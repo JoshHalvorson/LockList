@@ -1,10 +1,10 @@
-package com.joshuahalvorson.safeyoutube.view.network;
+package com.joshuahalvorson.safeyoutube.network;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.util.Log;
 
 import com.joshuahalvorson.safeyoutube.ApiKey;
-import com.joshuahalvorson.safeyoutube.view.model.PlaylistResultOverview;
+import com.joshuahalvorson.safeyoutube.model.PlaylistResultOverview;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

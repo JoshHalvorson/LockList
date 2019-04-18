@@ -1,5 +1,5 @@
 
-package com.joshuahalvorson.safeyoutube.view.model;
+package com.joshuahalvorson.safeyoutube.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
