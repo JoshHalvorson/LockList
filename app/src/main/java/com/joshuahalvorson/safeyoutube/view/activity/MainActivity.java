@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.joshuahalvorson.safeyoutube.R;
+import com.joshuahalvorson.safeyoutube.view.fragment.AddPlaylistDialogFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,8 +25,9 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();*/
+                startPlaylistFragment();
             }
         });
     }
@@ -43,5 +45,10 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void startPlaylistFragment(){
+        AddPlaylistDialogFragment addPlaylistDialogFragment = new AddPlaylistDialogFragment();
+        addPlaylistDialogFragment.show(getSupportFragmentManager(), "add_playlist");
     }
 }
