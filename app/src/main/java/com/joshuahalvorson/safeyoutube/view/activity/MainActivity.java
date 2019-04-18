@@ -8,12 +8,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.joshuahalvorson.safeyoutube.R;
 import com.joshuahalvorson.safeyoutube.view.fragment.AddPlaylistDialogFragment;
 
-public class MainActivity extends AppCompatActivity {
-
+public class MainActivity extends AppCompatActivity implements AddPlaylistDialogFragment.ReturnDataFromDialogFragment{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,4 +51,10 @@ public class MainActivity extends AppCompatActivity {
         AddPlaylistDialogFragment addPlaylistDialogFragment = new AddPlaylistDialogFragment();
         addPlaylistDialogFragment.show(getSupportFragmentManager(), "add_playlist");
     }
+
+    @Override
+    public void returnData(String playlistId) {
+        ((TextView)findViewById(R.id.text)).setText(playlistId);
+    }
+
 }
