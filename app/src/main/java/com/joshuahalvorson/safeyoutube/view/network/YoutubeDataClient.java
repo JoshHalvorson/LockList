@@ -1,7 +1,6 @@
 package com.joshuahalvorson.safeyoutube.view.network;
 
 import com.joshuahalvorson.safeyoutube.view.model.PlaylistResultOverview;
-
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
