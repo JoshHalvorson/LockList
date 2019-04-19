@@ -5,8 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.joshuahalvorson.safeyoutube.R;
 import com.joshuahalvorson.safeyoutube.model.Item;
 
@@ -36,7 +38,11 @@ public class PlaylistItemsListRecyclerviewAdapter extends RecyclerView.Adapter<P
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         Item item = items.get(i);
-        viewHolder.videoName.setText(item.getSnippet().getTitle());
+        String name = item.getSnippet().getTitle();
+        viewHolder.videoName.setText(name);
+        Glide.with(viewHolder.videoThumbnail.getContext())
+                .load(item.getSnippet().getThumbnails().getDefault().getUrl())
+                .into(viewHolder.videoThumbnail);
     }
 
     @Override
@@ -46,10 +52,12 @@ public class PlaylistItemsListRecyclerviewAdapter extends RecyclerView.Adapter<P
 
     class ViewHolder extends RecyclerView.ViewHolder{
         TextView videoName;
+        ImageView videoThumbnail;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             videoName = itemView.findViewById(R.id.video_name);
+            videoThumbnail = itemView.findViewById(R.id.video_thumbnail);
         }
     }
 }
