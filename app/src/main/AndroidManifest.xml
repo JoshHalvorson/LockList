@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.activity.SettingsActivity"></activity>
+        <activity android:name=".view.activity.LoginActivity"></activity>
+        <activity android:name=".view.activity.SettingsActivity" />
         <activity
             android:name=".view.activity.WatchPlaylistActivity"
             android:label="@string/title_activity_watch_playlist"
