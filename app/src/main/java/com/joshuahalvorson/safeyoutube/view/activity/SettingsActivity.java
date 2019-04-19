@@ -56,9 +56,8 @@ public class SettingsActivity extends AppCompatActivity {
         sharedPref = getPreferences(Context.MODE_PRIVATE);
         int ageRangeValue = sharedPref.getInt(getString(R.string.age_range_key), 0);
         ageSeekBar.setProgress(ageRangeValue);
-        
+
         ageSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            //TODO: add logic to change youtube player mode based on selected age range
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
