@@ -1,6 +1,8 @@
 package com.joshuahalvorson.safeyoutube.view.activity;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +21,7 @@ public class SettingsActivity extends AppCompatActivity {
     private SeekBar ageSeekBar;
     private Switch dayNightSwitch;
     private TextView currentThemeText;
+    private SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,10 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        sharedPref = getPreferences(Context.MODE_PRIVATE);
+        int ageRangeValue = sharedPref.getInt(getString(R.string.age_range_key), 0);
+        ageSeekBar.setProgress(ageRangeValue);
+        
         ageSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             //TODO: add logic to change youtube player mode based on selected age range
             @Override
@@ -64,7 +71,10 @@ public class SettingsActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                sharedPref = getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putInt(getString(R.string.age_range_key), seekBar.getProgress());
+                editor.apply();
             }
         });
 
