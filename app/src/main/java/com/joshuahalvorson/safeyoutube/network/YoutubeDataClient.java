@@ -13,4 +13,10 @@ public interface YoutubeDataClient {
                                                      @Query("playlistId") String playlistId,
                                                      @Query("maxResults") String maxResults,
                                                      @Query("key") String key);
+
+    @GET("playlists")
+    Call<PlaylistResultOverview> getPlaylistInfo(@Query("part") String part,
+                                                 @Query("id") String playlistId,
+                                                 @Query("key") String key);
+
 }

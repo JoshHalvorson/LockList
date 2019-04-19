@@ -36,4 +36,21 @@ public class YoutubeDataApiRepository {
         });
         return playlistResultOverviewMutableLiveData;
     }
+
+    public static MutableLiveData<PlaylistResultOverview> getPlaylistInfo(String playlistId){
+        final MutableLiveData<PlaylistResultOverview> playlistInfoMutableLiveData = new MutableLiveData<>();
+        Call<PlaylistResultOverview> call = client.getPlaylistInfo("snippet", playlistId, ApiKey.KEY);
+        call.enqueue(new Callback<PlaylistResultOverview>() {
+            @Override
+            public void onResponse(Call<PlaylistResultOverview> call, Response<PlaylistResultOverview> response) {
+                playlistInfoMutableLiveData.setValue(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<PlaylistResultOverview> call, Throwable t) {
+                Log.i("getPlaylistInfo", t.getLocalizedMessage());
+            }
+        });
+        return playlistInfoMutableLiveData;
+    }
 }

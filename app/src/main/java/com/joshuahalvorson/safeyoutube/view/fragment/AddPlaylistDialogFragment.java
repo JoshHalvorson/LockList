@@ -2,6 +2,9 @@ package com.joshuahalvorson.safeyoutube.view.fragment;
 
 
 import android.app.Activity;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,12 +19,15 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.joshuahalvorson.safeyoutube.R;
+import com.joshuahalvorson.safeyoutube.model.PlaylistResultOverview;
+import com.joshuahalvorson.safeyoutube.network.YoutubeDataApiViewModel;
 
 public class AddPlaylistDialogFragment extends DialogFragment {
     public static final String PLAYLIST_URL_KEY = "playlist_url";
     private EditText urlEditText, playlistNameEditText;
     private Button addPlaylistButton;
     private ReturnDataFromDialogFragment dialogFragmentCallback;
+    private YoutubeDataApiViewModel viewModel;
 
     public AddPlaylistDialogFragment() {
     }
@@ -38,12 +44,24 @@ public class AddPlaylistDialogFragment extends DialogFragment {
         addPlaylistButton = view.findViewById(R.id.add_playlist_button);
         playlistNameEditText = view.findViewById(R.id.playlist_name_edit_text);
 
+        viewModel = ViewModelProviders.of(this).get(YoutubeDataApiViewModel.class);
+
         if (getArguments() != null){
             dialogFragmentCallback = (ReturnDataFromDialogFragment) getActivity();
             String url = getArguments().getString(PLAYLIST_URL_KEY);
-            String[] urlParts = url.split("list=");
-            dialogFragmentCallback.returnData(urlParts[0], urlParts[1]);
-            dismiss();
+            final String[] urlParts = url.split("list=");
+            final String playlistId = urlParts[1];
+            LiveData<PlaylistResultOverview> liveData = viewModel.getPlaylistInfo(playlistId);
+            liveData.observe(this, new Observer<PlaylistResultOverview>() {
+                @Override
+                public void onChanged(@Nullable PlaylistResultOverview playlistResultOverview) {
+                    if(playlistResultOverview != null){
+                        String title = playlistResultOverview.getItems().get(0).getSnippet().getTitle();
+                        dialogFragmentCallback.returnData(title, playlistId);
+                        dismiss();
+                    }
+                }
+            });
         }
 
         addPlaylistButton.setOnClickListener(new View.OnClickListener() {
