@@ -1,9 +1,15 @@
 package com.joshuahalvorson.safeyoutube.view.activity;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,9 +21,19 @@ import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.joshuahalvorson.safeyoutube.ApiKey;
 import com.joshuahalvorson.safeyoutube.R;
+import com.joshuahalvorson.safeyoutube.adapter.PlaylistItemsListRecyclerviewAdapter;
+import com.joshuahalvorson.safeyoutube.model.Item;
+import com.joshuahalvorson.safeyoutube.model.PlaylistResultOverview;
+import com.joshuahalvorson.safeyoutube.network.YoutubeDataApiViewModel;
+
+import java.util.ArrayList;
 
 public class WatchPlaylistActivity extends AppCompatActivity {
     private YouTubePlayerSupportFragment youTubePlayerFragment;
+    private YoutubeDataApiViewModel viewModel;
+    private ArrayList<Item> items;
+    private PlaylistItemsListRecyclerviewAdapter adapter;
+    private String playlistId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,13 +42,34 @@ public class WatchPlaylistActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        items = new ArrayList<>();
+        adapter = new PlaylistItemsListRecyclerviewAdapter(items);
+        viewModel = ViewModelProviders.of(this).get(YoutubeDataApiViewModel.class);
         youTubePlayerFragment =
                 (YouTubePlayerSupportFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.youtube_fragment);
-
-        if(getIntent() != null){
-            initializeVideo(youTubePlayerFragment, getIntent().getStringExtra("playlistId"));
+        RecyclerView videosRecyclerview = findViewById(R.id.videos_list);
+        videosRecyclerview.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        videosRecyclerview.setAdapter(adapter);
+        if(getIntent() != null) {
+            playlistId = getIntent().getStringExtra("playlistId");
+            initializeVideo(youTubePlayerFragment, playlistId);
         }
+
+        LiveData<PlaylistResultOverview> playlistResultOverview =
+                viewModel
+                        .getPlaylistOverview(
+                                playlistId,
+                                "50");
+
+        playlistResultOverview.observe(this, new Observer<PlaylistResultOverview>() {
+            @Override
+            public void onChanged(@Nullable PlaylistResultOverview playlistResultOverview) {
+                items.clear();
+                items.addAll(playlistResultOverview.getItems());
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
