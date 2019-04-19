@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.joshuahalvorson.safeyoutube.R;
 
@@ -14,6 +15,7 @@ public class SettingsActivity extends AppCompatActivity {
     private Button clearSavedPlaylistsButton, changePasswordButton;
     private SeekBar ageSeekBar;
     private Switch dayNightSwitch;
+    private TextView currentThemeText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,15 +26,16 @@ public class SettingsActivity extends AppCompatActivity {
         ageSeekBar = findViewById(R.id.age_range_seek_bar);
         clearSavedPlaylistsButton = findViewById(R.id.clear_cache_button);
         changePasswordButton = findViewById(R.id.change_password_button);
+        currentThemeText = findViewById(R.id.current_theme_text);
 
         dayNightSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 //TODO: add logic to switch day night mode
                 if(isChecked){
-                    dayNightSwitch.setText("Night");
+                    currentThemeText.setText("Night");
                 }else{
-                    dayNightSwitch.setText("Day");
+                    currentThemeText.setText("Day");
                 }
             }
         });
