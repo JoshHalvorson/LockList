@@ -43,14 +43,12 @@ public class SettingsActivity extends AppCompatActivity {
         sharedPref = getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (getSystemService(UiModeManager.class).getCurrentModeType() == 1){
-                dayNightSwitch.setChecked(true);
-                currentThemeText.setText("Night");
-            }else{
-                dayNightSwitch.setChecked(false);
-                currentThemeText.setText("Day");
-            }
+        if (sharedPref.getInt(getString(R.string.dark_mode_key), 1) == 2){
+            dayNightSwitch.setChecked(true);
+            currentThemeText.setText("Night");
+        }else{
+            dayNightSwitch.setChecked(false);
+            currentThemeText.setText("Day");
         }
 
         dayNightSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -62,12 +60,18 @@ public class SettingsActivity extends AppCompatActivity {
                     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
                         UiModeManager uiModeManager = getSystemService(UiModeManager.class);
                         uiModeManager.setNightMode(UiModeManager.MODE_NIGHT_YES);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putInt(getString(R.string.dark_mode_key), 2);
+                        editor.apply();
                     }
                 }else{
                     currentThemeText.setText("Day");
                     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
                         UiModeManager uiModeManager = getSystemService(UiModeManager.class);
                         uiModeManager.setNightMode(UiModeManager.MODE_NIGHT_NO);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putInt(getString(R.string.dark_mode_key), 1);
+                        editor.apply();
                     }
                 }
             }

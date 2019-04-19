@@ -7,4 +7,5 @@
     <string name="preference_file_key">safeyoutube_shared_prefs</string>
     <string name="account_key">account_password</string>
     <string name="age_range_key">age_range</string>
+    <string name="dark_mode_key">dark_mode</string>
 </resources>
