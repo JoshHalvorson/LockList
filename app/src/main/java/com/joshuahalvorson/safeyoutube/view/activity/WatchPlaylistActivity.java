@@ -3,7 +3,9 @@ package com.joshuahalvorson.safeyoutube.view.activity;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -32,6 +34,8 @@ public class WatchPlaylistActivity extends AppCompatActivity {
     private ArrayList<Item> items;
     private PlaylistItemsListRecyclerviewAdapter adapter;
     private String playlistId;
+    private SharedPreferences sharedPref;
+    private int ageValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +69,10 @@ public class WatchPlaylistActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             }
         });
+
+        sharedPref = getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        ageValue = sharedPref.getInt(getString(R.string.age_range_key), 1);
     }
 
     @Override
@@ -89,7 +97,18 @@ public class WatchPlaylistActivity extends AppCompatActivity {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                 youTubePlayer.loadPlaylist(playlistId);
-                youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
+                switch (ageValue){
+                    case 0:
+                        youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.CHROMELESS);
+                        break;
+                    case 1:
+                        youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
+                        break;
+                    case 2:
+                        youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
+                        break;
+                }
+
             }
 
             @Override
