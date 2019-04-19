@@ -71,22 +71,6 @@ public class MainActivity extends AppCompatActivity implements
         db = Room.databaseBuilder(getApplicationContext(),
                 PlaylistDatabase.class, "database-playlists").build();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final List<Playlist> tempPlaylists = db.playlistDao().getAll();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (tempPlaylists != null){
-                            playlists.addAll(tempPlaylists);
-                            adapter.notifyDataSetChanged();
-                        }
-                    }
-                });
-            }
-        }).start();
-
         Intent intent = getIntent();
         String action = intent.getAction();
         String type = intent.getType();
@@ -97,6 +81,27 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final List<Playlist> tempPlaylists = db.playlistDao().getAll();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (tempPlaylists != null){
+                            playlists.clear();
+                            playlists.addAll(tempPlaylists);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+            }
+        }).start();
     }
 
     @Override
