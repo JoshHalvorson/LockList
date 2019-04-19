@@ -1,5 +1,6 @@
 package com.joshuahalvorson.safeyoutube.view.activity;
 
+import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
@@ -15,14 +16,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import com.joshuahalvorson.safeyoutube.R;
 import com.joshuahalvorson.safeyoutube.adapter.PlaylistsListRecyclerviewAdapter;
+import com.joshuahalvorson.safeyoutube.database.Playlist;
+import com.joshuahalvorson.safeyoutube.database.PlaylistDatabase;
 import com.joshuahalvorson.safeyoutube.view.fragment.AddPlaylistDialogFragment;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements
         AddPlaylistDialogFragment.ReturnDataFromDialogFragment {
     private ArrayList<String> playlistIds;
     private PlaylistsListRecyclerviewAdapter adapter;
     private ConstraintLayout parent;
+    private PlaylistDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +61,26 @@ public class MainActivity extends AppCompatActivity implements
         playlistsListRecyclerview.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         playlistsListRecyclerview.setAdapter(adapter);
 
+        db = Room.databaseBuilder(getApplicationContext(),
+                PlaylistDatabase.class, "database-playlists").build();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final List<Playlist> playlists = db.playlistDao().getAll();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (playlists != null){
+                            for(Playlist p : playlists){
+                                playlistIds.add(p.playlistId);
+                            }
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+            }
+        }).start();
     }
 
     @Override
@@ -79,9 +104,17 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void returnData(String playlistId) {
+    public void returnData(final String playlistId) {
         playlistIds.add(playlistId);
         adapter.notifyItemChanged(playlistIds.size() - 1);
+        if(db != null){
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    db.playlistDao().insertAll(new Playlist(playlistId));
+                }
+            }).start();
+        }
         Snackbar.make(parent, "Added playlist", Snackbar.LENGTH_SHORT).show();
     }
 }
