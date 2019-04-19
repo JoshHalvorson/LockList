@@ -3,6 +3,7 @@ package com.joshuahalvorson.safeyoutube.view.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.joshuahalvorson.safeyoutube.R;
+import com.joshuahalvorson.safeyoutube.view.fragment.ChangePasswordDialogFragment;
 
 public class SettingsActivity extends AppCompatActivity {
     public static final int LOGIN_REQUEST_CODE = 1;
@@ -49,7 +51,8 @@ public class SettingsActivity extends AppCompatActivity {
         changePasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: add logic to change current password
+                ChangePasswordDialogFragment changePasswordDialogFragment = new ChangePasswordDialogFragment();
+                changePasswordDialogFragment.show(getSupportFragmentManager(), "change_password");
             }
         });
 
@@ -107,5 +110,4 @@ public class SettingsActivity extends AppCompatActivity {
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
-
 }
