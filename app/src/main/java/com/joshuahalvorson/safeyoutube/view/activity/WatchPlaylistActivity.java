@@ -5,17 +5,13 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
-
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
@@ -29,6 +25,7 @@ import com.joshuahalvorson.safeyoutube.network.YoutubeDataApiViewModel;
 import java.util.ArrayList;
 
 public class WatchPlaylistActivity extends AppCompatActivity {
+    public static final String PLAYLIST_ID_KEY = "playlistId";
     private YouTubePlayerSupportFragment youTubePlayerFragment;
     private YoutubeDataApiViewModel viewModel;
     private ArrayList<Item> items;
@@ -52,7 +49,7 @@ public class WatchPlaylistActivity extends AppCompatActivity {
         videosRecyclerview.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         videosRecyclerview.setAdapter(adapter);
         if(getIntent() != null) {
-            playlistId = getIntent().getStringExtra("playlistId");
+            playlistId = getIntent().getStringExtra(PLAYLIST_ID_KEY);
             initializeVideo(youTubePlayerFragment, playlistId);
         }
 

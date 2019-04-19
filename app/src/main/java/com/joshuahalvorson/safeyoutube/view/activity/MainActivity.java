@@ -13,11 +13,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import com.joshuahalvorson.safeyoutube.R;
 import com.joshuahalvorson.safeyoutube.adapter.PlaylistsListRecyclerviewAdapter;
 import com.joshuahalvorson.safeyoutube.view.fragment.AddPlaylistDialogFragment;
-
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements
@@ -49,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements
             public void onListItemClick(String playlistId) {
                 Log.i("clicked", playlistId);
                 Intent intent = new Intent(getApplicationContext(), WatchPlaylistActivity.class);
-                intent.putExtra("playlistId", playlistId);
+                intent.putExtra(WatchPlaylistActivity.PLAYLIST_ID_KEY, playlistId);
                 startActivity(intent);
             }
         });
