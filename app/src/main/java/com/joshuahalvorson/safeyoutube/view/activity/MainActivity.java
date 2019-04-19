@@ -10,17 +10,22 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
+import com.joshuahalvorson.safeyoutube.ApiKey;
 import com.joshuahalvorson.safeyoutube.R;
 import com.joshuahalvorson.safeyoutube.adapter.PlaylistsListRecyclerviewAdapter;
 import com.joshuahalvorson.safeyoutube.view.fragment.AddPlaylistDialogFragment;
-
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements
         AddPlaylistDialogFragment.ReturnDataFromDialogFragment {
     private ArrayList<String> playlistIds;
     private PlaylistsListRecyclerviewAdapter adapter;
+    private YouTubePlayerSupportFragment youTubePlayerFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +33,10 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        youTubePlayerFragment =
+                (YouTubePlayerSupportFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.youtube_fragment);
 
         playlistIds = new ArrayList<>();
 
@@ -43,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onListItemClick(String playlistId) {
                 Log.i("clicked", playlistId);
+                initializeVideo(youTubePlayerFragment, playlistId);
 
             }
         });
@@ -50,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements
         RecyclerView playlistsListRecyclerview = findViewById(R.id.playlists_list);
         playlistsListRecyclerview.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         playlistsListRecyclerview.setAdapter(adapter);
+
     }
 
     @Override
@@ -72,8 +83,25 @@ public class MainActivity extends AppCompatActivity implements
         addPlaylistDialogFragment.show(getSupportFragmentManager(), "add_playlist");
     }
 
-    public void startWatchPlaylistFragment(String playlistId){
+    private void initializeVideo(YouTubePlayerSupportFragment fragment, final String playlistId){
+        fragment.initialize(ApiKey.KEY, new YouTubePlayer.OnInitializedListener() {
+            @Override
+            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+                youTubePlayer.cuePlaylist(playlistId);
+                youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
+            }
 
+            @Override
+            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+                if (youTubeInitializationResult.isUserRecoverableError()) {
+                    youTubeInitializationResult.getErrorDialog(getParent(), 1).show();
+                } else {
+                    String errorMessage = String.format(
+                            getString(R.string.error_player), youTubeInitializationResult.toString());
+                    Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     @Override
