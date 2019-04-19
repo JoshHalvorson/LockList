@@ -1,12 +1,16 @@
 package com.joshuahalvorson.safeyoutube.view.activity;
 
+import android.app.UiModeManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.Build;
+import android.preference.Preference;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -36,14 +40,35 @@ public class SettingsActivity extends AppCompatActivity {
         changePasswordButton = findViewById(R.id.change_password_button);
         currentThemeText = findViewById(R.id.current_theme_text);
 
+        sharedPref = getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (getSystemService(UiModeManager.class).getCurrentModeType() == 1){
+                dayNightSwitch.setChecked(true);
+                currentThemeText.setText("Night");
+            }else{
+                dayNightSwitch.setChecked(false);
+                currentThemeText.setText("Day");
+            }
+        }
+
         dayNightSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 //TODO: add logic to switch day night mode
                 if(isChecked){
                     currentThemeText.setText("Night");
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                        UiModeManager uiModeManager = getSystemService(UiModeManager.class);
+                        uiModeManager.setNightMode(UiModeManager.MODE_NIGHT_YES);
+                    }
                 }else{
                     currentThemeText.setText("Day");
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                        UiModeManager uiModeManager = getSystemService(UiModeManager.class);
+                        uiModeManager.setNightMode(UiModeManager.MODE_NIGHT_NO);
+                    }
                 }
             }
         });
@@ -56,8 +81,6 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        sharedPref = getSharedPreferences(
-                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         int ageRangeValue = sharedPref.getInt(getString(R.string.age_range_key), 0);
         ageSeekBar.setProgress(ageRangeValue);
 
@@ -74,7 +97,6 @@ public class SettingsActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putInt(getString(R.string.age_range_key), seekBar.getProgress());
                 editor.apply();
