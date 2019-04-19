@@ -36,6 +36,14 @@ public class AddPlaylistDialogFragment extends DialogFragment {
         urlEditText = view.findViewById(R.id.video_url_edit_text);
         addPlaylistButton = view.findViewById(R.id.add_playlist_button);
 
+        if (getArguments() != null){
+            dialogFragmentCallback = (ReturnDataFromDialogFragment) getActivity();
+            String url = getArguments().getString("playlist_url");
+            String[] urlParts = url.split("list=");
+            dialogFragmentCallback.returnData(urlParts[1]);
+            dismiss();
+        }
+
         addPlaylistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
