@@ -25,7 +25,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements
         AddPlaylistDialogFragment.ReturnDataFromDialogFragment {
-    private ArrayList<String> playlistIds;
+    private ArrayList<Playlist> playlists;
     private PlaylistsListRecyclerviewAdapter adapter;
     private ConstraintLayout parent;
     public static PlaylistDatabase db;
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements
         setSupportActionBar(toolbar);
 
         parent = findViewById(R.id.parent);
-        playlistIds = new ArrayList<>();
+        playlists = new ArrayList<>();
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -50,12 +50,12 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        adapter = new PlaylistsListRecyclerviewAdapter(playlistIds, new PlaylistsListRecyclerviewAdapter.OnListItemClick() {
+        adapter = new PlaylistsListRecyclerviewAdapter(playlists, new PlaylistsListRecyclerviewAdapter.OnListItemClick() {
             @Override
-            public void onListItemClick(String playlistId) {
-                Log.i("clicked", playlistId);
+            public void onListItemClick(Playlist playlist) {
+                Log.i("clicked", playlist.playlistId);
                 Intent intent = new Intent(getApplicationContext(), WatchPlaylistActivity.class);
-                intent.putExtra(WatchPlaylistActivity.PLAYLIST_ID_KEY, playlistId);
+                intent.putExtra(WatchPlaylistActivity.PLAYLIST_ID_KEY, playlist.playlistId);
                 startActivity(intent);
             }
         });
@@ -70,14 +70,12 @@ public class MainActivity extends AppCompatActivity implements
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final List<Playlist> playlists = db.playlistDao().getAll();
+                final List<Playlist> tempPlaylists = db.playlistDao().getAll();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (playlists != null){
-                            for(Playlist p : playlists){
-                                playlistIds.add(p.playlistId);
-                            }
+                        if (tempPlaylists != null){
+                            playlists.addAll(tempPlaylists);
                             adapter.notifyDataSetChanged();
                         }
                     }
@@ -140,14 +138,15 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void returnData(final String playlistId) {
-        playlistIds.add(playlistId);
-        adapter.notifyItemChanged(playlistIds.size() - 1);
+    public void returnData(final String playlistName, final String playlistId) {
+        final Playlist playlist = new Playlist(playlistId, playlistName.split(":")[0]);
+        playlists.add(playlist);
+        adapter.notifyItemChanged(playlists.size() - 1);
         if(db != null){
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    db.playlistDao().insertAll(new Playlist(playlistId));
+                    db.playlistDao().insertAll(playlist);
                 }
             }).start();
         }

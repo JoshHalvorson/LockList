@@ -19,7 +19,7 @@ import com.joshuahalvorson.safeyoutube.R;
 
 public class AddPlaylistDialogFragment extends DialogFragment {
     public static final String PLAYLIST_URL_KEY = "playlist_url";
-    private EditText urlEditText;
+    private EditText urlEditText, playlistNameEditText;
     private Button addPlaylistButton;
     private ReturnDataFromDialogFragment dialogFragmentCallback;
 
@@ -36,34 +36,34 @@ public class AddPlaylistDialogFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         urlEditText = view.findViewById(R.id.video_url_edit_text);
         addPlaylistButton = view.findViewById(R.id.add_playlist_button);
+        playlistNameEditText = view.findViewById(R.id.playlist_name_edit_text);
 
         if (getArguments() != null){
             dialogFragmentCallback = (ReturnDataFromDialogFragment) getActivity();
             String url = getArguments().getString(PLAYLIST_URL_KEY);
             String[] urlParts = url.split("list=");
-            dialogFragmentCallback.returnData(urlParts[1]);
+            dialogFragmentCallback.returnData(urlParts[0], urlParts[1]);
             dismiss();
         }
 
         addPlaylistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!urlEditText.getText().toString().equals("")){
+                if(!urlEditText.getText().toString().equals("") &&
+                        !playlistNameEditText.getText().toString().equals("")){
                     String url = urlEditText.getText().toString();
                     String[] urlParts = url.split("list=");
-                    if(urlParts.length == 2){
-                        String playlistId = urlParts[1];
-                        Log.i("playlistId", playlistId);
-                        dialogFragmentCallback = (ReturnDataFromDialogFragment) getActivity();
-                        dialogFragmentCallback.returnData(playlistId);
-                        dismiss();
-                    }
+                    String playlistId = urlParts[1];
+                    dialogFragmentCallback = (ReturnDataFromDialogFragment) getActivity();
+                    dialogFragmentCallback.returnData(
+                            playlistNameEditText.getText().toString(), urlParts[1]);
+                    dismiss();
                 }
             }
         });
     }
 
     public interface ReturnDataFromDialogFragment {
-        void returnData(String playlistId);
+        void returnData(String playlistName, String playlistId);
     }
 }

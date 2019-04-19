@@ -7,16 +7,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.joshuahalvorson.safeyoutube.R;
-import com.joshuahalvorson.safeyoutube.model.PlaylistResultOverview;
+import com.joshuahalvorson.safeyoutube.database.Playlist;
 
 import java.util.ArrayList;
 
 public class PlaylistsListRecyclerviewAdapter extends RecyclerView.Adapter<PlaylistsListRecyclerviewAdapter.ViewHolder> {
-    private ArrayList<String> playlistItems;
+    private ArrayList<Playlist> playlists;
     private OnListItemClick callback;
 
-    public PlaylistsListRecyclerviewAdapter(ArrayList<String> items, OnListItemClick callback) {
-        this.playlistItems = items;
+    public PlaylistsListRecyclerviewAdapter(ArrayList<Playlist> playlists, OnListItemClick callback) {
+        this.playlists = playlists;
         this.callback = callback;
     }
 
@@ -36,8 +36,8 @@ public class PlaylistsListRecyclerviewAdapter extends RecyclerView.Adapter<Playl
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        final String playlist = playlistItems.get(i);
-        viewHolder.playlistName.setText(playlist);
+        final Playlist playlist = playlists.get(i);
+        viewHolder.playlistName.setText(playlist.playlistName);
         viewHolder.playlistName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -48,7 +48,7 @@ public class PlaylistsListRecyclerviewAdapter extends RecyclerView.Adapter<Playl
 
     @Override
     public int getItemCount() {
-        return playlistItems.size();
+        return playlists.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
@@ -61,6 +61,6 @@ public class PlaylistsListRecyclerviewAdapter extends RecyclerView.Adapter<Playl
     }
 
     public interface OnListItemClick {
-        void onListItemClick(String playlistId);
+        void onListItemClick(Playlist playlist);
     }
 }
