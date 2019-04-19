@@ -29,7 +29,8 @@ public class LoginActivity extends AppCompatActivity {
         passwordText = findViewById(R.id.login_text);
         enteredPasswordText = findViewById(R.id.password_edit_text);
 
-        sharedPref = getPreferences(Context.MODE_PRIVATE);
+        sharedPref = getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         final String password = sharedPref.getString(getString(R.string.account_key), "");
 
         if (password != null) {
@@ -40,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         if (!enteredPasswordText.getText().toString().equals("")) {
-                            sharedPref = getPreferences(Context.MODE_PRIVATE);
+                            sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPref.edit();
                             editor.putString(getString(R.string.account_key), enteredPasswordText.getText().toString());
                             editor.apply();

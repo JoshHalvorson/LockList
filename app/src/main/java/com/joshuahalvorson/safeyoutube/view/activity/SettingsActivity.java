@@ -53,7 +53,8 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        sharedPref = getPreferences(Context.MODE_PRIVATE);
+        sharedPref = getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         int ageRangeValue = sharedPref.getInt(getString(R.string.age_range_key), 0);
         ageSeekBar.setProgress(ageRangeValue);
 
@@ -70,7 +71,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                sharedPref = getPreferences(Context.MODE_PRIVATE);
+                sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putInt(getString(R.string.age_range_key), seekBar.getProgress());
                 editor.apply();

@@ -4,6 +4,7 @@
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
     <string name="title_activity_watch_playlist">WatchPlaylistActivity</string>
 
+    <string name="preference_file_key">safeyoutube_shared_prefs</string>
     <string name="account_key">account_password</string>
     <string name="age_range_key">age_range</string>
 </resources>
