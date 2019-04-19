@@ -57,10 +57,7 @@ public class WatchPlaylistActivity extends AppCompatActivity {
         }
 
         LiveData<PlaylistResultOverview> playlistResultOverview =
-                viewModel
-                        .getPlaylistOverview(
-                                playlistId,
-                                "50");
+                viewModel.getPlaylistOverview(playlistId);
 
         playlistResultOverview.observe(this, new Observer<PlaylistResultOverview>() {
             @Override

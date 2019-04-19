@@ -20,9 +20,9 @@ public class YoutubeDataApiRepository {
             .build();
     private static YoutubeDataClient client = retrofit.create(YoutubeDataClient.class);
 
-    public static MutableLiveData<PlaylistResultOverview> getPlaylistOverview(String playlistId, String maxResults){
+    public static MutableLiveData<PlaylistResultOverview> getPlaylistOverview(String playlistId){
         final MutableLiveData<PlaylistResultOverview> playlistResultOverviewMutableLiveData = new MutableLiveData<>();
-        Call<PlaylistResultOverview> call = client.getPlaylistOverview("snippet", playlistId, maxResults, ApiKey.KEY);
+        Call<PlaylistResultOverview> call = client.getPlaylistOverview("snippet", playlistId, "50", ApiKey.KEY);
         call.enqueue(new Callback<PlaylistResultOverview>() {
             @Override
             public void onResponse(Call<PlaylistResultOverview> call, Response<PlaylistResultOverview> response) {

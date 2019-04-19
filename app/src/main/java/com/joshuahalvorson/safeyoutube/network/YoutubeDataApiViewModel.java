@@ -9,8 +9,8 @@ public class YoutubeDataApiViewModel extends ViewModel {
     private MutableLiveData<PlaylistResultOverview> liveData;
     private YoutubeDataApiRepository youtubeDataApiRepository;
 
-    public LiveData<PlaylistResultOverview> getPlaylistOverview(String playlistId, String maxResults){
-        liveData = YoutubeDataApiRepository.getPlaylistOverview(playlistId, maxResults);
+    public LiveData<PlaylistResultOverview> getPlaylistOverview(String playlistId){
+        liveData = YoutubeDataApiRepository.getPlaylistOverview(playlistId);
         return liveData;
     }
 }
