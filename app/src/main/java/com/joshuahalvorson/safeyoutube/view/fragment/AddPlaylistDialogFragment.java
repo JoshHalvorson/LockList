@@ -18,6 +18,7 @@ import android.widget.EditText;
 import com.joshuahalvorson.safeyoutube.R;
 
 public class AddPlaylistDialogFragment extends DialogFragment {
+    public static final String PLAYLIST_URL_KEY = "playlist_url";
     private EditText urlEditText;
     private Button addPlaylistButton;
     private ReturnDataFromDialogFragment dialogFragmentCallback;
@@ -38,7 +39,7 @@ public class AddPlaylistDialogFragment extends DialogFragment {
 
         if (getArguments() != null){
             dialogFragmentCallback = (ReturnDataFromDialogFragment) getActivity();
-            String url = getArguments().getString("playlist_url");
+            String url = getArguments().getString(PLAYLIST_URL_KEY);
             String[] urlParts = url.split("list=");
             dialogFragmentCallback.returnData(urlParts[1]);
             dismiss();

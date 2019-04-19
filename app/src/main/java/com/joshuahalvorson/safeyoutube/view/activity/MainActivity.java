@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements
         Bundle bundle;
         if (url != null){
             bundle = new Bundle();
-            bundle.putString("playlist_url", url);
+            bundle.putString(AddPlaylistDialogFragment.PLAYLIST_URL_KEY, url);
             addPlaylistDialogFragment.setArguments(bundle);
         }
         addPlaylistDialogFragment.show(getSupportFragmentManager(), "add_playlist");
