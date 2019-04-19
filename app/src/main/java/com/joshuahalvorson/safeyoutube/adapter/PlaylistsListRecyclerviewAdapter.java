@@ -13,9 +13,11 @@ import java.util.ArrayList;
 
 public class PlaylistsListRecyclerviewAdapter extends RecyclerView.Adapter<PlaylistsListRecyclerviewAdapter.ViewHolder> {
     private ArrayList<String> playlistItems;
+    private OnListItemClick callback;
 
-    public PlaylistsListRecyclerviewAdapter(ArrayList<String> items) {
+    public PlaylistsListRecyclerviewAdapter(ArrayList<String> items, OnListItemClick callback) {
         this.playlistItems = items;
+        this.callback = callback;
     }
 
     @NonNull
@@ -34,8 +36,14 @@ public class PlaylistsListRecyclerviewAdapter extends RecyclerView.Adapter<Playl
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        String playlist = playlistItems.get(i);
+        final String playlist = playlistItems.get(i);
         viewHolder.playlistName.setText(playlist);
+        viewHolder.playlistName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callback.onListItemClick(playlist);
+            }
+        });
     }
 
     @Override
@@ -50,5 +58,9 @@ public class PlaylistsListRecyclerviewAdapter extends RecyclerView.Adapter<Playl
             super(itemView);
             playlistName = itemView.findViewById(R.id.playlists_list_element_name);
         }
+    }
+
+    public interface OnListItemClick {
+        void onListItemClick(String playlistId);
     }
 }

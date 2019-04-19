@@ -1,30 +1,24 @@
 package com.joshuahalvorson.safeyoutube.view.activity;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.joshuahalvorson.safeyoutube.R;
 import com.joshuahalvorson.safeyoutube.adapter.PlaylistsListRecyclerviewAdapter;
 import com.joshuahalvorson.safeyoutube.view.fragment.AddPlaylistDialogFragment;
-import com.joshuahalvorson.safeyoutube.model.Item;
-import com.joshuahalvorson.safeyoutube.model.PlaylistResultOverview;
-import com.joshuahalvorson.safeyoutube.network.YoutubeDataApiViewModel;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements AddPlaylistDialogFragment.ReturnDataFromDialogFragment{
+public class MainActivity extends AppCompatActivity implements
+        AddPlaylistDialogFragment.ReturnDataFromDialogFragment {
     private ArrayList<String> playlistIds;
     private PlaylistsListRecyclerviewAdapter adapter;
 
@@ -35,15 +29,23 @@ public class MainActivity extends AppCompatActivity implements AddPlaylistDialog
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        playlistIds = new ArrayList<>();
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startPlaylistFragment();
+                startAddPlaylistFragment();
             }
         });
 
-        adapter = new PlaylistsListRecyclerviewAdapter(playlistIds);
+        adapter = new PlaylistsListRecyclerviewAdapter(playlistIds, new PlaylistsListRecyclerviewAdapter.OnListItemClick() {
+            @Override
+            public void onListItemClick(String playlistId) {
+                Log.i("clicked", playlistId);
+
+            }
+        });
 
         RecyclerView playlistsListRecyclerview = findViewById(R.id.playlists_list);
         playlistsListRecyclerview.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -65,9 +67,13 @@ public class MainActivity extends AppCompatActivity implements AddPlaylistDialog
         return super.onOptionsItemSelected(item);
     }
 
-    private void startPlaylistFragment(){
+    private void startAddPlaylistFragment(){
         AddPlaylistDialogFragment addPlaylistDialogFragment = new AddPlaylistDialogFragment();
         addPlaylistDialogFragment.show(getSupportFragmentManager(), "add_playlist");
+    }
+
+    public void startWatchPlaylistFragment(String playlistId){
+
     }
 
     @Override
@@ -77,5 +83,4 @@ public class MainActivity extends AppCompatActivity implements AddPlaylistDialog
         /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();*/
     }
-
 }
