@@ -13,7 +13,7 @@ public interface PlaylistDao {
     List<Playlist> getAll();
 
     @Query("SELECT * FROM playlist WHERE playlist_id = (:playlistId)")
-    Playlist getPlaylistId(String playlistId);
+    Playlist getPlaylistId(int playlistId);
 
     @Insert
     void insertAll(Playlist... playlists);

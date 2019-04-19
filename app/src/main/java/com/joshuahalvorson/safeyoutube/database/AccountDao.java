@@ -12,7 +12,7 @@ public interface AccountDao {
     List<Account> getAll();
 
     @Query("SELECT * FROM account WHERE id = (:id)")
-    Account getAccountById(String id);
+    Account getAccountById(int id);
 
     @Insert
     void insertAll(Account... accounts);
