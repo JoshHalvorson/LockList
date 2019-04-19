@@ -3,6 +3,7 @@ package com.joshuahalvorson.safeyoutube.view.activity;
 import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -95,8 +96,10 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
-            startActivity(intent);
+            if(!MainActivity.isLoggedIn){
+                Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivityForResult(loginIntent, SettingsActivity.LOGIN_REQUEST_CODE);
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -105,6 +108,17 @@ public class MainActivity extends AppCompatActivity implements
     private void startAddPlaylistFragment(){
         AddPlaylistDialogFragment addPlaylistDialogFragment = new AddPlaylistDialogFragment();
         addPlaylistDialogFragment.show(getSupportFragmentManager(), "add_playlist");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == SettingsActivity.LOGIN_REQUEST_CODE && resultCode == RESULT_OK){
+            Log.i("login", "logged in");
+            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+            startActivity(intent);
+        }else if (requestCode == SettingsActivity.LOGIN_REQUEST_CODE && resultCode == RESULT_CANCELED){
+            Log.i("login", "not logged in");
+        }
     }
 
     @Override

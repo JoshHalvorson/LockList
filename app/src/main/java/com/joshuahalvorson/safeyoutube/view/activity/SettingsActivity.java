@@ -1,8 +1,10 @@
 package com.joshuahalvorson.safeyoutube.view.activity;
 
+import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 import com.joshuahalvorson.safeyoutube.R;
 
 public class SettingsActivity extends AppCompatActivity {
+    public static final int LOGIN_REQUEST_CODE = 1;
     private Button clearSavedPlaylistsButton, changePasswordButton;
     private SeekBar ageSeekBar;
     private Switch dayNightSwitch;
@@ -40,12 +43,12 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        changePasswordButton.setOnClickListener(new View.OnClickListener() {
+        /*changePasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //TODO: add logic to change current password
             }
-        });
+        });*/
 
         ageSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             //TODO: add logic to change youtube player mode based on selected age range
@@ -65,4 +68,6 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }
