@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements
             startActivity(intent);
         }else if (requestCode == SettingsActivity.LOGIN_REQUEST_CODE && resultCode == RESULT_CANCELED){
             Log.i("login", "not logged in");
+            Snackbar.make(parent, "Not logged in", Snackbar.LENGTH_SHORT).show();
         }
     }
 
