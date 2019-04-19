@@ -27,7 +27,6 @@
         android:layout_marginBottom="8dp"
         android:gravity="center_vertical"
         android:text="TextView"
-        android:textColor="@android:color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/video_thumbnail"
