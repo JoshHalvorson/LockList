@@ -29,6 +29,8 @@ public class MainActivity extends AppCompatActivity implements
     private ConstraintLayout parent;
     private PlaylistDatabase db;
 
+    public static boolean isLoggedIn = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
