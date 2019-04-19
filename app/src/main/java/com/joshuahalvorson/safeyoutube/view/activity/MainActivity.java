@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements
     private ArrayList<String> playlistIds;
     private PlaylistsListRecyclerviewAdapter adapter;
     private ConstraintLayout parent;
-    private PlaylistDatabase db;
+    public static PlaylistDatabase db;
 
     public static boolean isLoggedIn = false;
 
@@ -135,5 +135,14 @@ public class MainActivity extends AppCompatActivity implements
             }).start();
         }
         Snackbar.make(parent, "Added playlist", Snackbar.LENGTH_SHORT).show();
+    }
+
+    public static void clearDb(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                db.clearAllTables();
+            }
+        }).start();
     }
 }

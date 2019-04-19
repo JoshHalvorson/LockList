@@ -1,17 +1,25 @@
 package com.joshuahalvorson.safeyoutube.view.activity;
 
+import android.arch.persistence.room.Room;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.joshuahalvorson.safeyoutube.R;
+import com.joshuahalvorson.safeyoutube.database.PlaylistDatabase;
+
+import org.mortbay.jetty.Main;
 
 public class SettingsActivity extends AppCompatActivity {
     public static final int LOGIN_REQUEST_CODE = 1;
@@ -43,12 +51,12 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        /*changePasswordButton.setOnClickListener(new View.OnClickListener() {
+        changePasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //TODO: add logic to change current password
             }
-        });*/
+        });
 
         ageSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             //TODO: add logic to change youtube player mode based on selected age range
@@ -67,7 +75,35 @@ public class SettingsActivity extends AppCompatActivity {
 
             }
         });
+
+        clearSavedPlaylistsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                open();
+            }
+        });
     }
 
+    public void open(){
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("Are you sure you want to clear saved playlists?");
+                alertDialogBuilder.setPositiveButton("Yes",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                MainActivity.clearDb();
+                            }
+                        });
+
+        alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
 
 }
