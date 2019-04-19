@@ -1,9 +1,14 @@
 package com.joshuahalvorson.safeyoutube.view.activity;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
@@ -11,9 +16,18 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.joshuahalvorson.safeyoutube.R;
+import com.joshuahalvorson.safeyoutube.adapter.PlaylistsListRecyclerviewAdapter;
 import com.joshuahalvorson.safeyoutube.view.fragment.AddPlaylistDialogFragment;
+import com.joshuahalvorson.safeyoutube.model.Item;
+import com.joshuahalvorson.safeyoutube.model.PlaylistResultOverview;
+import com.joshuahalvorson.safeyoutube.network.YoutubeDataApiViewModel;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements AddPlaylistDialogFragment.ReturnDataFromDialogFragment{
+    private ArrayList<String> playlistIds;
+    private PlaylistsListRecyclerviewAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,11 +39,15 @@ public class MainActivity extends AppCompatActivity implements AddPlaylistDialog
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*/
                 startPlaylistFragment();
             }
         });
+
+        adapter = new PlaylistsListRecyclerviewAdapter(playlistIds);
+
+        RecyclerView playlistsListRecyclerview = findViewById(R.id.playlists_list);
+        playlistsListRecyclerview.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        playlistsListRecyclerview.setAdapter(adapter);
     }
 
     @Override
@@ -54,7 +72,10 @@ public class MainActivity extends AppCompatActivity implements AddPlaylistDialog
 
     @Override
     public void returnData(String playlistId) {
-        ((TextView)findViewById(R.id.text)).setText(playlistId);
+        playlistIds.add(playlistId);
+        adapter.notifyItemChanged(playlistIds.size() - 1);
+        /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();*/
     }
 
 }
