@@ -13,7 +13,11 @@ public class Playlist {
     @ColumnInfo(name = "playlist_id")
     public String playlistId;
 
-    public Playlist(String playlistId) {
+    @ColumnInfo(name = "playlist_name")
+    public String playlistName;
+
+    public Playlist(String playlistId, String playlistName) {
         this.playlistId = playlistId;
+        this.playlistName = playlistName;
     }
 }
