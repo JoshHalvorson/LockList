@@ -18,9 +18,13 @@ public class Playlist {
     @ColumnInfo(name = "playlist_video_count")
     public int playlistVideoCount;
 
-    public Playlist(String playlistId, String playlistName, int playlistVideoCount) {
+    @ColumnInfo(name = "playlist_thumbnail")
+    public String playlistThumbnail;
+
+    public Playlist(String playlistId, String playlistName, int playlistVideoCount, String playlistThumbnail) {
         this.playlistId = playlistId;
         this.playlistName = playlistName;
         this.playlistVideoCount = playlistVideoCount;
+        this.playlistThumbnail = playlistThumbnail;
     }
 }
