@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -16,8 +17,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
+
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
@@ -114,6 +115,7 @@ public class WatchPlaylistActivity extends AppCompatActivity {
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                 mYoutubePlayer = youTubePlayer;
                 mYoutubePlayer.loadPlaylist(playlistId);
+                mYoutubePlayer.setFullscreenControlFlags(0);
                 switch (ageValue){
                     case 0:
                         mYoutubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.CHROMELESS);
@@ -139,6 +141,16 @@ public class WatchPlaylistActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            mYoutubePlayer.setFullscreen(false);
+        } else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            mYoutubePlayer.setFullscreen(true);
+        }
     }
 
     @Override
