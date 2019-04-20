@@ -19,6 +19,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.joshuahalvorson.safeyoutube.R;
+import com.joshuahalvorson.safeyoutube.database.Playlist;
+import com.joshuahalvorson.safeyoutube.model.Item;
 import com.joshuahalvorson.safeyoutube.model.PlaylistResultOverview;
 import com.joshuahalvorson.safeyoutube.network.YoutubeDataApiViewModel;
 
@@ -54,18 +56,20 @@ public class AddPlaylistDialogFragment extends DialogFragment {
             LiveData<PlaylistResultOverview> liveData = viewModel.getPlaylistInfo(playlistId);
             liveData.observe(this, new Observer<PlaylistResultOverview>() {
                 @Override
-                public void onChanged(@Nullable PlaylistResultOverview playlistResultOverview) {
-                    if(playlistResultOverview != null){
+                public void onChanged(@Nullable final PlaylistResultOverview playlistInfo) {
+                    if(playlistInfo != null){
                         LiveData<PlaylistResultOverview> liveData = viewModel.getPlaylistOverview(playlistId);
                         liveData.observe(getViewLifecycleOwner(), new Observer<PlaylistResultOverview>() {
                             @Override
                             public void onChanged(@Nullable PlaylistResultOverview playlistResultOverview) {
                                 if(playlistResultOverview != null){
-                                    String title = playlistResultOverview.getItems().get(0).getSnippet().getTitle();
-                                    dialogFragmentCallback.returnData(
-                                            title,
+                                    Item item = playlistInfo.getItems().get(0);
+                                    String title = item.getSnippet().getTitle();
+                                    dialogFragmentCallback.returnData(new Playlist(
                                             playlistId,
-                                            playlistResultOverview.getPageInfo().getTotalResults());
+                                            title,
+                                            playlistResultOverview.getPageInfo().getTotalResults(),
+                                            item.getSnippet().getThumbnails().getDefault().getUrl()));
                                     dismiss();
                                 }
                             }
@@ -88,11 +92,12 @@ public class AddPlaylistDialogFragment extends DialogFragment {
                         @Override
                         public void onChanged(@Nullable PlaylistResultOverview playlistResultOverview) {
                             if(playlistResultOverview != null){
+                                Item item = playlistResultOverview.getItems().get(0);
                                 dialogFragmentCallback = (ReturnDataFromDialogFragment) getActivity();
-                                dialogFragmentCallback.returnData(
-                                        playlistNameEditText.getText().toString(),
-                                        playlistId,
-                                        playlistResultOverview.getPageInfo().getTotalResults());
+                                dialogFragmentCallback.returnData(new Playlist(playlistId,
+                                                playlistNameEditText.getText().toString(),
+                                                playlistResultOverview.getPageInfo().getTotalResults(),
+                                                item.getSnippet().getThumbnails().getDefault().getUrl()));
                                 dismiss();
                             }
                         }
@@ -104,6 +109,6 @@ public class AddPlaylistDialogFragment extends DialogFragment {
     }
 
     public interface ReturnDataFromDialogFragment {
-        void returnData(String playlistName, String playlistId, int playlistVideos);
+        void returnData(Playlist playlist);
     }
 }

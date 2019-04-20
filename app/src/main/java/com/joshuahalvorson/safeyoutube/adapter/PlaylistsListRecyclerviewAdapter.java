@@ -5,7 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 import com.joshuahalvorson.safeyoutube.R;
 import com.joshuahalvorson.safeyoutube.database.Playlist;
 
@@ -39,6 +42,9 @@ public class PlaylistsListRecyclerviewAdapter extends RecyclerView.Adapter<Playl
         final Playlist playlist = playlists.get(i);
         viewHolder.playlistName.setText(playlist.playlistName);
         viewHolder.playlistVideos.setText(playlist.playlistVideoCount + " videos");
+        Glide.with(viewHolder.playlistThumbnail.getContext())
+                .load(playlist.playlistThumbnail)
+                .into(viewHolder.playlistThumbnail);
         viewHolder.playlistName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,11 +60,13 @@ public class PlaylistsListRecyclerviewAdapter extends RecyclerView.Adapter<Playl
 
     class ViewHolder extends RecyclerView.ViewHolder{
         TextView playlistName, playlistVideos;
+        ImageView playlistThumbnail;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             playlistName = itemView.findViewById(R.id.playlists_list_element_name);
             playlistVideos = itemView.findViewById(R.id.playlist_videos);
+            playlistThumbnail = itemView.findViewById(R.id.playlist_thumbnail);
         }
     }
 

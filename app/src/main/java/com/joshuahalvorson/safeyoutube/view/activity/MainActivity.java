@@ -147,8 +147,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void returnData(final String playlistName, final String playlistId, int playlistVideos) {
-        final Playlist playlist = new Playlist(playlistId, playlistName.split(":")[0], playlistVideos);
+    public void returnData(final Playlist playlist) {
         playlists.add(playlist);
         adapter.notifyItemChanged(playlists.size() - 1);
         if(db != null){
