@@ -26,7 +26,7 @@ import com.joshuahalvorson.safeyoutube.network.YoutubeDataApiViewModel;
 
 public class AddPlaylistDialogFragment extends DialogFragment {
     public static final String PLAYLIST_URL_KEY = "playlist_url";
-    private EditText urlEditText, playlistNameEditText;
+    private EditText urlEditText;
     private Button addPlaylistButton;
     private ReturnDataFromDialogFragment dialogFragmentCallback;
     private YoutubeDataApiViewModel viewModel;
@@ -44,7 +44,6 @@ public class AddPlaylistDialogFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         urlEditText = view.findViewById(R.id.video_url_edit_text);
         addPlaylistButton = view.findViewById(R.id.add_playlist_button);
-        playlistNameEditText = view.findViewById(R.id.playlist_name_edit_text);
 
         viewModel = ViewModelProviders.of(this).get(YoutubeDataApiViewModel.class);
 
@@ -82,27 +81,35 @@ public class AddPlaylistDialogFragment extends DialogFragment {
         addPlaylistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!urlEditText.getText().toString().equals("") &&
-                        !playlistNameEditText.getText().toString().equals("")){
+                if(!urlEditText.getText().toString().equals("")){
                     String url = urlEditText.getText().toString();
                     final String[] urlParts = url.split("list=");
                     final String playlistId = urlParts[1];
-                    LiveData<PlaylistResultOverview> liveData = viewModel.getPlaylistOverview(playlistId);
+                    LiveData<PlaylistResultOverview> liveData = viewModel.getPlaylistInfo(playlistId);
                     liveData.observe(getViewLifecycleOwner(), new Observer<PlaylistResultOverview>() {
                         @Override
-                        public void onChanged(@Nullable PlaylistResultOverview playlistResultOverview) {
-                            if(playlistResultOverview != null){
-                                Item item = playlistResultOverview.getItems().get(0);
-                                dialogFragmentCallback = (ReturnDataFromDialogFragment) getActivity();
-                                dialogFragmentCallback.returnData(new Playlist(playlistId,
-                                                playlistNameEditText.getText().toString(),
-                                                playlistResultOverview.getPageInfo().getTotalResults(),
-                                                item.getSnippet().getThumbnails().getDefault().getUrl()));
-                                dismiss();
+                        public void onChanged(@Nullable final PlaylistResultOverview playlistInfo) {
+                            if(playlistInfo != null){
+                                LiveData<PlaylistResultOverview> liveData = viewModel.getPlaylistOverview(playlistId);
+                                liveData.observe(getViewLifecycleOwner(), new Observer<PlaylistResultOverview>() {
+                                    @Override
+                                    public void onChanged(@Nullable PlaylistResultOverview playlistResultOverview) {
+                                        if(playlistResultOverview != null){
+                                            Item item = playlistInfo.getItems().get(0);
+                                            String title = item.getSnippet().getTitle();
+                                            dialogFragmentCallback = (ReturnDataFromDialogFragment) getActivity();
+                                            dialogFragmentCallback.returnData(new Playlist(
+                                                    playlistId,
+                                                    title,
+                                                    playlistResultOverview.getPageInfo().getTotalResults(),
+                                                    item.getSnippet().getThumbnails().getDefault().getUrl()));
+                                            dismiss();
+                                        }
+                                    }
+                                });
                             }
                         }
                     });
-
                 }
             }
         });
