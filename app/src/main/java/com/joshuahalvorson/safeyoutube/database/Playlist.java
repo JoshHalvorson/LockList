@@ -3,7 +3,6 @@ package com.joshuahalvorson.safeyoutube.database;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
-import android.support.annotation.NonNull;
 
 @Entity
 public class Playlist {
@@ -16,8 +15,12 @@ public class Playlist {
     @ColumnInfo(name = "playlist_name")
     public String playlistName;
 
-    public Playlist(String playlistId, String playlistName) {
+    @ColumnInfo(name = "playlist_video_count")
+    public int playlistVideoCount;
+
+    public Playlist(String playlistId, String playlistName, int playlistVideoCount) {
         this.playlistId = playlistId;
         this.playlistName = playlistName;
+        this.playlistVideoCount = playlistVideoCount;
     }
 }
