@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -36,6 +37,7 @@ public class WatchPlaylistActivity extends AppCompatActivity {
     private String playlistId;
     private SharedPreferences sharedPref;
     private int ageValue;
+    private YouTubePlayer mYoutubePlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +47,14 @@ public class WatchPlaylistActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         items = new ArrayList<>();
-        adapter = new PlaylistItemsListRecyclerviewAdapter(items);
+        adapter = new PlaylistItemsListRecyclerviewAdapter(items, new PlaylistItemsListRecyclerviewAdapter.OnVideoClicked() {
+            @Override
+            public void onVideoClicked(int itemIndex) {
+                mYoutubePlayer.loadPlaylist(playlistId, itemIndex, 1);
+                mYoutubePlayer.play();
+            }
+        });
+
         viewModel = ViewModelProviders.of(this).get(YoutubeDataApiViewModel.class);
         youTubePlayerFragment =
                 (YouTubePlayerSupportFragment) getSupportFragmentManager()
@@ -55,7 +64,7 @@ public class WatchPlaylistActivity extends AppCompatActivity {
         videosRecyclerview.setAdapter(adapter);
         if(getIntent() != null) {
             playlistId = getIntent().getStringExtra(PLAYLIST_ID_KEY);
-            initializeVideo(youTubePlayerFragment, playlistId);
+            initializeVideo(youTubePlayerFragment, playlistId, 0);
         }
 
         LiveData<PlaylistResultOverview> playlistResultOverview =
@@ -92,20 +101,21 @@ public class WatchPlaylistActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void initializeVideo(YouTubePlayerSupportFragment fragment, final String playlistId){
+    private void initializeVideo(YouTubePlayerSupportFragment fragment, final String playlistId, final int itemIndex){
         fragment.initialize(ApiKey.KEY, new YouTubePlayer.OnInitializedListener() {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-                youTubePlayer.loadPlaylist(playlistId);
+                mYoutubePlayer = youTubePlayer;
+                mYoutubePlayer.loadPlaylist(playlistId);
                 switch (ageValue){
                     case 0:
-                        youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.CHROMELESS);
+                        mYoutubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.CHROMELESS);
                         break;
                     case 1:
-                        youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
+                        mYoutubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
                         break;
                     case 2:
-                        youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
+                        mYoutubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
                         break;
                 }
 

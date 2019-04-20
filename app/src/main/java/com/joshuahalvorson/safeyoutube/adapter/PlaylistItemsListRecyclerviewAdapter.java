@@ -16,9 +16,11 @@ import java.util.ArrayList;
 
 public class PlaylistItemsListRecyclerviewAdapter extends RecyclerView.Adapter<PlaylistItemsListRecyclerviewAdapter.ViewHolder>{
     private ArrayList<Item> items;
+    private OnVideoClicked callback;
 
-    public PlaylistItemsListRecyclerviewAdapter(ArrayList<Item> items) {
+    public PlaylistItemsListRecyclerviewAdapter(ArrayList<Item> items, OnVideoClicked callback) {
         this.items = items;
+        this.callback = callback;
     }
 
     @NonNull
@@ -36,13 +38,20 @@ public class PlaylistItemsListRecyclerviewAdapter extends RecyclerView.Adapter<P
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int i) {
         Item item = items.get(i);
         String name = item.getSnippet().getTitle();
         viewHolder.videoName.setText(name);
         Glide.with(viewHolder.videoThumbnail.getContext())
                 .load(item.getSnippet().getThumbnails().getDefault().getUrl())
                 .into(viewHolder.videoThumbnail);
+
+        viewHolder.videoThumbnail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callback.onVideoClicked(i);
+            }
+        });
     }
 
     @Override
@@ -59,5 +68,9 @@ public class PlaylistItemsListRecyclerviewAdapter extends RecyclerView.Adapter<P
             videoName = itemView.findViewById(R.id.video_name);
             videoThumbnail = itemView.findViewById(R.id.video_thumbnail);
         }
+    }
+
+    public interface OnVideoClicked{
+        void onVideoClicked(int itemIndex);
     }
 }
