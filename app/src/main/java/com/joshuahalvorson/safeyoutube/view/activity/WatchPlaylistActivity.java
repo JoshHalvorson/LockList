@@ -8,10 +8,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -79,6 +81,11 @@ public class WatchPlaylistActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         sharedPref = getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         ageValue = sharedPref.getInt(getString(R.string.age_range_key), 1);
@@ -94,8 +101,8 @@ public class WatchPlaylistActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
-            startActivity(intent);
+            Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivityForResult(loginIntent, SettingsActivity.LOGIN_REQUEST_CODE);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -132,6 +139,18 @@ public class WatchPlaylistActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == SettingsActivity.LOGIN_REQUEST_CODE && resultCode == RESULT_OK){
+            Log.i("login", "logged in");
+            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+            startActivity(intent);
+        }else if (requestCode == SettingsActivity.LOGIN_REQUEST_CODE && resultCode == RESULT_CANCELED){
+            Log.i("login", "not logged in");
+            Snackbar.make(findViewById(R.id.videos_list), "Not logged in", Snackbar.LENGTH_SHORT).show();
+        }
     }
 
 }
