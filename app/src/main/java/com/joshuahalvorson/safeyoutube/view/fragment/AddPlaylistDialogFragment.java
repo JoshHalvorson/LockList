@@ -56,9 +56,20 @@ public class AddPlaylistDialogFragment extends DialogFragment {
                 @Override
                 public void onChanged(@Nullable PlaylistResultOverview playlistResultOverview) {
                     if(playlistResultOverview != null){
-                        String title = playlistResultOverview.getItems().get(0).getSnippet().getTitle();
-                        dialogFragmentCallback.returnData(title, playlistId);
-                        dismiss();
+                        LiveData<PlaylistResultOverview> liveData = viewModel.getPlaylistOverview(playlistId);
+                        liveData.observe(getViewLifecycleOwner(), new Observer<PlaylistResultOverview>() {
+                            @Override
+                            public void onChanged(@Nullable PlaylistResultOverview playlistResultOverview) {
+                                if(playlistResultOverview != null){
+                                    String title = playlistResultOverview.getItems().get(0).getSnippet().getTitle();
+                                    dialogFragmentCallback.returnData(
+                                            title,
+                                            playlistId,
+                                            playlistResultOverview.getPageInfo().getTotalResults());
+                                    dismiss();
+                                }
+                            }
+                        });
                     }
                 }
             });
@@ -70,18 +81,29 @@ public class AddPlaylistDialogFragment extends DialogFragment {
                 if(!urlEditText.getText().toString().equals("") &&
                         !playlistNameEditText.getText().toString().equals("")){
                     String url = urlEditText.getText().toString();
-                    String[] urlParts = url.split("list=");
-                    String playlistId = urlParts[1];
-                    dialogFragmentCallback = (ReturnDataFromDialogFragment) getActivity();
-                    dialogFragmentCallback.returnData(
-                            playlistNameEditText.getText().toString(), urlParts[1]);
-                    dismiss();
+                    final String[] urlParts = url.split("list=");
+                    final String playlistId = urlParts[1];
+                    LiveData<PlaylistResultOverview> liveData = viewModel.getPlaylistOverview(playlistId);
+                    liveData.observe(getViewLifecycleOwner(), new Observer<PlaylistResultOverview>() {
+                        @Override
+                        public void onChanged(@Nullable PlaylistResultOverview playlistResultOverview) {
+                            if(playlistResultOverview != null){
+                                dialogFragmentCallback = (ReturnDataFromDialogFragment) getActivity();
+                                dialogFragmentCallback.returnData(
+                                        playlistNameEditText.getText().toString(),
+                                        playlistId,
+                                        playlistResultOverview.getPageInfo().getTotalResults());
+                                dismiss();
+                            }
+                        }
+                    });
+
                 }
             }
         });
     }
 
     public interface ReturnDataFromDialogFragment {
-        void returnData(String playlistName, String playlistId);
+        void returnData(String playlistName, String playlistId, int playlistVideos);
     }
 }

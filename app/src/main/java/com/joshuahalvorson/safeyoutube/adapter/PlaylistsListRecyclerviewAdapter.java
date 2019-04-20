@@ -38,6 +38,7 @@ public class PlaylistsListRecyclerviewAdapter extends RecyclerView.Adapter<Playl
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         final Playlist playlist = playlists.get(i);
         viewHolder.playlistName.setText(playlist.playlistName);
+        viewHolder.playlistVideos.setText(playlist.playlistVideoCount + " videos");
         viewHolder.playlistName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,11 +53,12 @@ public class PlaylistsListRecyclerviewAdapter extends RecyclerView.Adapter<Playl
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
-        TextView playlistName;
+        TextView playlistName, playlistVideos;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             playlistName = itemView.findViewById(R.id.playlists_list_element_name);
+            playlistVideos = itemView.findViewById(R.id.playlist_videos);
         }
     }
 
