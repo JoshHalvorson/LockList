@@ -1,6 +1,8 @@
 package com.joshuahalvorson.safeyoutube.network;
 
 import com.joshuahalvorson.safeyoutube.model.PlaylistResultOverview;
+import com.joshuahalvorson.safeyoutube.model.VideoInfo;
+
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -18,5 +20,10 @@ public interface YoutubeDataClient {
     Call<PlaylistResultOverview> getPlaylistInfo(@Query("part") String part,
                                                  @Query("id") String playlistId,
                                                  @Query("key") String key);
+
+    @GET("videos")
+    Call<VideoInfo> getVideoInfo(@Query("part") String part,
+                                 @Query("id") String playlistId,
+                                 @Query("key") String key);
 
 }

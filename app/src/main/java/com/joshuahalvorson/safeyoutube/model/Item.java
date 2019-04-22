@@ -18,6 +18,9 @@ public class Item {
     @SerializedName("snippet")
     @Expose
     private Snippet snippet;
+    @SerializedName("contentDetails")
+    @Expose
+    private ContentDetails contentDetails;
 
     public String getKind() {
         return kind;
@@ -51,4 +54,11 @@ public class Item {
         this.snippet = snippet;
     }
 
+    public ContentDetails getContentDetails() {
+        return contentDetails;
+    }
+
+    public void setContentDetails(ContentDetails contentDetails) {
+        this.contentDetails = contentDetails;
+    }
 }

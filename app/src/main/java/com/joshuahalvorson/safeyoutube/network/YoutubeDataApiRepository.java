@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.joshuahalvorson.safeyoutube.ApiKey;
 import com.joshuahalvorson.safeyoutube.model.PlaylistResultOverview;
+import com.joshuahalvorson.safeyoutube.model.VideoInfo;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -48,6 +50,23 @@ public class YoutubeDataApiRepository {
 
             @Override
             public void onFailure(Call<PlaylistResultOverview> call, Throwable t) {
+                Log.i("getPlaylistInfo", t.getLocalizedMessage());
+            }
+        });
+        return playlistInfoMutableLiveData;
+    }
+
+    public static MutableLiveData<VideoInfo> getVideoInfo(String videoId){
+        final MutableLiveData<VideoInfo> playlistInfoMutableLiveData = new MutableLiveData<>();
+        Call<VideoInfo> call = client.getVideoInfo("contentDetails", videoId, ApiKey.KEY);
+        call.enqueue(new Callback<VideoInfo>() {
+            @Override
+            public void onResponse(Call<VideoInfo> call, Response<VideoInfo> response) {
+                playlistInfoMutableLiveData.setValue(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<VideoInfo> call, Throwable t) {
                 Log.i("getPlaylistInfo", t.getLocalizedMessage());
             }
         });
