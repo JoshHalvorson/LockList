@@ -67,7 +67,7 @@ public class WatchPlaylistActivity extends AppCompatActivity {
         videosRecyclerview.setAdapter(adapter);
         if(getIntent() != null) {
             playlistId = getIntent().getStringExtra(PLAYLIST_ID_KEY);
-            initializeVideo(youTubePlayerFragment, playlistId, 0);
+            initializeVideo(youTubePlayerFragment, playlistId);
         }
 
         LiveData<PlaylistResultOverview> playlistResultOverview =
@@ -109,7 +109,7 @@ public class WatchPlaylistActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void initializeVideo(YouTubePlayerSupportFragment fragment, final String playlistId, final int itemIndex){
+    private void initializeVideo(YouTubePlayerSupportFragment fragment, final String playlistId){
         fragment.initialize(ApiKey.KEY, new YouTubePlayer.OnInitializedListener() {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
