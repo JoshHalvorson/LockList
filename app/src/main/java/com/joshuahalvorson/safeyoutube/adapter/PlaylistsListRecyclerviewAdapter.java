@@ -1,6 +1,7 @@
 package com.joshuahalvorson.safeyoutube.adapter;
 
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,7 +46,7 @@ public class PlaylistsListRecyclerviewAdapter extends RecyclerView.Adapter<Playl
         Glide.with(viewHolder.playlistThumbnail.getContext())
                 .load(playlist.playlistThumbnail)
                 .into(viewHolder.playlistThumbnail);
-        viewHolder.playlistName.setOnClickListener(new View.OnClickListener() {
+        viewHolder.parent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 callback.onListItemClick(playlist);
@@ -61,12 +62,14 @@ public class PlaylistsListRecyclerviewAdapter extends RecyclerView.Adapter<Playl
     class ViewHolder extends RecyclerView.ViewHolder{
         TextView playlistName, playlistVideos;
         ImageView playlistThumbnail;
+        ConstraintLayout parent;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             playlistName = itemView.findViewById(R.id.playlists_list_element_name);
             playlistVideos = itemView.findViewById(R.id.playlist_videos);
             playlistThumbnail = itemView.findViewById(R.id.playlist_thumbnail);
+            parent = itemView.findViewById(R.id.playlist_item_parent);
         }
     }
 
