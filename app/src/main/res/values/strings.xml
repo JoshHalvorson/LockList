@@ -8,4 +8,7 @@
     <string name="account_key">account_password</string>
     <string name="age_range_key">age_range</string>
     <string name="dark_mode_key">dark_mode</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

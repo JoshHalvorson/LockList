@@ -38,4 +38,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/account_settings" />
 
+    <FrameLayout
+        android:id="@+id/remove_palylist_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#00FFFFFF"
+        android:backgroundTint="#00FFFFFF">
+
+    </FrameLayout>
+
 </android.support.constraint.ConstraintLayout>

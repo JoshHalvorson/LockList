@@ -20,10 +20,11 @@ import android.widget.TextView;
 
 import com.joshuahalvorson.safeyoutube.R;
 import com.joshuahalvorson.safeyoutube.view.fragment.ChangePasswordDialogFragment;
+import com.joshuahalvorson.safeyoutube.view.fragment.RemovePlaylistDialogFragment;
 
 public class SettingsActivity extends AppCompatActivity {
     public static final int LOGIN_REQUEST_CODE = 1;
-    private Button clearSavedPlaylistsButton, changePasswordButton;
+    private Button clearSavedPlaylistsButton, changePasswordButton, deleteSinglePlaylistButton;
     private SeekBar ageSeekBar;
     private Switch dayNightSwitch;
     private TextView currentThemeText;
@@ -39,6 +40,7 @@ public class SettingsActivity extends AppCompatActivity {
         clearSavedPlaylistsButton = findViewById(R.id.clear_cache_button);
         changePasswordButton = findViewById(R.id.change_password_button);
         currentThemeText = findViewById(R.id.current_theme_text);
+        deleteSinglePlaylistButton = findViewById(R.id.remove_single_playlists);
 
         sharedPref = getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
@@ -111,6 +113,17 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showClearPlaylistsAlert();
+            }
+        });
+
+        deleteSinglePlaylistButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RemovePlaylistDialogFragment removePlaylistDialogFragment = new RemovePlaylistDialogFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.remove_palylist_fragment_container, removePlaylistDialogFragment)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
     }
