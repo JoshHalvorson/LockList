@@ -51,13 +51,9 @@ public class RemovePlaylistDialogFragment extends Fragment {
         db = Room.databaseBuilder(getContext(),
                 PlaylistDatabase.class, "database-playlists").build();
 
-        adapter = new PlaylistsListRecyclerviewAdapter(playlists, new PlaylistsListRecyclerviewAdapter.OnListItemClick() {
+        adapter = new PlaylistsListRecyclerviewAdapter(true, playlists, new PlaylistsListRecyclerviewAdapter.OnListItemClick() {
             @Override
             public void onListItemClick(final Playlist playlist) {
-                Log.i("clicked", playlist.playlistId);
-                /*Intent intent = new Intent(getContext(), WatchPlaylistActivity.class);
-                intent.putExtra(WatchPlaylistActivity.PLAYLIST_ID_KEY, playlist.playlistId);
-                startActivity(intent);*/
                 new Thread(new Runnable() {
                     @Override
                     public void run() {

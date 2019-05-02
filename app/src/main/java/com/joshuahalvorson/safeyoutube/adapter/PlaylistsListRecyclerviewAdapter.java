@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,10 +19,12 @@ import java.util.ArrayList;
 public class PlaylistsListRecyclerviewAdapter extends RecyclerView.Adapter<PlaylistsListRecyclerviewAdapter.ViewHolder> {
     private ArrayList<Playlist> playlists;
     private OnListItemClick callback;
+    private boolean isDeleting;
 
-    public PlaylistsListRecyclerviewAdapter(ArrayList<Playlist> playlists, OnListItemClick callback) {
+    public PlaylistsListRecyclerviewAdapter(boolean isDeleting, ArrayList<Playlist> playlists, OnListItemClick callback){
         this.playlists = playlists;
         this.callback = callback;
+        this.isDeleting = isDeleting;
     }
 
     @NonNull
@@ -46,12 +49,22 @@ public class PlaylistsListRecyclerviewAdapter extends RecyclerView.Adapter<Playl
         Glide.with(viewHolder.playlistThumbnail.getContext())
                 .load(playlist.playlistThumbnail)
                 .into(viewHolder.playlistThumbnail);
-        viewHolder.parent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callback.onListItemClick(playlist);
-            }
-        });
+        if(isDeleting){
+            viewHolder.deletePlaylistButton.setVisibility(View.VISIBLE);
+            viewHolder.deletePlaylistButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    callback.onListItemClick(playlist);
+                }
+            });
+        } else {
+            viewHolder.parent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    callback.onListItemClick(playlist);
+                }
+            });
+        }
     }
 
     @Override
@@ -63,6 +76,7 @@ public class PlaylistsListRecyclerviewAdapter extends RecyclerView.Adapter<Playl
         TextView playlistName, playlistVideos;
         ImageView playlistThumbnail;
         ConstraintLayout parent;
+        ImageButton deletePlaylistButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -70,6 +84,7 @@ public class PlaylistsListRecyclerviewAdapter extends RecyclerView.Adapter<Playl
             playlistVideos = itemView.findViewById(R.id.playlist_videos);
             playlistThumbnail = itemView.findViewById(R.id.playlist_thumbnail);
             parent = itemView.findViewById(R.id.playlist_item_parent);
+            deletePlaylistButton = itemView.findViewById(R.id.delete_playlist_button);
         }
     }
 

@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        adapter = new PlaylistsListRecyclerviewAdapter(playlists, new PlaylistsListRecyclerviewAdapter.OnListItemClick() {
+        adapter = new PlaylistsListRecyclerviewAdapter(false, playlists, new PlaylistsListRecyclerviewAdapter.OnListItemClick() {
             @Override
             public void onListItemClick(Playlist playlist) {
                 Log.i("clicked", playlist.playlistId);
