@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startAddPlaylistFragment(null);
+                startAddPlaylistFragment(null, true);
             }
         });
 
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements
 
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if ("text/plain".equals(type)) {
-                startAddPlaylistFragment(intent.getStringExtra(Intent.EXTRA_TEXT));
+                startAddPlaylistFragment(intent.getStringExtra(Intent.EXTRA_TEXT), false);
             }
         }
 
@@ -123,12 +123,15 @@ public class MainActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    private void startAddPlaylistFragment(String url){
+    private void startAddPlaylistFragment(String url, boolean showFrag){
         AddPlaylistDialogFragment addPlaylistDialogFragment = new AddPlaylistDialogFragment();
         Bundle bundle;
         if (url != null){
             bundle = new Bundle();
             bundle.putString(AddPlaylistDialogFragment.PLAYLIST_URL_KEY, url);
+            if(!showFrag){
+                bundle.putBoolean(AddPlaylistDialogFragment.SHOW_FRAG_KEY, false);
+            }
             addPlaylistDialogFragment.setArguments(bundle);
         }
         addPlaylistDialogFragment.show(getSupportFragmentManager(), "add_playlist");
