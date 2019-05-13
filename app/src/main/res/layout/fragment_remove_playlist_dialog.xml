@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    tools:context=".view.fragment.RemovePlaylistDialogFragment">
+    tools:context=".Java.view.fragment.RemovePlaylistDialogFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/playlists_to_remove_list"
