@@ -20,7 +20,7 @@ class YoutubeDataApiRepository {
             .build()
     private val client = retrofit.create(YoutubeDataClient::class.java)
 
-    private fun getPlaylistOverview(playlistId: String): MutableLiveData<PlaylistResultOverview>{
+    fun getPlaylistOverview(playlistId: String): MutableLiveData<PlaylistResultOverview>{
         val playlistResultOverviewMutableLiveData = MutableLiveData<PlaylistResultOverview>()
         val call = client.getPlaylistOverview("snippet", playlistId, "50", ApiKey.KEY)
         call.enqueue(object : Callback<PlaylistResultOverview> {
