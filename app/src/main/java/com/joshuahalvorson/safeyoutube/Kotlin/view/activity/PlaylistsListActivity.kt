@@ -66,7 +66,7 @@ class PlaylistsListActivity : AppCompatActivity() {
         }
 
         val fab = findViewById<FloatingActionButton>(R.id.fab)
-        fab.setOnClickListener(View.OnClickListener { startAddPlaylistFragment(null, true) })
+        fab.setOnClickListener { startAddPlaylistFragment(null, true) }
     }
 
     override fun onResume() {
@@ -75,8 +75,8 @@ class PlaylistsListActivity : AppCompatActivity() {
             val tempPlaylists = db?.playlistDao()?.getAllPlaylists()
             runOnUiThread {
                 if (tempPlaylists != null) {
-                    playlists?.clear()
-                    playlists?.addAll(tempPlaylists!!)
+                    playlists.clear()
+                    playlists.addAll(tempPlaylists)
                     adapter?.notifyDataSetChanged()
                 }
             }
