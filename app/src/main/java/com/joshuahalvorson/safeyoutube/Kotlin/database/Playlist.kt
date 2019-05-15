@@ -6,13 +6,12 @@ import android.arch.persistence.room.PrimaryKey
 
 @Entity
 data class Playlist(
+        @ColumnInfo(name = "playlist_id") var playlistId: String,
+        @ColumnInfo(name = "playlist_name") var playlistName: String,
+        @ColumnInfo(name = "playlist_video_count") var playlistVideoCount: Int,
+        @ColumnInfo(name = "playlist_thumbnail") var playlistThumbnail: String){
         @PrimaryKey(autoGenerate = true)
-        private val id: Int,
-        @ColumnInfo(name = "playlist_id")
-        private val playlistId: String,
-        @ColumnInfo(name = "playlist_name")
-        private val playlistName: String,
-        @ColumnInfo(name = "playlist_video_count")
-        private val playlistVideoCount: Int,
-        @ColumnInfo(name = "playlist_thumbnail")
-        private val playlistThumbnail: String)
+        var id: Int = 0
+}
+
+
