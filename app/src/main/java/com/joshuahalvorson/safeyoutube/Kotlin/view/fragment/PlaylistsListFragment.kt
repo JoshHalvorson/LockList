@@ -19,13 +19,14 @@ import com.joshuahalvorson.safeyoutube.Kotlin.adapter.PlaylistsListRecyclerviewA
 import com.joshuahalvorson.safeyoutube.Kotlin.database.Playlist
 import com.joshuahalvorson.safeyoutube.Kotlin.database.PlaylistDatabase
 import com.joshuahalvorson.safeyoutube.R
+import kotlinx.android.synthetic.main.fragment_playlists_list.*
 import java.util.ArrayList
 
 class PlaylistsListFragment : Fragment() {
     private var listenerPlaylist: OnPlaylistFragmentInteractionListener? = null
     private var playlists: ArrayList<Playlist> = ArrayList()
-    private var adapter: PlaylistsListRecyclerviewAdapter? = null
-    private var recyclerView: RecyclerView? = null
+    private lateinit var adapter: PlaylistsListRecyclerviewAdapter
+    //private var adapter: PlaylistsListRecyclerviewAdapter? = null
     var db: PlaylistDatabase? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -45,18 +46,13 @@ class PlaylistsListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         db = Room.databaseBuilder(this.context!!,
                 PlaylistDatabase::class.java, "database-playlists").build()
-        recyclerView = activity?.findViewById<RecyclerView>(R.id.playlists_list)
-        val viewAdapter = PlaylistsListRecyclerviewAdapter(false, playlists, object: PlaylistsListRecyclerviewAdapter.OnListItemClick{
+        adapter = PlaylistsListRecyclerviewAdapter(false, playlists, object: PlaylistsListRecyclerviewAdapter.OnListItemClick{
             override fun onListItemClick(playlist: Playlist?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                TODO("not implemented")
             }
         })
-        val viewManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
-        recyclerView?.apply {
-            setHasFixedSize(false)
-            layoutManager = viewManager
-            adapter = viewAdapter
-        }
+        playlists_list.layoutManager = LinearLayoutManager(context)
+        playlists_list.adapter = adapter
 
         activity?.findViewById<FloatingActionButton>(R.id.add_playlist_button)?.setOnClickListener {
             startAddPlaylistFragment(null, true)
@@ -76,7 +72,7 @@ class PlaylistsListFragment : Fragment() {
                 if (tempPlaylists != null) {
                     playlists.clear()
                     playlists.addAll(tempPlaylists)
-                    adapter?.notifyDataSetChanged()
+                    adapter.notifyDataSetChanged()
                 }
             }
         }).start()
