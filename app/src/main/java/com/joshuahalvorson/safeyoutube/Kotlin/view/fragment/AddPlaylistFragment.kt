@@ -16,15 +16,12 @@ import com.joshuahalvorson.safeyoutube.Kotlin.database.Playlist
 import com.joshuahalvorson.safeyoutube.Kotlin.database.PlaylistDatabase
 import com.joshuahalvorson.safeyoutube.Kotlin.model.Models
 import com.joshuahalvorson.safeyoutube.Kotlin.network.YoutubeDataApiViewModel
-
 import com.joshuahalvorson.safeyoutube.R
-import kotlin.concurrent.thread
 
 class AddPlaylistFragment : DialogFragment() {
     val PLAYLIST_URL_KEY = "playlist_url"
     val SHOW_FRAG_KEY = "show_frag"
     private var parentView: ConstraintLayout? = null
-    private var dialogFragmentCallback: ReturnDataFromDialogFragment? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -52,7 +49,6 @@ class AddPlaylistFragment : DialogFragment() {
         val viewModel = ViewModelProviders.of(this).get(YoutubeDataApiViewModel::class.java)
 
         if (arguments != null) {
-            dialogFragmentCallback = activity as ReturnDataFromDialogFragment?
             val url = arguments!!.getString(PLAYLIST_URL_KEY)
             val urlParts = url!!.split("list=".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             val playlistId = urlParts[1]
@@ -115,9 +111,5 @@ class AddPlaylistFragment : DialogFragment() {
                 })
             }
         })
-    }
-
-    interface ReturnDataFromDialogFragment {
-        fun returnData(playlist: Playlist)
     }
 }

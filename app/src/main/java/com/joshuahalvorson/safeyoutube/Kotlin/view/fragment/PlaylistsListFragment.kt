@@ -43,6 +43,8 @@ class PlaylistsListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        db = Room.databaseBuilder(this.context!!,
+                PlaylistDatabase::class.java, "database-playlists").build()
         recyclerView = activity?.findViewById<RecyclerView>(R.id.playlists_list)
         val viewAdapter = PlaylistsListRecyclerviewAdapter(false, playlists, object: PlaylistsListRecyclerviewAdapter.OnListItemClick{
             override fun onListItemClick(playlist: Playlist?) {
@@ -56,10 +58,9 @@ class PlaylistsListFragment : Fragment() {
             adapter = viewAdapter
         }
 
-        db = Room.databaseBuilder(this.context!!,
-               PlaylistDatabase::class.java, "database-playlists").build()
-
-        activity?.findViewById<FloatingActionButton>(R.id.fab)?.setOnClickListener { startAddPlaylistFragment(null, true) }
+        activity?.findViewById<FloatingActionButton>(R.id.add_playlist_button)?.setOnClickListener {
+            startAddPlaylistFragment(null, true)
+        }
     }
 
     override fun onDetach() {
@@ -93,17 +94,17 @@ class PlaylistsListFragment : Fragment() {
     }
 
     private fun startAddPlaylistFragment(url: String?, showFrag: Boolean) {
-        /*val addPlaylistDialogFragment = AddPlaylistDialogFragment()
+        val addPlaylistDialogFragment = AddPlaylistFragment()
         val bundle: Bundle
         if (url != null) {
             bundle = Bundle()
-            bundle.putString(AddPlaylistDialogFragment.PLAYLIST_URL_KEY, url)
+            bundle.putString("playlist_url", url)
             if (!showFrag) {
-                bundle.putBoolean(AddPlaylistDialogFragment.SHOW_FRAG_KEY, false)
+                bundle.putBoolean("show_frag", false)
             }
             addPlaylistDialogFragment.arguments = bundle
         }
-        addPlaylistDialogFragment.show(fragmentManager, "add_playlist")*/
+        addPlaylistDialogFragment.show(fragmentManager, "add_playlist")
     }
 
     interface OnPlaylistFragmentInteractionListener {
