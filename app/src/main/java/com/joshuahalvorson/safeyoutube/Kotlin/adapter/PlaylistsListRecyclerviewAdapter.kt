@@ -13,8 +13,9 @@ import com.joshuahalvorson.safeyoutube.Kotlin.database.Playlist
 import com.joshuahalvorson.safeyoutube.R
 import java.util.ArrayList
 
-class PlaylistsListRecyclerviewAdapter(private val isDeleting: Boolean, private val playlists: MutableList<Playlist>, private val callback: OnListItemClick)
-    : RecyclerView.Adapter<PlaylistsListRecyclerviewAdapter.ViewHolder>() {
+class PlaylistsListRecyclerviewAdapter(
+        private val isDeleting: Boolean, private val playlists: MutableList<Playlist>, private val callback: OnListItemClick
+): RecyclerView.Adapter<PlaylistsListRecyclerviewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, p1: Int): ViewHolder {
         return ViewHolder(
@@ -26,7 +27,7 @@ class PlaylistsListRecyclerviewAdapter(private val isDeleting: Boolean, private 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val playlist = playlists.get(position)
         viewHolder.playlistName.text = playlist.playlistName
-        viewHolder.playlistVideos.text = "${playlist.playlistVideoCount} +  videos"
+        viewHolder.playlistVideos.text = "${playlist.playlistVideoCount} videos"
         Glide.with(viewHolder.playlistThumbnail.getContext())
                 .load(playlist.playlistThumbnail)
                 .into(viewHolder.playlistThumbnail)
@@ -39,7 +40,7 @@ class PlaylistsListRecyclerviewAdapter(private val isDeleting: Boolean, private 
     }
 
     override fun getItemCount(): Int {
-        return 0
+        return playlists.size
     }
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view){
