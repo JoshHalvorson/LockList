@@ -60,14 +60,18 @@ class AddPlaylistFragment : DialogFragment() {
                         if (playlistResultOverview != null) {
                             val item = playlistInfo.items[0]
                             val title = item.snippet?.title
+                            val results = playlistResultOverview.pageInfo?.totalResults!!
+                            val thumbnailUrl = item.snippet?.thumbnails?.standard?.url!!
 
                             val db = Room.databaseBuilder(this.context!!,
                                     PlaylistDatabase::class.java, "database-playlists").build()
-                            db.playlistDao().insertAll(Playlist(
-                                    playlistId,
-                                    title,
-                                    playlistResultOverview.pageInfo?.totalResults!!,
-                                    item.snippet?.thumbnails?._default?.url!!))
+                            Thread(Runnable {
+                                db.playlistDao().insertAll(Playlist(
+                                        playlistId,
+                                        title,
+                                        results,
+                                        thumbnailUrl))
+                            }).start()
 
                             dismiss()
                         }
@@ -101,8 +105,6 @@ class AddPlaylistFragment : DialogFragment() {
                                             results,
                                             thumbnailUrl))
                                 }).start()
-
-
 
                                 dismiss()
                             }
