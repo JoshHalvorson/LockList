@@ -26,7 +26,6 @@ class PlaylistsListFragment : Fragment() {
     private var listenerPlaylist: OnPlaylistFragmentInteractionListener? = null
     private var playlists: ArrayList<Playlist> = ArrayList()
     private lateinit var adapter: PlaylistsListRecyclerviewAdapter
-    //private var adapter: PlaylistsListRecyclerviewAdapter? = null
     var db: PlaylistDatabase? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
