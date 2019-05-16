@@ -77,17 +77,6 @@ class PlaylistsListFragment : Fragment() {
         }).start()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        /*if (requestCode == SettingsActivity.LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            Log.i("login", "logged in")
-            val intent = Intent(context, SettingsActivity::class.java)
-            startActivity(intent)
-        } else if (requestCode == SettingsActivity.LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_CANCELED) {
-            Log.i("login", "not logged in")
-            Snackbar.make(parent as View, "Not logged in", Snackbar.LENGTH_SHORT).show()
-        }*/
-    }
-
     private fun startAddPlaylistFragment(url: String?, showFrag: Boolean) {
         val addPlaylistDialogFragment = AddPlaylistFragment()
         val bundle: Bundle
