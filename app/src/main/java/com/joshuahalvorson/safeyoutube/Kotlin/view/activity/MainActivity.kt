@@ -23,16 +23,25 @@ import com.joshuahalvorson.safeyoutube.Java.view.fragment.AddPlaylistDialogFragm
 import com.joshuahalvorson.safeyoutube.Kotlin.adapter.PlaylistsListRecyclerviewAdapter
 import com.joshuahalvorson.safeyoutube.Kotlin.database.Playlist
 import com.joshuahalvorson.safeyoutube.Kotlin.database.PlaylistDatabase
+import com.joshuahalvorson.safeyoutube.Kotlin.view.fragment.PlaylistsListFragment
 import com.joshuahalvorson.safeyoutube.R
 import java.util.ArrayList
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), PlaylistsListFragment.OnPlaylistFragmentInteractionListener {
+    override fun onPlaylistInteraction(playlist: Playlist) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     var isLoggedIn = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_playlists_list)
         Stetho.initializeWithDefaults(this)
+
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, PlaylistsListFragment())
+                .commit()
 
         /*val intent = intent
         val action = intent.action
