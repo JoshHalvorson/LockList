@@ -23,6 +23,7 @@ import com.joshuahalvorson.safeyoutube.Java.view.fragment.AddPlaylistDialogFragm
 import com.joshuahalvorson.safeyoutube.Kotlin.adapter.PlaylistsListRecyclerviewAdapter
 import com.joshuahalvorson.safeyoutube.Kotlin.database.Playlist
 import com.joshuahalvorson.safeyoutube.Kotlin.database.PlaylistDatabase
+import com.joshuahalvorson.safeyoutube.Kotlin.view.fragment.LoginFragment
 import com.joshuahalvorson.safeyoutube.Kotlin.view.fragment.PlaylistsListFragment
 import com.joshuahalvorson.safeyoutube.R
 import java.util.ArrayList
@@ -38,10 +39,6 @@ class MainActivity : AppCompatActivity(), PlaylistsListFragment.OnPlaylistFragme
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_playlists_list)
         Stetho.initializeWithDefaults(this)
-
-        /*supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, PlaylistsListFragment())
-                .commit()*/
 
         val intent = intent
         val action = intent.action
@@ -74,8 +71,8 @@ class MainActivity : AppCompatActivity(), PlaylistsListFragment.OnPlaylistFragme
         val id = item.itemId
         if (id == R.id.action_settings) {
             if (!isLoggedIn) {
-                val loginIntent = Intent(applicationContext, LoginActivity::class.java)
-                startActivityForResult(loginIntent, SettingsActivity.LOGIN_REQUEST_CODE)
+                val loginFragDialog = LoginFragment()
+                loginFragDialog.show(supportFragmentManager, "login_fragment")
             }
             return true
         }
