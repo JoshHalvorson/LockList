@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/background_light"
     android:clickable="true"
-    android:focusable="true"
-    tools:context=".Java.view.activity.WatchPlaylistActivity">
+    android:focusable="true">
 
     <include layout="@layout/content_watch_playlist" />
 
