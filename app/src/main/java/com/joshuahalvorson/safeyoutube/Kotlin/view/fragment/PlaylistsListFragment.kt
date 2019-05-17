@@ -47,7 +47,16 @@ class PlaylistsListFragment : Fragment() {
                 PlaylistDatabase::class.java, "database-playlists").build()
         adapter = PlaylistsListRecyclerviewAdapter(false, playlists, object: PlaylistsListRecyclerviewAdapter.OnListItemClick{
             override fun onListItemClick(playlist: Playlist?) {
-                TODO("not implemented")
+                val watchFrag = WatchPlaylistFragment()
+                var bundle = Bundle()
+                if (playlist != null) {
+                    bundle.putString("playlist_id", playlist.playlistId)
+                    watchFrag.arguments = bundle
+                }
+                fragmentManager?.beginTransaction()
+                        ?.add(R.id.fragment_container, watchFrag)
+                        ?.addToBackStack("")
+                        ?.commit()
             }
         })
         playlists_list.layoutManager = LinearLayoutManager(context)
