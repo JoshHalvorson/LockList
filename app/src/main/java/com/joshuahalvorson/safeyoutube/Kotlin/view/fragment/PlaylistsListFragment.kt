@@ -65,6 +65,14 @@ class PlaylistsListFragment : Fragment() {
         activity?.findViewById<FloatingActionButton>(R.id.add_playlist_button)?.setOnClickListener {
             startAddPlaylistFragment(null, true)
         }
+
+        if (arguments != null){
+            val playlistUrl = arguments!!.getString("playlist_url")
+            val showFrag = arguments!!.getBoolean("show_frag")
+            if (playlistUrl != null && showFrag != true){
+                startAddPlaylistFragment(playlistUrl, showFrag)
+            }
+        }
     }
 
     override fun onDetach() {

@@ -39,19 +39,30 @@ class MainActivity : AppCompatActivity(), PlaylistsListFragment.OnPlaylistFragme
         setContentView(R.layout.activity_playlists_list)
         Stetho.initializeWithDefaults(this)
 
-        supportFragmentManager.beginTransaction()
+        /*supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, PlaylistsListFragment())
-                .commit()
+                .commit()*/
 
-        /*val intent = intent
+        val intent = intent
         val action = intent.action
         val type = intent.type
 
         if (Intent.ACTION_SEND == action && type != null) {
             if ("text/plain" == type) {
-                startAddPlaylistFragment(intent.getStringExtra(Intent.EXTRA_TEXT), false)
+                val playlistsFrag = PlaylistsListFragment()
+                var bundle = Bundle()
+                bundle.putString("playlist_url", intent.getStringExtra(Intent.EXTRA_TEXT))
+                bundle.putBoolean("show_frag", false)
+                playlistsFrag.arguments = bundle
+                supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, playlistsFrag)
+                        .commit()
             }
-        }*/
+        }else{
+            supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, PlaylistsListFragment())
+                    .commit()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
