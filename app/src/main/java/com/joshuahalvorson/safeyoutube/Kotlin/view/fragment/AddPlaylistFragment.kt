@@ -17,11 +17,17 @@ import com.joshuahalvorson.safeyoutube.Kotlin.database.PlaylistDatabase
 import com.joshuahalvorson.safeyoutube.Kotlin.model.Models
 import com.joshuahalvorson.safeyoutube.Kotlin.network.YoutubeDataApiViewModel
 import com.joshuahalvorson.safeyoutube.R
+import android.content.DialogInterface
 
 class AddPlaylistFragment : DialogFragment() {
+    private var onDismissListener: DialogInterface.OnDismissListener? = null
     val PLAYLIST_URL_KEY = "playlist_url"
     val SHOW_FRAG_KEY = "show_frag"
     private var parentView: ConstraintLayout? = null
+
+    fun setOnDismissListener(onDismissListener: DialogInterface.OnDismissListener) {
+        this.onDismissListener = onDismissListener
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -113,5 +119,10 @@ class AddPlaylistFragment : DialogFragment() {
                 })
             }
         })
+    }
+
+    override fun onDismiss(dialog: DialogInterface?) {
+        super.onDismiss(dialog)
+        onDismissListener?.onDismiss(dialog)
     }
 }

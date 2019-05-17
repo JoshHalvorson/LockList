@@ -1,17 +1,11 @@
 package com.joshuahalvorson.safeyoutube.Kotlin.view.fragment
 
-import android.app.Activity
 import android.arch.persistence.room.Room
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.support.constraint.ConstraintLayout
 import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +15,7 @@ import com.joshuahalvorson.safeyoutube.Kotlin.database.PlaylistDatabase
 import com.joshuahalvorson.safeyoutube.R
 import kotlinx.android.synthetic.main.fragment_playlists_list.*
 import java.util.ArrayList
+import android.content.DialogInterface
 
 class PlaylistsListFragment : Fragment() {
     private var listenerPlaylist: OnPlaylistFragmentInteractionListener? = null
@@ -73,15 +68,7 @@ class PlaylistsListFragment : Fragment() {
                 startAddPlaylistFragment(playlistUrl, showFrag)
             }
         }
-    }
 
-    override fun onDetach() {
-        super.onDetach()
-        listenerPlaylist = null
-    }
-
-    override fun onResume() {
-        super.onResume()
         Thread(Runnable {
             val tempPlaylists = db?.playlistDao()?.getAllPlaylists()
             activity?.runOnUiThread {
@@ -92,6 +79,12 @@ class PlaylistsListFragment : Fragment() {
                 }
             }
         }).start()
+
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        listenerPlaylist = null
     }
 
     private fun startAddPlaylistFragment(url: String?, showFrag: Boolean) {
@@ -105,6 +98,18 @@ class PlaylistsListFragment : Fragment() {
             }
             addPlaylistDialogFragment.arguments = bundle
         }
+        addPlaylistDialogFragment.setOnDismissListener(DialogInterface.OnDismissListener {
+            Thread(Runnable {
+                val tempPlaylists = db?.playlistDao()?.getAllPlaylists()
+                activity?.runOnUiThread {
+                    if (tempPlaylists != null) {
+                        playlists.clear()
+                        playlists.addAll(tempPlaylists)
+                        adapter.notifyDataSetChanged()
+                    }
+                }
+            }).start()
+        })
         addPlaylistDialogFragment.show(fragmentManager, "add_playlist")
     }
 
