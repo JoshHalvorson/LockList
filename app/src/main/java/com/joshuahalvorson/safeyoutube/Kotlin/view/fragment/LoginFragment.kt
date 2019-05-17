@@ -38,27 +38,35 @@ class LoginFragment : DialogFragment() {
                         val editor: SharedPreferences.Editor? = sharedPref?.edit()
                         editor?.putString(getString(R.string.account_key), password_edit_text.text.toString())
                         editor?.apply()
-                        //close dialog and
-                        //launch settings frag
+                        startSettingsFragment()
                     }else{
-                        //passwords do not match
-                        Toast.makeText(context, "Passwords do not match", Toast.LENGTH_LONG).show()
+                        makeToast("Passwords do not match")
                     }
                 }else{
-                    //one of the password fields is empty
-                    Toast.makeText(context, "One of the fields is empty", Toast.LENGTH_LONG).show()
+                    makeToast("One of the fields is empty")
                 }
             }
         }else{
+            confirm_password_edit_text.visibility = View.GONE
             log_in_button.setOnClickListener {
                 if(password == password_edit_text.text.toString()){
-                    //close dialog, launch settings frag
+                    startSettingsFragment()
                 }else{
-                    //password is wrong
-                    Toast.makeText(context, "Wrong password", Toast.LENGTH_LONG).show()
+                    makeToast("Wrong password")
                 }
             }
         }
+    }
 
+    private fun startSettingsFragment() {
+        fragmentManager?.beginTransaction()
+                ?.replace(R.id.fragment_container, SettingsFragment())
+                ?.addToBackStack("")
+                ?.commit()
+        dismiss()
+    }
+
+    private fun makeToast(toastText: String){
+        Toast.makeText(context, toastText, Toast.LENGTH_LONG).show()
     }
 }
