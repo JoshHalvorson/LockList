@@ -37,15 +37,17 @@ class MainActivity : AppCompatActivity() {
                     intent.removeExtra(intent.type)
                 }
             }else {
-                supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, PlaylistsListFragment())
-                        .commit()
+                launchPlaylistsListFragment()
             }
         }else {
-            supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, PlaylistsListFragment())
-                    .commit()
+            launchPlaylistsListFragment()
         }
+    }
+
+    private fun launchPlaylistsListFragment() {
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, PlaylistsListFragment())
+                .commit()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
