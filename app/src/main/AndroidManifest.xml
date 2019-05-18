@@ -4,6 +4,8 @@
     package="com.joshuahalvorson.safeyoutube">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
 
     <application
         android:allowBackup="true"
@@ -25,18 +27,6 @@
 
                 <data android:mimeType="text/plain" />
             </intent-filter>
-        </activity>
-        <activity android:name=".Java.view.activity.LoginActivity" />
-        <activity android:name=".Java.view.activity.SettingsActivity" />
-        <activity
-            android:name=".Java.view.activity.WatchPlaylistActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_watch_playlist"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".Java.view.activity.MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 
