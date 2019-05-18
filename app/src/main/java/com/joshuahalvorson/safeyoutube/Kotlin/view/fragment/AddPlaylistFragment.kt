@@ -78,6 +78,7 @@ class AddPlaylistFragment : DialogFragment() {
                                         results,
                                         thumbnailUrl))
                             }).start()
+                            db.close()
 
                             dismiss()
                         }
@@ -111,6 +112,7 @@ class AddPlaylistFragment : DialogFragment() {
                                             results,
                                             thumbnailUrl))
                                 }).start()
+                                db.close()
 
                                 dismiss()
                             }
