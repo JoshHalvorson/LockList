@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity(), PlaylistsListFragment.OnPlaylistFragme
                 supportFragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, playlistsFrag)
                         .commit()
+                intent.removeExtra(intent.type)
             }
         }else{
             supportFragmentManager.beginTransaction()
