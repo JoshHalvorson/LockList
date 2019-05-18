@@ -1,6 +1,7 @@
 package com.joshuahalvorson.safeyoutube.Kotlin.view.fragment
 
 import android.arch.persistence.room.Room
+import android.arch.persistence.room.RoomDatabase
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -16,6 +17,7 @@ import kotlinx.android.synthetic.main.fragment_remove_playlist.*
 
 class RemovePlaylistFragment : Fragment() {
     private lateinit var adapter: PlaylistsListRecyclerviewAdapter
+    private lateinit var db: PlaylistDatabase
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -24,8 +26,8 @@ class RemovePlaylistFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         var playlists = ArrayList<Playlist>()
-        val db = Room.databaseBuilder<PlaylistDatabase>(context!!,
-                PlaylistDatabase::class.java, "database-playlists").build();
+        db = Room.databaseBuilder<PlaylistDatabase>(context!!,
+                PlaylistDatabase::class.java, "database-playlists").build()
 
         adapter = PlaylistsListRecyclerviewAdapter(true, playlists, object : PlaylistsListRecyclerviewAdapter.OnListItemClick {
             override fun onListItemClick(playlist: Playlist?) {
@@ -35,7 +37,6 @@ class RemovePlaylistFragment : Fragment() {
                         playlists.remove(playlist)
                         activity?.runOnUiThread {
                             adapter.notifyDataSetChanged()
-                            db.close()
                         }
                     }).start()
                 }
@@ -53,5 +54,10 @@ class RemovePlaylistFragment : Fragment() {
                 adapter.notifyDataSetChanged()
             }
         }).start()
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        db.close()
     }
 }
