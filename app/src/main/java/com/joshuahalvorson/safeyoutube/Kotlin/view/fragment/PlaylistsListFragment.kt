@@ -56,11 +56,13 @@ class PlaylistsListFragment : Fragment() {
             startAddPlaylistFragment(null, true)
         }
 
-        if (arguments != null){
-            val playlistUrl = arguments!!.getString("playlist_url")
-            val showFrag = arguments!!.getBoolean("show_frag")
-            if (playlistUrl != null && showFrag != true){
-                startAddPlaylistFragment(playlistUrl, showFrag)
+        if(savedInstanceState == null){
+            if (arguments != null){
+                val playlistUrl = arguments!!.getString("playlist_url")
+                val showFrag = arguments!!.getBoolean("show_frag")
+                if (playlistUrl != null && !showFrag){
+                    startAddPlaylistFragment(playlistUrl, showFrag)
+                }
             }
         }
     }

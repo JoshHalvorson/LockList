@@ -11,7 +11,7 @@ interface PlaylistDao {
     fun getAllPlaylists(): List<Playlist>
 
     @Query("SELECT * FROM playlist WHERE playlist_id = (:playlistId)")
-    fun getPlaylistById(playlistId: Int): Playlist
+    fun getPlaylistById(playlistId: String): Boolean
 
     @Insert
     fun insertAll(vararg playlists: Playlist)

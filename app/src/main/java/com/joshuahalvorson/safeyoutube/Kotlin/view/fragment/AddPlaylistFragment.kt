@@ -18,6 +18,7 @@ import com.joshuahalvorson.safeyoutube.Kotlin.model.Models
 import com.joshuahalvorson.safeyoutube.Kotlin.network.YoutubeDataApiViewModel
 import com.joshuahalvorson.safeyoutube.R
 import android.content.DialogInterface
+import android.widget.Toast
 
 class AddPlaylistFragment : DialogFragment() {
     private var onDismissListener: DialogInterface.OnDismissListener? = null
@@ -68,19 +69,24 @@ class AddPlaylistFragment : DialogFragment() {
                     val liveData = viewModel.getPlaylistOverview(playlistId)
                     liveData?.observe(viewLifecycleOwner, Observer<Models.PlaylistResultOverview> { playlistResultOverview ->
                         if (playlistResultOverview != null) {
-                            val item = playlistInfo.items[0]
-                            val title = item.snippet?.title
-                            val results = playlistResultOverview.pageInfo?.totalResults!!
-                            val thumbnailUrl = item.snippet?.thumbnails?.standard?.url!!
-
                             Thread(Runnable {
-                                db.playlistDao().insertAll(Playlist(
-                                        playlistId,
-                                        title,
-                                        results,
-                                        thumbnailUrl))
-                            }).start()
+                                if(db.playlistDao().getPlaylistById(playlistId)){
+                                    activity?.runOnUiThread {
+                                        Toast.makeText(context, "Playlist is already added", Toast.LENGTH_LONG).show()
+                                    }
+                                }else{
+                                    val item = playlistInfo.items[0]
+                                    val title = item.snippet?.title
+                                    val results = playlistResultOverview.pageInfo?.totalResults!!
+                                    val thumbnailUrl = item.snippet?.thumbnails?.standard?.url!!
 
+                                    db.playlistDao().insertAll(Playlist(
+                                            playlistId,
+                                            title,
+                                            results,
+                                            thumbnailUrl))
+                                }
+                            }).start()
                             dismiss()
                         }
                     })
