@@ -95,7 +95,10 @@ class SettingsFragment : Fragment() {
         }
 
         remove_single_playlists.setOnClickListener {
-            //launch removePlaylistDialogFragment
+            fragmentManager?.beginTransaction()
+                    ?.replace(R.id.fragment_container, RemovePlaylistFragment())
+                    ?.addToBackStack("")
+                    ?.commit()
         }
     }
 
