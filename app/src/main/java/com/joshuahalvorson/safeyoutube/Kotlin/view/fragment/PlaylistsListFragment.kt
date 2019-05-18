@@ -48,6 +48,7 @@ class PlaylistsListFragment : Fragment() {
                         ?.commit()
             }
         })
+
         playlists_list.layoutManager = LinearLayoutManager(context)
         playlists_list.adapter = adapter
 
@@ -62,17 +63,6 @@ class PlaylistsListFragment : Fragment() {
                 startAddPlaylistFragment(playlistUrl, showFrag)
             }
         }
-
-        Thread(Runnable {
-            val tempPlaylists = db?.playlistDao()?.getAllPlaylists()
-            activity?.runOnUiThread {
-                if (tempPlaylists != null) {
-                    playlists.clear()
-                    playlists.addAll(tempPlaylists)
-                    adapter.notifyDataSetChanged()
-                }
-            }
-        }).start()
     }
 
     private fun startAddPlaylistFragment(url: String?, showFrag: Boolean) {
@@ -86,19 +76,30 @@ class PlaylistsListFragment : Fragment() {
             }
             addPlaylistDialogFragment.arguments = bundle
         }
+
         addPlaylistDialogFragment.setOnDismissListener(DialogInterface.OnDismissListener {
-            Thread(Runnable {
-                val tempPlaylists = db?.playlistDao()?.getAllPlaylists()
-                activity?.runOnUiThread {
-                    if (tempPlaylists != null) {
-                        playlists.clear()
-                        playlists.addAll(tempPlaylists)
-                        adapter.notifyDataSetChanged()
-                    }
-                }
-            }).start()
+            updatePlaylistsList()
         })
+
         addPlaylistDialogFragment.show(fragmentManager, "add_playlist")
+    }
+
+    private fun updatePlaylistsList() {
+        Thread(Runnable {
+            val tempPlaylists = db?.playlistDao()?.getAllPlaylists()
+            activity?.runOnUiThread {
+                if (tempPlaylists != null) {
+                    playlists.clear()
+                    playlists.addAll(tempPlaylists)
+                    adapter.notifyDataSetChanged()
+                }
+            }
+        }).start()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updatePlaylistsList()
     }
 
     override fun onDestroy() {
