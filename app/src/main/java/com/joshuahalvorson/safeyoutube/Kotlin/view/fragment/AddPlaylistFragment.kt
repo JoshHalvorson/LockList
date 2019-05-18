@@ -25,6 +25,8 @@ class AddPlaylistFragment : DialogFragment() {
     val SHOW_FRAG_KEY = "show_frag"
     private var parentView: ConstraintLayout? = null
 
+    private lateinit var db: PlaylistDatabase
+
     fun setOnDismissListener(onDismissListener: DialogInterface.OnDismissListener) {
         this.onDismissListener = onDismissListener
     }
@@ -46,6 +48,8 @@ class AddPlaylistFragment : DialogFragment() {
                 window.attributes = windowParams
             }
         }
+        db = Room.databaseBuilder(this.context!!,
+                PlaylistDatabase::class.java, "database-playlists").build()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -69,8 +73,6 @@ class AddPlaylistFragment : DialogFragment() {
                             val results = playlistResultOverview.pageInfo?.totalResults!!
                             val thumbnailUrl = item.snippet?.thumbnails?.standard?.url!!
 
-                            val db = Room.databaseBuilder(this.context!!,
-                                    PlaylistDatabase::class.java, "database-playlists").build()
                             Thread(Runnable {
                                 db.playlistDao().insertAll(Playlist(
                                         playlistId,
@@ -78,7 +80,6 @@ class AddPlaylistFragment : DialogFragment() {
                                         results,
                                         thumbnailUrl))
                             }).start()
-                            db.close()
 
                             dismiss()
                         }
@@ -103,8 +104,6 @@ class AddPlaylistFragment : DialogFragment() {
                                 val results = playlistResultOverview.pageInfo?.totalResults!!
                                 val thumbnailUrl = item.snippet?.thumbnails?.standard?.url!!
 
-                                val db = Room.databaseBuilder(this.context!!,
-                                        PlaylistDatabase::class.java, "database-playlists").build()
                                 Thread(Runnable {
                                     db.playlistDao().insertAll(Playlist(
                                             playlistId,
@@ -112,7 +111,6 @@ class AddPlaylistFragment : DialogFragment() {
                                             results,
                                             thumbnailUrl))
                                 }).start()
-                                db.close()
 
                                 dismiss()
                             }
@@ -121,6 +119,11 @@ class AddPlaylistFragment : DialogFragment() {
                 })
             }
         })
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        db.close()
     }
 
     override fun onDismiss(dialog: DialogInterface?) {
