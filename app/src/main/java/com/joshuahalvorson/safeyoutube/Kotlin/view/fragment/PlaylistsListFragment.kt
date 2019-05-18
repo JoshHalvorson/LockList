@@ -27,9 +27,13 @@ class PlaylistsListFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_playlists_list, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         db = Room.databaseBuilder(this.context!!,
                 PlaylistDatabase::class.java, "database-playlists").build()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         adapter = PlaylistsListRecyclerviewAdapter(false, playlists, object: PlaylistsListRecyclerviewAdapter.OnListItemClick{
             override fun onListItemClick(playlist: Playlist?) {
                 val watchFrag = WatchPlaylistFragment()
@@ -95,5 +99,10 @@ class PlaylistsListFragment : Fragment() {
             }).start()
         })
         addPlaylistDialogFragment.show(fragmentManager, "add_playlist")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        db?.close()
     }
 }

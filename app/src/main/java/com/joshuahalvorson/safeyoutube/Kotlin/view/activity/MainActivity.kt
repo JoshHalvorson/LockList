@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
                     bundle.putBoolean("show_frag", false)
 
                     launchPlaylistsListFragment(bundle)
-                    
+
                     intent.removeExtra(intent.type)
                 }
             }else {
