@@ -105,19 +105,24 @@ class AddPlaylistFragment : DialogFragment() {
                         val liveData = viewModel.getPlaylistOverview(playlistId)
                         liveData?.observe(viewLifecycleOwner, Observer<Models.PlaylistResultOverview> { playlistResultOverview ->
                             if (playlistResultOverview != null) {
-                                val item = playlistInfo.items[0]
-                                val title = item.snippet?.title
-                                val results = playlistResultOverview.pageInfo?.totalResults!!
-                                val thumbnailUrl = item.snippet?.thumbnails?.standard?.url!!
-
                                 Thread(Runnable {
-                                    db.playlistDao().insertAll(Playlist(
-                                            playlistId,
-                                            title,
-                                            results,
-                                            thumbnailUrl))
-                                }).start()
+                                    if(db.playlistDao().getPlaylistById(playlistId)){
+                                        activity?.runOnUiThread {
+                                            Toast.makeText(context, "Playlist is already added", Toast.LENGTH_LONG).show()
+                                        }
+                                    }else{
+                                        val item = playlistInfo.items[0]
+                                        val title = item.snippet?.title
+                                        val results = playlistResultOverview.pageInfo?.totalResults!!
+                                        val thumbnailUrl = item.snippet?.thumbnails?.standard?.url!!
 
+                                        db.playlistDao().insertAll(Playlist(
+                                                playlistId,
+                                                title,
+                                                results,
+                                                thumbnailUrl))
+                                    }
+                                }).start()
                                 dismiss()
                             }
                         })
