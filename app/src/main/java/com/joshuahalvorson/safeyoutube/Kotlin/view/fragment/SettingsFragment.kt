@@ -68,7 +68,8 @@ class SettingsFragment : Fragment() {
         })
 
         change_password_button.setOnClickListener {
-            //launch change password fragment
+            val changePasswordFragment = ChangePasswordFragment()
+            changePasswordFragment.show(fragmentManager, "change_password_fragment")
         }
 
         val ageRangeValue = sharedPref?.getInt(getString(R.string.age_range_key), 0)
