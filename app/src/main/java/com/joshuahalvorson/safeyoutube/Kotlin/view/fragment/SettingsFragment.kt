@@ -104,7 +104,7 @@ class SettingsFragment : Fragment() {
     }
 
     private fun showClearPlaylistsAlert() {
-        val alertDialogBuilder = AlertDialog.Builder(this.context!!)
+        val alertDialogBuilder = AlertDialog.Builder(this.context!!, R.style.AlertDialog)
         alertDialogBuilder.setMessage("Are you sure you want to clear saved playlists?")
         alertDialogBuilder.setPositiveButton("Yes"
         ) { arg0, arg1 -> clearDb() }
