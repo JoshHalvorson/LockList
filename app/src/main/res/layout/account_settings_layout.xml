@@ -26,10 +26,19 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
         android:layout_marginTop="10dp"
-        android:text="Change password"
+        android:text="Change local account password"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/account_settings_text" />
 
+    <Button
+        android:id="@+id/log_in_to_youtube_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="8dp"
+        android:text="Log in to youtube"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/change_password_button" />
 
 
 </android.support.constraint.ConstraintLayout>
