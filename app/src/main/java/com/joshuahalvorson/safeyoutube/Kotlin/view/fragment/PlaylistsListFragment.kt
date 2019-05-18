@@ -18,7 +18,6 @@ import java.util.ArrayList
 import android.content.DialogInterface
 
 class PlaylistsListFragment : Fragment() {
-    private var listenerPlaylist: OnPlaylistFragmentInteractionListener? = null
     private var playlists: ArrayList<Playlist> = ArrayList()
     private lateinit var adapter: PlaylistsListRecyclerviewAdapter
     var db: PlaylistDatabase? = null
@@ -26,15 +25,6 @@ class PlaylistsListFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_playlists_list, container, false)
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is OnPlaylistFragmentInteractionListener) {
-            listenerPlaylist = context
-        } else {
-            throw RuntimeException(context.toString() + " must implement OnPlaylistFragmentInteractionListener")
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -79,12 +69,6 @@ class PlaylistsListFragment : Fragment() {
                 }
             }
         }).start()
-
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        listenerPlaylist = null
     }
 
     private fun startAddPlaylistFragment(url: String?, showFrag: Boolean) {
@@ -111,9 +95,5 @@ class PlaylistsListFragment : Fragment() {
             }).start()
         })
         addPlaylistDialogFragment.show(fragmentManager, "add_playlist")
-    }
-
-    interface OnPlaylistFragmentInteractionListener {
-        fun onPlaylistInteraction(playlist: Playlist)
     }
 }

@@ -11,11 +11,7 @@ import com.joshuahalvorson.safeyoutube.Kotlin.view.fragment.LoginFragment
 import com.joshuahalvorson.safeyoutube.Kotlin.view.fragment.PlaylistsListFragment
 import com.joshuahalvorson.safeyoutube.R
 
-class MainActivity : AppCompatActivity(), PlaylistsListFragment.OnPlaylistFragmentInteractionListener {
-    override fun onPlaylistInteraction(playlist: Playlist) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
+class MainActivity : AppCompatActivity() {
     var isLoggedIn = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
