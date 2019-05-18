@@ -2,7 +2,6 @@ package com.joshuahalvorson.safeyoutube.Kotlin.view.fragment
 
 import android.arch.persistence.room.Room
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -13,14 +12,14 @@ import com.joshuahalvorson.safeyoutube.Kotlin.database.Playlist
 import com.joshuahalvorson.safeyoutube.Kotlin.database.PlaylistDatabase
 
 import com.joshuahalvorson.safeyoutube.R
-import kotlinx.android.synthetic.main.fragment_remove_playlist_dialog.*
+import kotlinx.android.synthetic.main.fragment_remove_playlist.*
 
 class RemovePlaylistFragment : Fragment() {
     private lateinit var adapter: PlaylistsListRecyclerviewAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_remove_playlist_dialog, container, false)
+        return inflater.inflate(R.layout.fragment_remove_playlist, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

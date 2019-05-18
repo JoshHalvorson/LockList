@@ -1,32 +1,15 @@
 package com.joshuahalvorson.safeyoutube.Kotlin.view.activity
 
-import android.app.Activity
-import android.arch.persistence.room.Room
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.constraint.ConstraintLayout
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import com.facebook.stetho.Stetho
-import com.joshuahalvorson.safeyoutube.Java.view.activity.LoginActivity
-import com.joshuahalvorson.safeyoutube.Java.view.activity.SettingsActivity
-import com.joshuahalvorson.safeyoutube.Java.view.activity.WatchPlaylistActivity
-import com.joshuahalvorson.safeyoutube.Java.view.fragment.AddPlaylistDialogFragment
-import com.joshuahalvorson.safeyoutube.Kotlin.adapter.PlaylistsListRecyclerviewAdapter
 import com.joshuahalvorson.safeyoutube.Kotlin.database.Playlist
-import com.joshuahalvorson.safeyoutube.Kotlin.database.PlaylistDatabase
 import com.joshuahalvorson.safeyoutube.Kotlin.view.fragment.LoginFragment
 import com.joshuahalvorson.safeyoutube.Kotlin.view.fragment.PlaylistsListFragment
 import com.joshuahalvorson.safeyoutube.R
-import java.util.ArrayList
 
 class MainActivity : AppCompatActivity(), PlaylistsListFragment.OnPlaylistFragmentInteractionListener {
     override fun onPlaylistInteraction(playlist: Playlist) {
@@ -37,7 +20,7 @@ class MainActivity : AppCompatActivity(), PlaylistsListFragment.OnPlaylistFragme
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_playlists_list)
+        setContentView(R.layout.activity_main)
         Stetho.initializeWithDefaults(this)
 
         val intent = intent

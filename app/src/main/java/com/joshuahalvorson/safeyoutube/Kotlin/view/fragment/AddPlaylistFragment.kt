@@ -31,7 +31,7 @@ class AddPlaylistFragment : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_add_playlist_dialog, container, false)
+        return inflater.inflate(R.layout.fragment_add_playlist, container, false)
     }
 
     override fun onStart() {

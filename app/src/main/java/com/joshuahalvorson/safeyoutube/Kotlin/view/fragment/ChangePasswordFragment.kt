@@ -3,20 +3,19 @@ package com.joshuahalvorson.safeyoutube.Kotlin.view.fragment
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 
 import com.joshuahalvorson.safeyoutube.R
-import kotlinx.android.synthetic.main.fragment_change_password_dialog.*
+import kotlinx.android.synthetic.main.fragment_change_password.*
 
 class ChangePasswordFragment : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_change_password_dialog, container, false)
+        return inflater.inflate(R.layout.fragment_change_password, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -15,7 +15,6 @@ import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerSupportFragment
 import com.joshuahalvorson.safeyoutube.ApiKey
-import com.joshuahalvorson.safeyoutube.Java.view.activity.WatchPlaylistActivity.PLAYLIST_ID_KEY
 import com.joshuahalvorson.safeyoutube.Kotlin.adapter.PlaylistItemsListRecyclerviewAdapter
 import com.joshuahalvorson.safeyoutube.Kotlin.adapter.PlaylistsListRecyclerviewAdapter
 import com.joshuahalvorson.safeyoutube.Kotlin.database.Playlist
@@ -25,7 +24,6 @@ import com.joshuahalvorson.safeyoutube.Kotlin.network.YoutubeDataApiViewModel
 import kotlinx.android.synthetic.main.content_watch_playlist.*
 import java.util.ArrayList
 import com.joshuahalvorson.safeyoutube.R
-
 
 class WatchPlaylistFragment : Fragment() {
     private var items: ArrayList<Models.Item> = ArrayList()
