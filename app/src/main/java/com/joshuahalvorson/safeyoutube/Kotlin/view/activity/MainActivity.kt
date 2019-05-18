@@ -23,19 +23,25 @@ class MainActivity : AppCompatActivity() {
         val action = intent.action
         val type = intent.type
 
-        if (Intent.ACTION_SEND == action && type != null) {
-            if ("text/plain" == type) {
-                val playlistsFrag = PlaylistsListFragment()
-                var bundle = Bundle()
-                bundle.putString("playlist_url", intent.getStringExtra(Intent.EXTRA_TEXT))
-                bundle.putBoolean("show_frag", false)
-                playlistsFrag.arguments = bundle
+        if (savedInstanceState == null){
+            if (Intent.ACTION_SEND == action && type != null) {
+                if ("text/plain" == type) {
+                    val playlistsFrag = PlaylistsListFragment()
+                    var bundle = Bundle()
+                    bundle.putString("playlist_url", intent.getStringExtra(Intent.EXTRA_TEXT))
+                    bundle.putBoolean("show_frag", false)
+                    playlistsFrag.arguments = bundle
+                    supportFragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, playlistsFrag)
+                            .commit()
+                    intent.removeExtra(intent.type)
+                }
+            }else {
                 supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, playlistsFrag)
+                        .replace(R.id.fragment_container, PlaylistsListFragment())
                         .commit()
-                intent.removeExtra(intent.type)
             }
-        }else{
+        }else {
             supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, PlaylistsListFragment())
                     .commit()
