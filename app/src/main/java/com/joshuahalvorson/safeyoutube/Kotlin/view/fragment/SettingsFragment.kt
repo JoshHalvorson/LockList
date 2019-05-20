@@ -34,6 +34,17 @@ import pub.devrel.easypermissions.EasyPermissions
 import java.util.*
 
 class SettingsFragment : Fragment() {
+    lateinit var googleAccountCredential: GoogleAccountCredential
+
+    internal val REQUEST_ACCOUNT_PICKER = 1000
+    internal val REQUEST_AUTHORIZATION = 1001
+    internal val REQUEST_GOOGLE_PLAY_SERVICES = 1002
+    internal val REQUEST_PERMISSION_GET_ACCOUNTS = 1003
+
+    private val PREF_ACCOUNT_NAME = "account_name"
+
+    private val SCOPES = arrayOf(YouTubeScopes.YOUTUBE_READONLY)
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_settings, container, false)
@@ -110,11 +121,22 @@ class SettingsFragment : Fragment() {
                     ?.commit()
         }
 
-        val googleAccountCredential = GoogleAccountCredential.usingOAuth2(
+        googleAccountCredential = GoogleAccountCredential.usingOAuth2(
                 context, Arrays.asList(*arrayOf(YouTubeScopes.YOUTUBE_READONLY)))
                 .setBackOff(ExponentialBackOff())
 
-        Log.i("googlelogin", googleAccountCredential.selectedAccount.name)
+        log_in_to_youtube_button.setOnClickListener {
+            val accountName = activity?.getPreferences(Context.MODE_PRIVATE)
+                    ?.getString(PREF_ACCOUNT_NAME, null);
+            if (accountName != null) {
+                googleAccountCredential.selectedAccountName = accountName;
+                getResultsFromApi()
+            }else{
+                startActivityForResult(
+                        googleAccountCredential.newChooseAccountIntent(),
+                        REQUEST_ACCOUNT_PICKER)
+            }
+        }
     }
 
     private fun showClearPlaylistsAlert() {
@@ -134,6 +156,118 @@ class SettingsFragment : Fragment() {
                 PlaylistDatabase::class.java, "database-playlists").build()
         Thread(Runnable { db.clearAllTables() }).start()
         db.close()
+    }
+
+
+    private fun getResultsFromApi() {
+        if (!isGooglePlayServicesAvailable()) {
+            acquireGooglePlayServices()
+        } else if (googleAccountCredential.getSelectedAccountName() == null) {
+            chooseAccount()
+        } else if (!isDeviceOnline()) {
+            Toast.makeText(context, "No network connection available.", Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(context, googleAccountCredential.selectedAccountName, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    @AfterPermissionGranted(1003)
+    private fun chooseAccount() {
+        if (EasyPermissions.hasPermissions(
+                        context!!, Manifest.permission.GET_ACCOUNTS)) {
+            val accountName = activity?.getPreferences(Context.MODE_PRIVATE)
+                    ?.getString(PREF_ACCOUNT_NAME, null)
+            if (accountName != null) {
+                googleAccountCredential.setSelectedAccountName(accountName)
+                getResultsFromApi()
+            } else {
+                startActivityForResult(
+                        googleAccountCredential.newChooseAccountIntent(),
+                        REQUEST_ACCOUNT_PICKER)
+            }
+        } else {
+            EasyPermissions.requestPermissions(
+                    this,
+                    "This app needs to access your Google account (via Contacts).",
+                    REQUEST_PERMISSION_GET_ACCOUNTS,
+                    Manifest.permission.GET_ACCOUNTS)
+        }
+    }
+
+    override fun onActivityResult(
+            requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_GOOGLE_PLAY_SERVICES -> if (resultCode != Activity.RESULT_OK) {
+                Toast.makeText(
+                        context,
+                        "This app requires Google Play Services. Please install " + "Google Play Services on your device and relaunch this app.",
+                        Toast.LENGTH_LONG).show()
+            } else {
+                getResultsFromApi()
+            }
+            REQUEST_ACCOUNT_PICKER -> if (resultCode == Activity.RESULT_OK && data != null &&
+                    data.extras != null) {
+                val accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME)
+                if (accountName != null) {
+                    val settings = activity?.getPreferences(Context.MODE_PRIVATE)
+                    val editor = settings?.edit()
+                    editor?.putString(PREF_ACCOUNT_NAME, accountName)
+                    editor?.apply()
+                    googleAccountCredential.setSelectedAccountName(accountName)
+                    getResultsFromApi()
+                }
+            }
+            REQUEST_AUTHORIZATION -> if (resultCode == Activity.RESULT_OK) {
+                getResultsFromApi()
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>,
+                                            grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(
+                requestCode, permissions, grantResults, this)
+    }
+
+    fun onPermissionsGranted(requestCode: Int, list: List<String>) {
+        // Do nothing.
+    }
+
+    fun onPermissionsDenied(requestCode: Int, list: List<String>) {
+        // Do nothing.
+    }
+
+    private fun isDeviceOnline(): Boolean {
+        val connMgr = activity?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connMgr.activeNetworkInfo
+        return networkInfo != null && networkInfo.isConnected
+    }
+
+    private fun isGooglePlayServicesAvailable(): Boolean {
+        val apiAvailability = GoogleApiAvailability.getInstance()
+        val connectionStatusCode = apiAvailability.isGooglePlayServicesAvailable(context)
+        return connectionStatusCode == ConnectionResult.SUCCESS
+    }
+
+    private fun acquireGooglePlayServices() {
+        val apiAvailability = GoogleApiAvailability.getInstance()
+        val connectionStatusCode = apiAvailability.isGooglePlayServicesAvailable(context)
+        if (apiAvailability.isUserResolvableError(connectionStatusCode)) {
+            showGooglePlayServicesAvailabilityErrorDialog(connectionStatusCode)
+        }
+    }
+
+    internal fun showGooglePlayServicesAvailabilityErrorDialog(
+            connectionStatusCode: Int) {
+        val apiAvailability = GoogleApiAvailability.getInstance()
+        val dialog = apiAvailability.getErrorDialog(
+                activity,
+                connectionStatusCode,
+                REQUEST_GOOGLE_PLAY_SERVICES)
+        dialog.show()
     }
 
 }
