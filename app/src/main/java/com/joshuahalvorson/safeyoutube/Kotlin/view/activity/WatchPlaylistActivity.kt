@@ -1,5 +1,6 @@
 package com.joshuahalvorson.safeyoutube.Kotlin.view.activity
 
+import android.app.Activity
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.SharedPreferences
@@ -29,8 +30,8 @@ import com.joshuahalvorson.safeyoutube.Kotlin.adapter.PlaylistItemsListRecyclerv
 import com.joshuahalvorson.safeyoutube.Kotlin.model.Models
 import com.joshuahalvorson.safeyoutube.Kotlin.network.YoutubeDataApiViewModel
 import com.joshuahalvorson.safeyoutube.R
+import kotlinx.android.synthetic.main.activity_watch_playlist.*
 
-import kotlinx.android.synthetic.main.content_watch_playlist.*
 import kotlinx.io.IOException
 import java.util.*
 
@@ -137,7 +138,6 @@ class WatchPlaylistActivity : AppCompatActivity() {
     private fun initializeVideo(fragment: YouTubePlayerSupportFragment, id: String) {
         fragment.initialize(ApiKey.KEY, object : YouTubePlayer.OnInitializedListener {
             override fun onInitializationSuccess(provider: YouTubePlayer.Provider, youTubePlayer: YouTubePlayer, b: Boolean) {
-                mYoutubePlayer = youTubePlayer
                 youTubePlayer.loadPlaylist(id)
                 youTubePlayer.setPlayerStateChangeListener(playerStateChangeListener)
                 youTubePlayer.fullscreenControlFlags = 0
@@ -146,7 +146,8 @@ class WatchPlaylistActivity : AppCompatActivity() {
                     1 -> youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL)
                     2 -> youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT)
                 }
-
+                youTubePlayer.fullscreenControlFlags = YouTubePlayer.FULLSCREEN_FLAG_CONTROL_ORIENTATION; YouTubePlayer.FULLSCREEN_FLAG_ALWAYS_FULLSCREEN_IN_LANDSCAPE
+                mYoutubePlayer = youTubePlayer
             }
 
             override fun onInitializationFailure(provider: YouTubePlayer.Provider, youTubeInitializationResult: YouTubeInitializationResult) {
