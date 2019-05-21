@@ -11,7 +11,6 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.joshuahalvorson.safeyoutube.Kotlin.database.Playlist
 import com.joshuahalvorson.safeyoutube.R
-import java.util.ArrayList
 
 class PlaylistsListRecyclerviewAdapter(
         private val isDeleting: Boolean, private val playlists: MutableList<Playlist>, private val callback: OnListItemClick
@@ -32,10 +31,16 @@ class PlaylistsListRecyclerviewAdapter(
                 .load(playlist.playlistThumbnail)
                 .into(viewHolder.playlistThumbnail)
         if (isDeleting) {
-            viewHolder.deletePlaylistButton.setVisibility(View.VISIBLE)
+            viewHolder.deletePlaylistButton.visibility = View.VISIBLE
             viewHolder.deletePlaylistButton.setOnClickListener(View.OnClickListener { callback.onListItemClick(playlist) })
         } else {
             viewHolder.parent.setOnClickListener(View.OnClickListener { callback.onListItemClick(playlist) })
+        }
+        when(playlist.playlistStatus){
+            "public" -> viewHolder.playlistStatusImage.setImageResource(R.drawable.ic_playlist_public)
+            "unlisted" -> viewHolder.playlistStatusImage.setImageResource(R.drawable.ic_playlist_unlisted)
+            "private" -> viewHolder.playlistStatusImage.setImageResource(R.drawable.ic_playlist_private)
+
         }
     }
 
@@ -49,6 +54,7 @@ class PlaylistsListRecyclerviewAdapter(
         val playlistThumbnail: ImageView = view.findViewById(R.id.playlist_thumbnail)
         val parent: ConstraintLayout = view.findViewById(R.id.playlist_item_parent)
         val deletePlaylistButton: ImageButton = view.findViewById(R.id.delete_playlist_button)
+        val playlistStatusImage: ImageView = view.findViewById(R.id.playlist_status_image)
     }
 
     interface OnListItemClick {
