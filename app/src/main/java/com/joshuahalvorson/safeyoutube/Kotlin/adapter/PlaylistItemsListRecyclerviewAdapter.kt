@@ -8,12 +8,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.google.api.services.youtube.model.PlaylistItem
 import com.joshuahalvorson.safeyoutube.Kotlin.model.Models
 import com.joshuahalvorson.safeyoutube.R
 import java.util.ArrayList
 
 class PlaylistItemsListRecyclerviewAdapter(
-        private val items: ArrayList<Models.Item>, private val callback: OnVideoClicked
+        private val items: ArrayList<PlaylistItem>, private val callback: OnVideoClicked
 ): RecyclerView.Adapter<PlaylistItemsListRecyclerviewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, p1: Int): PlaylistItemsListRecyclerviewAdapter.ViewHolder {
