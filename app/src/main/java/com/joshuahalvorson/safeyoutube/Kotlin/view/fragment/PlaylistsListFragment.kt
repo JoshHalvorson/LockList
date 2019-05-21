@@ -192,8 +192,11 @@ class PlaylistsListFragment : Fragment() {
             if (output == null || output.size == 0) {
                 //account playlists already added
             } else {
-                /*playlists.addAll(output)
-                adapter.notifyDataSetChanged()*/
+                val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
+                val editor = prefs?.edit()
+                editor?.putString("account_playlists", output.joinToString { it.playlistId })
+                editor?.apply()
+
                 updatePlaylistsList()
             }
         }

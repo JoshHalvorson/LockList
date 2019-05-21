@@ -147,9 +147,18 @@ class SettingsFragment : Fragment() {
     }
 
     private fun signOut(){
+        val db = Room.databaseBuilder(this.context!!,
+                PlaylistDatabase::class.java, "database-playlists").build()
         val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
         val editor = prefs?.edit()
         editor?.remove(PREF_ACCOUNT_NAME)
+        val ids = prefs?.getString("account_playlists", "")
+        val idParts = ids?.split(", ")
+        idParts?.forEach {
+            Thread(Runnable {
+                db.playlistDao().deletePlaylistById(it)
+            }).start()
+        }
         editor?.apply()
         log_in_to_youtube_button.text = "Log in"
         Toast.makeText(context, "Logged out", Toast.LENGTH_LONG).show()

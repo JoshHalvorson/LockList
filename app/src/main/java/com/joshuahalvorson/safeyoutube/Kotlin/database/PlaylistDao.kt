@@ -13,6 +13,9 @@ interface PlaylistDao {
     @Query("SELECT * FROM playlist WHERE playlist_id = (:playlistId)")
     fun getPlaylistById(playlistId: String): Boolean
 
+    @Query("DELETE FROM playlist WHERE playlist_id = (:playlistId)")
+    fun deletePlaylistById(playlistId: String)
+
     @Insert
     fun insertAll(vararg playlists: Playlist)
 
