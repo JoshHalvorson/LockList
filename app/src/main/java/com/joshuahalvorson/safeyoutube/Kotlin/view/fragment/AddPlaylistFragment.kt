@@ -79,7 +79,7 @@ class AddPlaylistFragment : DialogFragment() {
                                     val title = item.snippet?.title
                                     val results = playlistResultOverview.pageInfo?.totalResults!!
                                     val thumbnailUrl = item.snippet?.thumbnails?.standard?.url!!
-                                    val status = item.status?.status
+                                    val status = item.status?.privacyStatus
 
                                     db.playlistDao().insertAll(Playlist(
                                             playlistId,
@@ -117,7 +117,7 @@ class AddPlaylistFragment : DialogFragment() {
                                         val title = item.snippet?.title
                                         val results = playlistResultOverview.pageInfo?.totalResults!!
                                         val thumbnailUrl = item.snippet?.thumbnails?.standard?.url!!
-                                        val status = item.status?.status
+                                        val status = item.status?.privacyStatus
 
                                         db.playlistDao().insertAll(Playlist(
                                                 playlistId,
@@ -138,7 +138,7 @@ class AddPlaylistFragment : DialogFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        db.close()
+        //db.close()
     }
 
     override fun onDismiss(dialog: DialogInterface?) {

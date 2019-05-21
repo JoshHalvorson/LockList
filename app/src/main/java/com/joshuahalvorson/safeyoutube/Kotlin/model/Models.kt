@@ -95,6 +95,6 @@ object Models{
     }
 
     class Status{
-        var status: String? = null
+        var privacyStatus: String? = null
     }
 }

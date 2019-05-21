@@ -36,7 +36,8 @@ class PlaylistsListRecyclerviewAdapter(
         } else {
             viewHolder.parent.setOnClickListener(View.OnClickListener { callback.onListItemClick(playlist) })
         }
-        when(playlist.playlistStatus){
+
+        when(playlist.privacyStatus){
             "public" -> viewHolder.playlistStatusImage.setImageResource(R.drawable.ic_playlist_public)
             "unlisted" -> viewHolder.playlistStatusImage.setImageResource(R.drawable.ic_playlist_unlisted)
             "private" -> viewHolder.playlistStatusImage.setImageResource(R.drawable.ic_playlist_private)
