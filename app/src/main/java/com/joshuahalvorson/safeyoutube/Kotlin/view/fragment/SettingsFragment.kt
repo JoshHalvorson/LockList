@@ -125,18 +125,35 @@ class SettingsFragment : Fragment() {
                 context, Arrays.asList(*arrayOf(YouTubeScopes.YOUTUBE_READONLY)))
                 .setBackOff(ExponentialBackOff())
 
-        log_in_to_youtube_button.setOnClickListener {
-            val accountName = activity?.getPreferences(Context.MODE_PRIVATE)
-                    ?.getString(PREF_ACCOUNT_NAME, null);
-            if (accountName != null) {
-                googleAccountCredential.selectedAccountName = accountName;
-                getResultsFromApi()
-            }else{
+        checkLogIn()
+    }
+
+    private fun checkLogIn() {
+        val accountName = activity?.getPreferences(Context.MODE_PRIVATE)
+                ?.getString(PREF_ACCOUNT_NAME, null);
+        if (accountName != null) {
+            googleAccountCredential.selectedAccountName = accountName
+            log_in_to_youtube_button.text = "Log out of $accountName"
+            log_in_to_youtube_button.setOnClickListener {
+                signOut()
+            }
+        } else {
+            log_in_to_youtube_button.setOnClickListener {
                 startActivityForResult(
                         googleAccountCredential.newChooseAccountIntent(),
                         REQUEST_ACCOUNT_PICKER)
             }
         }
+    }
+
+    private fun signOut(){
+        val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
+        val editor = prefs?.edit()
+        editor?.remove(PREF_ACCOUNT_NAME)
+        editor?.apply()
+        log_in_to_youtube_button.text = "Log in"
+        Toast.makeText(context, "Logged out", Toast.LENGTH_LONG).show()
+        checkLogIn()
     }
 
     private fun showClearPlaylistsAlert() {
@@ -167,7 +184,8 @@ class SettingsFragment : Fragment() {
         } else if (!isDeviceOnline()) {
             Toast.makeText(context, "No network connection available.", Toast.LENGTH_LONG).show()
         } else {
-            Toast.makeText(context, googleAccountCredential.selectedAccountName, Toast.LENGTH_LONG).show()
+            log_in_to_youtube_button.text = "Log out of ${googleAccountCredential.selectedAccountName}"
+            Toast.makeText(context, "Logged in to ${googleAccountCredential.selectedAccountName}", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -214,7 +232,7 @@ class SettingsFragment : Fragment() {
                     val editor = settings?.edit()
                     editor?.putString(PREF_ACCOUNT_NAME, accountName)
                     editor?.apply()
-                    googleAccountCredential.setSelectedAccountName(accountName)
+                    googleAccountCredential.selectedAccountName = accountName
                     getResultsFromApi()
                 }
             }
