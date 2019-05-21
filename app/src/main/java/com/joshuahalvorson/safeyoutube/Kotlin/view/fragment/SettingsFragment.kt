@@ -135,7 +135,7 @@ class SettingsFragment : Fragment() {
             googleAccountCredential.selectedAccountName = accountName
             log_in_to_youtube_button.text = "Log out of $accountName"
             log_in_to_youtube_button.setOnClickListener {
-                signOut()
+                showLogOutAlertDialog()
             }
         } else {
             log_in_to_youtube_button.setOnClickListener {
@@ -154,6 +154,18 @@ class SettingsFragment : Fragment() {
         log_in_to_youtube_button.text = "Log in"
         Toast.makeText(context, "Logged out", Toast.LENGTH_LONG).show()
         checkLogIn()
+    }
+
+    private fun showLogOutAlertDialog() {
+        val alertDialogBuilder = AlertDialog.Builder(this.context!!, R.style.AlertDialog)
+        alertDialogBuilder.setMessage("Are you sure you want to log out of ${googleAccountCredential.selectedAccountName}?")
+        alertDialogBuilder.setPositiveButton("Yes"
+        ) { arg0, arg1 -> signOut() }
+
+        alertDialogBuilder.setNegativeButton("No") { dialog, which -> }
+
+        val alertDialog = alertDialogBuilder.create()
+        alertDialog.show()
     }
 
     private fun showClearPlaylistsAlert() {
