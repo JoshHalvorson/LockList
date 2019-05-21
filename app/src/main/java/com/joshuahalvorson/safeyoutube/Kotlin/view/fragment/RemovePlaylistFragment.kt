@@ -4,6 +4,7 @@ import android.arch.persistence.room.Room
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -45,6 +46,7 @@ class RemovePlaylistFragment : Fragment() {
         }, ids)
 
         playlists_to_remove_list.layoutManager = LinearLayoutManager(context)
+        playlists_to_remove_list.addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
         playlists_to_remove_list.adapter = adapter
 
         Thread(Runnable {
