@@ -16,11 +16,11 @@ interface YoutubeDataClient {
     @GET("playlists")
     fun getPlaylistInfo(@Query("part") part: String,
                         @Query("id") playlistId: String,
-                        @Query("key") key: String) : Call<PlaylistResultOverview>
+                        @Query("key") key: String): Call<PlaylistResultOverview>
 
     @GET("videos")
     fun getVideoInfo(@Query("part") part: String,
                      @Query("id") playlistId: String,
-                     @Query("key") key: String) : Call<VideoInfo>
+                     @Query("key") key: String): Call<VideoInfo>
 
 }

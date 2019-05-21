@@ -3,6 +3,7 @@ package com.joshuahalvorson.safeyoutube.Kotlin.view.fragment
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.arch.persistence.room.Room
+import android.content.DialogInterface
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.v4.app.DialogFragment
@@ -12,13 +13,12 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import com.joshuahalvorson.safeyoutube.Kotlin.database.Playlist
 import com.joshuahalvorson.safeyoutube.Kotlin.database.PlaylistDatabase
 import com.joshuahalvorson.safeyoutube.Kotlin.model.Models
 import com.joshuahalvorson.safeyoutube.Kotlin.network.YoutubeDataApiViewModel
 import com.joshuahalvorson.safeyoutube.R
-import android.content.DialogInterface
-import android.widget.Toast
 
 class AddPlaylistFragment : DialogFragment() {
     private var onDismissListener: DialogInterface.OnDismissListener? = null
@@ -41,7 +41,7 @@ class AddPlaylistFragment : DialogFragment() {
         super.onStart()
         if (arguments != null) {
             if (!arguments!!.getBoolean(SHOW_FRAG_KEY)) {
-                parentView?.setVisibility(View.GONE)
+                parentView?.visibility = View.GONE
                 val window = dialog.window
                 val windowParams = window!!.attributes
                 windowParams.dimAmount = 0.0f
@@ -70,11 +70,11 @@ class AddPlaylistFragment : DialogFragment() {
                     liveData?.observe(viewLifecycleOwner, Observer<Models.PlaylistResultOverview> { playlistResultOverview ->
                         if (playlistResultOverview != null) {
                             Thread(Runnable {
-                                if(db.playlistDao().getPlaylistById(playlistId)){
+                                if (db.playlistDao().getPlaylistById(playlistId)) {
                                     activity?.runOnUiThread {
                                         Toast.makeText(context, "Playlist is already added", Toast.LENGTH_LONG).show()
                                     }
-                                }else{
+                                } else {
                                     val item = playlistInfo.items[0]
                                     val title = item.snippet?.title
                                     val results = playlistResultOverview.pageInfo?.totalResults!!
@@ -97,8 +97,8 @@ class AddPlaylistFragment : DialogFragment() {
             })
         }
 
-        addPlaylistButton?.setOnClickListener(View.OnClickListener {
-            if (urlEditText?.getText().toString() != "") {
+        addPlaylistButton?.setOnClickListener {
+            if (urlEditText?.text.toString() != "") {
                 val url = urlEditText?.text.toString()
                 val urlParts = url.split("list=".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
                 val playlistId = urlParts[1]
@@ -109,11 +109,11 @@ class AddPlaylistFragment : DialogFragment() {
                         liveData?.observe(viewLifecycleOwner, Observer<Models.PlaylistResultOverview> { playlistResultOverview ->
                             if (playlistResultOverview != null) {
                                 Thread(Runnable {
-                                    if(db.playlistDao().getPlaylistById(playlistId)){
+                                    if (db.playlistDao().getPlaylistById(playlistId)) {
                                         activity?.runOnUiThread {
                                             Toast.makeText(context, "Playlist is already added", Toast.LENGTH_LONG).show()
                                         }
-                                    }else{
+                                    } else {
                                         val item = playlistInfo.items[0]
                                         val title = item.snippet?.title
                                         val results = playlistResultOverview.pageInfo?.totalResults!!
@@ -135,12 +135,7 @@ class AddPlaylistFragment : DialogFragment() {
                     }
                 })
             }
-        })
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        //db.close()
+        }
     }
 
     override fun onDismiss(dialog: DialogInterface?) {

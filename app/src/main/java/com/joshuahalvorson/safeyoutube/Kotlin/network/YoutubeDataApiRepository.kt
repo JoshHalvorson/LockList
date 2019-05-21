@@ -20,7 +20,7 @@ class YoutubeDataApiRepository {
             .build()
     private val client = retrofit.create(YoutubeDataClient::class.java)
 
-    fun getPlaylistOverview(playlistId: String): MutableLiveData<PlaylistResultOverview>{
+    fun getPlaylistOverview(playlistId: String): MutableLiveData<PlaylistResultOverview> {
         val playlistResultOverviewMutableLiveData = MutableLiveData<PlaylistResultOverview>()
         val call = client.getPlaylistOverview("snippet, status", playlistId, "50", ApiKey.KEY)
         call.enqueue(object : Callback<PlaylistResultOverview> {
@@ -40,7 +40,7 @@ class YoutubeDataApiRepository {
         val call = client.getPlaylistInfo("snippet, status", playlistId, ApiKey.KEY)
         call.enqueue(object : Callback<PlaylistResultOverview> {
             override fun onResponse(call: Call<PlaylistResultOverview>, response: Response<PlaylistResultOverview>) {
-                playlistInfoMutableLiveData.setValue(response.body())
+                playlistInfoMutableLiveData.value = response.body()
             }
 
             override fun onFailure(call: Call<PlaylistResultOverview>, t: Throwable) {
@@ -55,7 +55,7 @@ class YoutubeDataApiRepository {
         val call = client.getVideoInfo("contentDetails", videoId, ApiKey.KEY)
         call.enqueue(object : Callback<VideoInfo> {
             override fun onResponse(call: Call<VideoInfo>, response: Response<VideoInfo>) {
-                playlistInfoMutableLiveData.setValue(response.body())
+                playlistInfoMutableLiveData.value = response.body()
             }
 
             override fun onFailure(call: Call<VideoInfo>, t: Throwable) {

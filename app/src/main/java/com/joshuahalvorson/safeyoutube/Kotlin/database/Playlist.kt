@@ -11,8 +11,8 @@ data class Playlist(
         @ColumnInfo(name = "playlist_video_count") var playlistVideoCount: Int,
         @ColumnInfo(name = "playlist_thumbnail") var playlistThumbnail: String,
         @ColumnInfo(name = "playlist_status") var privacyStatus: String?) {
-        @PrimaryKey(autoGenerate = true)
-        var id: Int = 0
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0
 }
 
 

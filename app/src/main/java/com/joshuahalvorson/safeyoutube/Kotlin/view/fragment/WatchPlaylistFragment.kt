@@ -29,9 +29,8 @@ import com.joshuahalvorson.safeyoutube.Kotlin.adapter.ItemsRecyclerviewAdapter
 import com.joshuahalvorson.safeyoutube.Kotlin.adapter.PlaylistItemsListRecyclerviewAdapter
 import com.joshuahalvorson.safeyoutube.Kotlin.model.Models
 import com.joshuahalvorson.safeyoutube.Kotlin.network.YoutubeDataApiViewModel
-
-import kotlinx.android.synthetic.main.content_watch_playlist.*
 import com.joshuahalvorson.safeyoutube.R
+import kotlinx.android.synthetic.main.content_watch_playlist.*
 import kotlinx.io.IOException
 import java.util.*
 
@@ -66,7 +65,7 @@ class WatchPlaylistFragment : Fragment() {
 
         override fun onError(p0: YouTubePlayer.ErrorReason?) {
             var toastText: String = ""
-            when(p0.toString()){
+            when (p0.toString()) {
                 "INTERNAL_ERROR" -> toastText = "Can't play this playlist, make sure it's not private on youtube"
                 "NOT_PLAYABLE" -> toastText = "Private videos can't be played"
             }
@@ -84,14 +83,14 @@ class WatchPlaylistFragment : Fragment() {
 
         youtubePlayerFragment = childFragmentManager.findFragmentById(R.id.youtube_fragment) as YouTubePlayerSupportFragment
 
-        adapter = PlaylistItemsListRecyclerviewAdapter(youtubeItems, object: PlaylistItemsListRecyclerviewAdapter.OnVideoClicked{
+        adapter = PlaylistItemsListRecyclerviewAdapter(youtubeItems, object : PlaylistItemsListRecyclerviewAdapter.OnVideoClicked {
             override fun onVideoClicked(itemIndex: Int) {
                 mYoutubePlayer?.loadPlaylist(playlistId, itemIndex, 1)
                 mYoutubePlayer?.play()
             }
         })
 
-        itemAdapter = ItemsRecyclerviewAdapter(items, object: ItemsRecyclerviewAdapter.OnVideoClicked{
+        itemAdapter = ItemsRecyclerviewAdapter(items, object : ItemsRecyclerviewAdapter.OnVideoClicked {
             override fun onVideoClicked(itemIndex: Int) {
                 mYoutubePlayer?.loadPlaylist(playlistId, itemIndex, 1)
                 mYoutubePlayer?.play()
@@ -104,19 +103,19 @@ class WatchPlaylistFragment : Fragment() {
                 context, Arrays.asList(*arrayOf(YouTubeScopes.YOUTUBE_READONLY)))
                 .setBackOff(ExponentialBackOff())
         val accountName = activity?.getPreferences(Context.MODE_PRIVATE)
-                ?.getString("account_name", null);
+                ?.getString("account_name", null)
         if (accountName != null) {
-            googleAccountCredential.selectedAccountName = accountName;
-        }else{
+            googleAccountCredential.selectedAccountName = accountName
+        } else {
             //not logged in
         }
 
         if (arguments != null) {
             playlistId = arguments!!.getString("playlist_id", "")
-            if(accountName != null){
+            if (accountName != null) {
                 videos_list.adapter = adapter
                 GetPlaylistItemsTask().execute(playlistId)
-            }else{
+            } else {
                 //when not logged in, user network call method
                 val liveData = viewModel.getPlaylistOverview(playlistId)
                 liveData?.observe(this, android.arch.lifecycle.Observer { playlistResultOverview ->

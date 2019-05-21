@@ -1,7 +1,6 @@
 package com.joshuahalvorson.safeyoutube.Kotlin.view.fragment
 
 import android.arch.persistence.room.Room
-import android.arch.persistence.room.RoomDatabase
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -11,7 +10,6 @@ import android.view.ViewGroup
 import com.joshuahalvorson.safeyoutube.Kotlin.adapter.PlaylistsListRecyclerviewAdapter
 import com.joshuahalvorson.safeyoutube.Kotlin.database.Playlist
 import com.joshuahalvorson.safeyoutube.Kotlin.database.PlaylistDatabase
-
 import com.joshuahalvorson.safeyoutube.R
 import kotlinx.android.synthetic.main.fragment_remove_playlist.*
 
@@ -48,7 +46,7 @@ class RemovePlaylistFragment : Fragment() {
 
         Thread(Runnable {
             val tempPlaylists = db.playlistDao().getAllPlaylists()
-            activity?.runOnUiThread{
+            activity?.runOnUiThread {
                 playlists.clear()
                 playlists.addAll(tempPlaylists)
                 adapter.notifyDataSetChanged()

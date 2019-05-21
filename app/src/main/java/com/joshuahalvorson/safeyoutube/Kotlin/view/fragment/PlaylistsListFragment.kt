@@ -2,6 +2,8 @@ package com.joshuahalvorson.safeyoutube.Kotlin.view.fragment
 
 import android.arch.persistence.room.Room
 import android.content.Context
+import android.content.DialogInterface
+import android.os.AsyncTask
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
@@ -9,25 +11,23 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import com.google.android.gms.common.GoogleApiAvailability
+import com.google.api.client.extensions.android.http.AndroidHttp
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
+import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
+import com.google.api.client.json.jackson2.JacksonFactory
+import com.google.api.client.util.ExponentialBackOff
+import com.google.api.services.youtube.YouTube
+import com.google.api.services.youtube.YouTubeScopes
 import com.joshuahalvorson.safeyoutube.Kotlin.adapter.PlaylistsListRecyclerviewAdapter
 import com.joshuahalvorson.safeyoutube.Kotlin.database.Playlist
 import com.joshuahalvorson.safeyoutube.Kotlin.database.PlaylistDatabase
 import com.joshuahalvorson.safeyoutube.R
 import kotlinx.android.synthetic.main.fragment_playlists_list.*
-import android.content.DialogInterface
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
-import com.google.api.client.util.ExponentialBackOff
-import com.google.api.services.youtube.YouTubeScopes
-import java.util.*
-import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
-import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException
-import com.google.api.client.json.jackson2.JacksonFactory
-import com.google.api.client.extensions.android.http.AndroidHttp
-import android.os.AsyncTask
-import android.widget.Toast
-import com.google.android.gms.common.GoogleApiAvailability
-import com.google.api.services.youtube.YouTube
 import kotlinx.io.IOException
+import java.util.*
 import kotlin.collections.ArrayList
 
 class PlaylistsListFragment : Fragment() {
@@ -48,10 +48,10 @@ class PlaylistsListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        adapter = PlaylistsListRecyclerviewAdapter(false, playlists, object: PlaylistsListRecyclerviewAdapter.OnListItemClick{
+        adapter = PlaylistsListRecyclerviewAdapter(false, playlists, object : PlaylistsListRecyclerviewAdapter.OnListItemClick {
             override fun onListItemClick(playlist: Playlist?) {
                 val watchFrag = WatchPlaylistFragment()
-                var bundle = Bundle()
+                val bundle = Bundle()
                 if (playlist != null) {
                     bundle.putString("playlist_id", playlist.playlistId)
                     watchFrag.arguments = bundle
@@ -70,25 +70,25 @@ class PlaylistsListFragment : Fragment() {
             startAddPlaylistFragment(null, true)
         }
 
-        if(savedInstanceState == null){
-            if (arguments != null){
+        if (savedInstanceState == null) {
+            if (arguments != null) {
                 val playlistUrl = arguments!!.getString("playlist_url")
                 val showFrag = arguments!!.getBoolean("show_frag")
-                if (playlistUrl != null && !showFrag){
+                if (playlistUrl != null && !showFrag) {
                     startAddPlaylistFragment(playlistUrl, showFrag)
                 }
             }
         }
 
         googleAccountCredential = GoogleAccountCredential.usingOAuth2(
-                context, Arrays.asList(*arrayOf(YouTubeScopes.YOUTUBE_READONLY)))
+                context, Arrays.asList(YouTubeScopes.YOUTUBE_READONLY))
                 .setBackOff(ExponentialBackOff())
         val accountName = activity?.getPreferences(Context.MODE_PRIVATE)
-                ?.getString("account_name", null);
+                ?.getString("account_name", null)
         if (accountName != null) {
-            googleAccountCredential.selectedAccountName = accountName;
-            MakeRequestTask().execute();
-        }else{
+            googleAccountCredential.selectedAccountName = accountName
+            MakeRequestTask().execute()
+        } else {
             //not logged in
         }
     }
@@ -166,10 +166,10 @@ class PlaylistsListFragment : Fragment() {
                     ?.execute()
 
             result?.items?.forEach {
-                if(db?.playlistDao()?.getPlaylistById(it.id)!!){
+                if (db?.playlistDao()?.getPlaylistById(it.id)!!) {
                     //playlist already in db
                     return tempList
-                }else{
+                } else {
                     val playlist = Playlist(it.id,
                             it.snippet.title,
                             it.contentDetails.itemCount.toInt(),

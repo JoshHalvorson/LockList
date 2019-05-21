@@ -13,18 +13,18 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.CompoundButton
+import android.widget.SeekBar
+import android.widget.Toast
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.util.ExponentialBackOff
 import com.google.api.services.youtube.YouTubeScopes
 import com.joshuahalvorson.safeyoutube.Kotlin.database.PlaylistDatabase
-
 import com.joshuahalvorson.safeyoutube.R
 import kotlinx.android.synthetic.main.account_settings_layout.*
 import kotlinx.android.synthetic.main.app_settings_layout.*
@@ -56,17 +56,17 @@ class SettingsFragment : Fragment() {
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE)
 
         if (sharedPref?.getInt(getString(R.string.dark_mode_key), 1) == 2) {
-            day_night_switch.setChecked(true)
-            current_theme_text.setText("Night")
+            day_night_switch.isChecked = true
+            current_theme_text.text = "Night"
         } else {
-            day_night_switch.setChecked(false)
-            current_theme_text.setText("Day")
+            day_night_switch.isChecked = false
+            current_theme_text.text = "Day"
         }
 
         day_night_switch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
             //TODO: add logic to switch day night mode
             if (isChecked) {
-                current_theme_text.setText("Night")
+                current_theme_text.text = "Night"
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     val uiModeManager = activity?.getSystemService<UiModeManager>(UiModeManager::class.java)
                     uiModeManager?.nightMode = UiModeManager.MODE_NIGHT_YES
@@ -75,10 +75,10 @@ class SettingsFragment : Fragment() {
                     editor?.apply()
                 }
             } else {
-                current_theme_text.setText("Day")
+                current_theme_text.text = "Day"
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     val uiModeManager = activity?.getSystemService<UiModeManager>(UiModeManager::class.java)
-                    uiModeManager?.setNightMode(UiModeManager.MODE_NIGHT_NO)
+                    uiModeManager?.nightMode = UiModeManager.MODE_NIGHT_NO
                     val editor = sharedPref?.edit()
                     editor?.putInt(getString(R.string.dark_mode_key), 1)
                     editor?.apply()
@@ -96,7 +96,7 @@ class SettingsFragment : Fragment() {
             age_range_seek_bar.progress = ageRangeValue
         }
 
-        age_range_seek_bar.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
+        age_range_seek_bar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
             }
 
@@ -130,7 +130,7 @@ class SettingsFragment : Fragment() {
 
     private fun checkLogIn() {
         val accountName = activity?.getPreferences(Context.MODE_PRIVATE)
-                ?.getString(PREF_ACCOUNT_NAME, null);
+                ?.getString(PREF_ACCOUNT_NAME, null)
         if (accountName != null) {
             googleAccountCredential.selectedAccountName = accountName
             log_in_to_youtube_button.text = "Log out of $accountName"
@@ -146,7 +146,7 @@ class SettingsFragment : Fragment() {
         }
     }
 
-    private fun signOut(){
+    private fun signOut() {
         val db = Room.databaseBuilder(this.context!!,
                 PlaylistDatabase::class.java, "database-playlists").build()
         val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
@@ -189,7 +189,7 @@ class SettingsFragment : Fragment() {
         alertDialog.show()
     }
 
-    private fun clearDb(){
+    private fun clearDb() {
         val db = Room.databaseBuilder(this.context!!,
                 PlaylistDatabase::class.java, "database-playlists").build()
         Thread(Runnable { db.clearAllTables() }).start()
@@ -200,7 +200,7 @@ class SettingsFragment : Fragment() {
     private fun getResultsFromApi() {
         if (!isGooglePlayServicesAvailable()) {
             acquireGooglePlayServices()
-        } else if (googleAccountCredential.getSelectedAccountName() == null) {
+        } else if (googleAccountCredential.selectedAccountName == null) {
             chooseAccount()
         } else if (!isDeviceOnline()) {
             Toast.makeText(context, "No network connection available.", Toast.LENGTH_LONG).show()
@@ -217,7 +217,7 @@ class SettingsFragment : Fragment() {
             val accountName = activity?.getPreferences(Context.MODE_PRIVATE)
                     ?.getString(PREF_ACCOUNT_NAME, null)
             if (accountName != null) {
-                googleAccountCredential.setSelectedAccountName(accountName)
+                googleAccountCredential.selectedAccountName = accountName
                 getResultsFromApi()
             } else {
                 startActivityForResult(

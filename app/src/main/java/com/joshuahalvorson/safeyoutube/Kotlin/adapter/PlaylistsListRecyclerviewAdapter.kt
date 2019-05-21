@@ -14,11 +14,11 @@ import com.joshuahalvorson.safeyoutube.R
 
 class PlaylistsListRecyclerviewAdapter(
         private val isDeleting: Boolean, private val playlists: MutableList<Playlist>, private val callback: OnListItemClick
-): RecyclerView.Adapter<PlaylistsListRecyclerviewAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<PlaylistsListRecyclerviewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, p1: Int): ViewHolder {
         return ViewHolder(
-                LayoutInflater.from(viewGroup.getContext())
+                LayoutInflater.from(viewGroup.context)
                         .inflate(R.layout.playlists_list_element_layout, viewGroup, false)
         )
     }
@@ -27,17 +27,17 @@ class PlaylistsListRecyclerviewAdapter(
         val playlist = playlists.get(position)
         viewHolder.playlistName.text = playlist.playlistName
         viewHolder.playlistVideos.text = "${playlist.playlistVideoCount} videos"
-        Glide.with(viewHolder.playlistThumbnail.getContext())
+        Glide.with(viewHolder.playlistThumbnail.context)
                 .load(playlist.playlistThumbnail)
                 .into(viewHolder.playlistThumbnail)
         if (isDeleting) {
             viewHolder.deletePlaylistButton.visibility = View.VISIBLE
-            viewHolder.deletePlaylistButton.setOnClickListener(View.OnClickListener { callback.onListItemClick(playlist) })
+            viewHolder.deletePlaylistButton.setOnClickListener { callback.onListItemClick(playlist) }
         } else {
-            viewHolder.parent.setOnClickListener(View.OnClickListener { callback.onListItemClick(playlist) })
+            viewHolder.parent.setOnClickListener { callback.onListItemClick(playlist) }
         }
 
-        when(playlist.privacyStatus){
+        when (playlist.privacyStatus) {
             "public" -> viewHolder.playlistStatusImage.setImageResource(R.drawable.ic_playlist_public)
             "unlisted" -> viewHolder.playlistStatusImage.setImageResource(R.drawable.ic_playlist_unlisted)
             "private" -> viewHolder.playlistStatusImage.setImageResource(R.drawable.ic_playlist_private)
@@ -49,9 +49,9 @@ class PlaylistsListRecyclerviewAdapter(
         return playlists.size
     }
 
-    class ViewHolder(view: View): RecyclerView.ViewHolder(view){
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val playlistName: TextView = view.findViewById(R.id.playlists_list_element_name)
-        val playlistVideos:TextView = view.findViewById(R.id.playlist_videos)
+        val playlistVideos: TextView = view.findViewById(R.id.playlist_videos)
         val playlistThumbnail: ImageView = view.findViewById(R.id.playlist_thumbnail)
         val parent: ConstraintLayout = view.findViewById(R.id.playlist_item_parent)
         val deletePlaylistButton: ImageButton = view.findViewById(R.id.delete_playlist_button)

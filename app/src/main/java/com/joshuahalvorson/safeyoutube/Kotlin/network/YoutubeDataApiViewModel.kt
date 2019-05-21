@@ -1,11 +1,9 @@
 package com.joshuahalvorson.safeyoutube.Kotlin.network
 
-import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.joshuahalvorson.safeyoutube.Kotlin.model.Models.PlaylistResultOverview
 import com.joshuahalvorson.safeyoutube.Kotlin.model.Models.VideoInfo
-import com.joshuahalvorson.safeyoutube.Kotlin.network.YoutubeDataApiRepository;
 
 class YoutubeDataApiViewModel : ViewModel() {
     private var playlistOverview: MutableLiveData<PlaylistResultOverview>? = null

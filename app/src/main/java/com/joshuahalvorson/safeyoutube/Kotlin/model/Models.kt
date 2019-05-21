@@ -1,7 +1,7 @@
 package com.joshuahalvorson.safeyoutube.Kotlin.model
 
-object Models{
-    class ContentDetails{
+object Models {
+    class ContentDetails {
         var duration: String? = null
         var dimension: String? = null
         var definition: String? = null
@@ -16,13 +16,13 @@ object Models{
         var height: Int? = null
     }
 
-    class High{
+    class High {
         var url: String? = null
         var width: Int? = null
         var height: Int? = null
     }
 
-    class Item{
+    class Item {
         var kind: String? = null
         var etag: String? = null
         var id: String? = null
@@ -31,24 +31,24 @@ object Models{
         var status: Status? = null
     }
 
-    class Maxres{
+    class Maxres {
         var url: String? = null
         var width: Int? = null
         var height: Int? = null
     }
 
-    class Medium{
+    class Medium {
         var url: String? = null
         var width: Int? = null
         var height: Int? = null
     }
 
-    class PageInfo{
+    class PageInfo {
         var totalResults: Int? = null
         var resultsPerPage: Int? = null
     }
 
-    class PlaylistResultOverview{
+    class PlaylistResultOverview {
         var kind: String? = null
         var etag: String? = null
         var nextPageToken: String? = null
@@ -56,12 +56,12 @@ object Models{
         var items: List<Item> = listOf()
     }
 
-    class ResourceId{
+    class ResourceId {
         var kind: String? = null
         var videoId: String? = null
     }
 
-    class Snippet{
+    class Snippet {
         var publishedAt: String? = null
         var channelId: String? = null
         var title: String? = null
@@ -73,13 +73,13 @@ object Models{
         var resourceId: ResourceId? = null
     }
 
-    class Standard{
+    class Standard {
         var url: String? = null
         var width: Int? = null
         var height: Int? = null
     }
 
-    class Thumbnails{
+    class Thumbnails {
         var _default: Default? = null
         var medium: Medium? = null
         var high: High? = null
@@ -87,14 +87,14 @@ object Models{
         var maxres: Maxres? = null
     }
 
-    class VideoInfo{
+    class VideoInfo {
         var kind: String? = null
         var etag: String? = null
         var pageInfo: PageInfo? = null
         var items: List<Item>? = null
     }
 
-    class Status{
+    class Status {
         var privacyStatus: String? = null
     }
 }

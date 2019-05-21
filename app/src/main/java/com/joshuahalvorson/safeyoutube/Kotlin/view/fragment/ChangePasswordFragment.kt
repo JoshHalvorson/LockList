@@ -24,17 +24,17 @@ class ChangePasswordFragment : DialogFragment() {
         val password = sharedPref?.getString(getString(R.string.account_key), "")
 
         change_password_button.setOnClickListener {
-            if(old_password_edit_text.text.toString() == password){
-                if(new_password_edit_text.text.toString() != password){
+            if (old_password_edit_text.text.toString() == password) {
+                if (new_password_edit_text.text.toString() != password) {
                     val editor = sharedPref.edit()
                     editor.putString(getString(R.string.account_key), new_password_edit_text.text.toString())
                     editor.apply()
                     Toast.makeText(context, "Password changed", Toast.LENGTH_LONG).show()
                     dismiss()
-                }else{
+                } else {
                     Toast.makeText(context, "New password is the same as the old password", Toast.LENGTH_LONG).show()
                 }
-            }else{
+            } else {
                 Toast.makeText(context, "Old password is not the same as the current password", Toast.LENGTH_LONG).show()
             }
         }
