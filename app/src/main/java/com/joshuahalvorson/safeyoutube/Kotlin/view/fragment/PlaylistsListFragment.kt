@@ -192,8 +192,9 @@ class PlaylistsListFragment : Fragment() {
             if (output == null || output.size == 0) {
                 //account playlists already added
             } else {
-                playlists.addAll(output)
-                adapter.notifyDataSetChanged()
+                /*playlists.addAll(output)
+                adapter.notifyDataSetChanged()*/
+                updatePlaylistsList()
             }
         }
 

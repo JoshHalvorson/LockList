@@ -87,9 +87,10 @@ class AddPlaylistFragment : DialogFragment() {
                                             results,
                                             thumbnailUrl,
                                             status))
+
+                                    dismiss()
                                 }
                             }).start()
-                            dismiss()
                         }
                     })
                 }
@@ -126,8 +127,9 @@ class AddPlaylistFragment : DialogFragment() {
                                                 thumbnailUrl,
                                                 status))
                                     }
+
+                                    dismiss()
                                 }).start()
-                                dismiss()
                             }
                         })
                     }
