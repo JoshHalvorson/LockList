@@ -1,15 +1,14 @@
-package com.joshuahalvorson.safeyoutube.Kotlin.view.fragment
+package com.joshuahalvorson.safeyoutube.Kotlin.view.activity
 
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.os.AsyncTask
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.youtube.player.YouTubeInitializationResult
@@ -30,11 +29,12 @@ import com.joshuahalvorson.safeyoutube.Kotlin.adapter.PlaylistItemsListRecyclerv
 import com.joshuahalvorson.safeyoutube.Kotlin.model.Models
 import com.joshuahalvorson.safeyoutube.Kotlin.network.YoutubeDataApiViewModel
 import com.joshuahalvorson.safeyoutube.R
+
 import kotlinx.android.synthetic.main.content_watch_playlist.*
 import kotlinx.io.IOException
 import java.util.*
 
-class WatchPlaylistFragment : Fragment() {
+class WatchPlaylistActivity : AppCompatActivity() {
     private var youtubeItems: ArrayList<PlaylistItem> = ArrayList()
     private var items: ArrayList<Models.Item> = ArrayList()
     private var sharedPref: SharedPreferences? = null
@@ -64,24 +64,24 @@ class WatchPlaylistFragment : Fragment() {
         }
 
         override fun onError(p0: YouTubePlayer.ErrorReason?) {
-            var toastText: String = ""
+            var toastText = ""
             when (p0.toString()) {
                 "INTERNAL_ERROR" -> toastText = "Can't play this playlist, make sure it's not private on youtube"
                 "NOT_PLAYABLE" -> toastText = "Private videos can't be played"
             }
-            Toast.makeText(context, toastText, Toast.LENGTH_LONG).show()
+            Toast.makeText(applicationContext, toastText, Toast.LENGTH_LONG).show()
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_watch_playlist, container, false)
-    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_watch_playlist)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val playlistId = intent.getStringExtra("playlist_id_key")
+
         val viewModel = ViewModelProviders.of(this).get(YoutubeDataApiViewModel::class.java)
 
-        youtubePlayerFragment = childFragmentManager.findFragmentById(R.id.youtube_fragment) as YouTubePlayerSupportFragment
+        youtubePlayerFragment = supportFragmentManager.findFragmentById(R.id.youtube_fragment) as YouTubePlayerSupportFragment
 
         adapter = PlaylistItemsListRecyclerviewAdapter(youtubeItems, object : PlaylistItemsListRecyclerviewAdapter.OnVideoClicked {
             override fun onVideoClicked(itemIndex: Int) {
@@ -97,12 +97,12 @@ class WatchPlaylistFragment : Fragment() {
             }
         })
 
-        videos_list.layoutManager = LinearLayoutManager(context)
+        videos_list.layoutManager = LinearLayoutManager(applicationContext)
 
         googleAccountCredential = GoogleAccountCredential.usingOAuth2(
-                context, Arrays.asList(*arrayOf(YouTubeScopes.YOUTUBE_READONLY)))
+                applicationContext, Arrays.asList(YouTubeScopes.YOUTUBE_READONLY))
                 .setBackOff(ExponentialBackOff())
-        val accountName = activity?.getPreferences(Context.MODE_PRIVATE)
+        val accountName = getPreferences(Context.MODE_PRIVATE)
                 ?.getString("account_name", null)
         if (accountName != null) {
             googleAccountCredential.selectedAccountName = accountName
@@ -110,29 +110,26 @@ class WatchPlaylistFragment : Fragment() {
             //not logged in
         }
 
-        if (arguments != null) {
-            playlistId = arguments!!.getString("playlist_id", "")
-            if (accountName != null) {
-                videos_list.adapter = adapter
-                GetPlaylistItemsTask().execute(playlistId)
-            } else {
-                //when not logged in, user network call method
-                val liveData = viewModel.getPlaylistOverview(playlistId)
-                liveData?.observe(this, android.arch.lifecycle.Observer { playlistResultOverview ->
-                    if (playlistResultOverview != null) {
-                        videos_list.adapter = itemAdapter
-                        items.addAll(playlistResultOverview.items)
-                        itemAdapter.notifyDataSetChanged()
-                        initializeVideo(youtubePlayerFragment, playlistId)
-                    }
-                })
-            }
+        if (accountName != null) {
+            videos_list.adapter = adapter
+            GetPlaylistItemsTask().execute(playlistId)
+        } else {
+            //when not logged in, user network call method
+            val liveData = viewModel.getPlaylistOverview(playlistId)
+            liveData?.observe(this, android.arch.lifecycle.Observer { playlistResultOverview ->
+                if (playlistResultOverview != null) {
+                    videos_list.adapter = itemAdapter
+                    items.addAll(playlistResultOverview.items)
+                    itemAdapter.notifyDataSetChanged()
+                    initializeVideo(youtubePlayerFragment, playlistId)
+                }
+            })
         }
     }
 
     override fun onResume() {
         super.onResume()
-        sharedPref = activity?.getSharedPreferences(
+        sharedPref = getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         ageValue = sharedPref?.getInt(getString(R.string.age_range_key), 1)
     }
@@ -154,11 +151,11 @@ class WatchPlaylistFragment : Fragment() {
 
             override fun onInitializationFailure(provider: YouTubePlayer.Provider, youTubeInitializationResult: YouTubeInitializationResult) {
                 if (youTubeInitializationResult.isUserRecoverableError) {
-                    youTubeInitializationResult.getErrorDialog(activity, 1).show()
+                    youTubeInitializationResult.getErrorDialog(this@WatchPlaylistActivity, 1).show()
                 } else {
                     val errorMessage = String.format(
                             getString(R.string.error_player), youTubeInitializationResult.toString())
-                    Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+                    Toast.makeText(applicationContext, errorMessage, Toast.LENGTH_LONG).show()
                 }
             }
         })
@@ -228,10 +225,10 @@ class WatchPlaylistFragment : Fragment() {
                             (lastError as UserRecoverableAuthIOException).intent,
                             1003)
                 } else {
-                    Toast.makeText(context, "The following error occurred:\n" + lastError!!.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(applicationContext, "The following error occurred:\n" + lastError!!.message, Toast.LENGTH_LONG).show()
                 }
             } else {
-                Toast.makeText(context, "Request cancelled.", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, "Request cancelled.", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -240,9 +237,37 @@ class WatchPlaylistFragment : Fragment() {
             connectionStatusCode: Int) {
         val apiAvailability = GoogleApiAvailability.getInstance()
         val dialog = apiAvailability.getErrorDialog(
-                activity,
+                this,
                 connectionStatusCode,
                 1002)
         dialog.show()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        if (newConfig?.orientation == Configuration.ORIENTATION_LANDSCAPE){
+            hideSystemUI()
+            mYoutubePlayer?.setFullscreen(true)
+        }else{
+            //showSystemUI()
+            mYoutubePlayer?.setFullscreen(false)
+        }
+    }
+
+    private fun hideSystemUI() {
+        // For "lean back" mode, remove SYSTEM_UI_FLAG_IMMERSIVE.
+        //SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
+                // Hide the nav bar and status bar
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_FULLSCREEN)
+    }
+
+    // Shows the system bars by removing all the flags
+    // except for the ones that make the content appear under the system bars.
+    private fun showSystemUI() {
+        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
     }
 }

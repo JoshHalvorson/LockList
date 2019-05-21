@@ -3,6 +3,7 @@ package com.joshuahalvorson.safeyoutube.Kotlin.view.fragment
 import android.arch.persistence.room.Room
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
@@ -25,6 +26,7 @@ import com.google.api.services.youtube.YouTubeScopes
 import com.joshuahalvorson.safeyoutube.Kotlin.adapter.PlaylistsListRecyclerviewAdapter
 import com.joshuahalvorson.safeyoutube.Kotlin.database.Playlist
 import com.joshuahalvorson.safeyoutube.Kotlin.database.PlaylistDatabase
+import com.joshuahalvorson.safeyoutube.Kotlin.view.activity.WatchPlaylistActivity
 import com.joshuahalvorson.safeyoutube.R
 import kotlinx.android.synthetic.main.fragment_playlists_list.*
 import kotlinx.io.IOException
@@ -52,7 +54,7 @@ class PlaylistsListFragment : Fragment() {
         val ids = activity?.getPreferences(Context.MODE_PRIVATE)?.getString(getString(R.string.account_playlists_key), "")?.split(", ")
         adapter = PlaylistsListRecyclerviewAdapter(false, playlists, object : PlaylistsListRecyclerviewAdapter.OnListItemClick {
             override fun onListItemClick(playlist: Playlist?) {
-                val watchFrag = WatchPlaylistFragment()
+                /*val watchFrag = WatchPlaylistFragment()
                 val bundle = Bundle()
                 if (playlist != null) {
                     bundle.putString("playlist_id", playlist.playlistId)
@@ -61,7 +63,12 @@ class PlaylistsListFragment : Fragment() {
                 fragmentManager?.beginTransaction()
                         ?.add(R.id.fragment_container, watchFrag)
                         ?.addToBackStack("")
-                        ?.commit()
+                        ?.commit()*/
+
+                val intent = Intent(activity, WatchPlaylistActivity::class.java).apply {
+                    putExtra("playlist_id_key", playlist?.playlistId)
+                }
+                startActivity(intent)
             }
         }, ids)
 
