@@ -13,7 +13,10 @@ import com.joshuahalvorson.safeyoutube.Kotlin.database.Playlist
 import com.joshuahalvorson.safeyoutube.R
 
 class PlaylistsListRecyclerviewAdapter(
-        private val isDeleting: Boolean, private val playlists: MutableList<Playlist>, private val callback: OnListItemClick
+        private val isDeleting: Boolean,
+        private val playlists: MutableList<Playlist>,
+        private val callback: OnListItemClick,
+        private val ids: List<String>?
 ) : RecyclerView.Adapter<PlaylistsListRecyclerviewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, p1: Int): ViewHolder {
@@ -41,7 +44,12 @@ class PlaylistsListRecyclerviewAdapter(
             "public" -> viewHolder.playlistStatusImage.setImageResource(R.drawable.ic_playlist_public)
             "unlisted" -> viewHolder.playlistStatusImage.setImageResource(R.drawable.ic_playlist_unlisted)
             "private" -> viewHolder.playlistStatusImage.setImageResource(R.drawable.ic_playlist_private)
+        }
 
+        if (ids != null){
+            if (ids.contains(playlist.playlistId)){
+                viewHolder.userPlaylistImage.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -56,6 +64,7 @@ class PlaylistsListRecyclerviewAdapter(
         val parent: ConstraintLayout = view.findViewById(R.id.playlist_item_parent)
         val deletePlaylistButton: ImageButton = view.findViewById(R.id.delete_playlist_button)
         val playlistStatusImage: ImageView = view.findViewById(R.id.playlist_status_image)
+        val userPlaylistImage: ImageView = view.findViewById(R.id.user_playlist_image)
     }
 
     interface OnListItemClick {

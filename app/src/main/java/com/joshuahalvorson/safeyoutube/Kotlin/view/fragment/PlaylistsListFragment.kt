@@ -48,6 +48,7 @@ class PlaylistsListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val ids = activity?.getPreferences(Context.MODE_PRIVATE)?.getString("account_playlists", "")?.split(", ")
         adapter = PlaylistsListRecyclerviewAdapter(false, playlists, object : PlaylistsListRecyclerviewAdapter.OnListItemClick {
             override fun onListItemClick(playlist: Playlist?) {
                 val watchFrag = WatchPlaylistFragment()
@@ -61,7 +62,7 @@ class PlaylistsListFragment : Fragment() {
                         ?.addToBackStack("")
                         ?.commit()
             }
-        })
+        }, ids)
 
         playlists_list.layoutManager = LinearLayoutManager(context)
         playlists_list.adapter = adapter

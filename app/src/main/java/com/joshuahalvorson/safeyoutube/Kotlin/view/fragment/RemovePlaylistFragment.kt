@@ -1,6 +1,7 @@
 package com.joshuahalvorson.safeyoutube.Kotlin.view.fragment
 
 import android.arch.persistence.room.Room
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -27,6 +28,8 @@ class RemovePlaylistFragment : Fragment() {
         db = Room.databaseBuilder<PlaylistDatabase>(context!!,
                 PlaylistDatabase::class.java, "database-playlists").build()
 
+        val ids = activity?.getPreferences(Context.MODE_PRIVATE)?.getString("account_playlists", "")?.split(", ")
+
         adapter = PlaylistsListRecyclerviewAdapter(true, playlists, object : PlaylistsListRecyclerviewAdapter.OnListItemClick {
             override fun onListItemClick(playlist: Playlist?) {
                 if (playlist != null) {
@@ -39,7 +42,7 @@ class RemovePlaylistFragment : Fragment() {
                     }).start()
                 }
             }
-        })
+        }, ids)
 
         playlists_to_remove_list.layoutManager = LinearLayoutManager(context)
         playlists_to_remove_list.adapter = adapter
