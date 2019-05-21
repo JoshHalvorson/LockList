@@ -27,9 +27,9 @@ class RemovePlaylistFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         var playlists = ArrayList<Playlist>()
         db = Room.databaseBuilder<PlaylistDatabase>(context!!,
-                PlaylistDatabase::class.java, "database-playlists").build()
+                PlaylistDatabase::class.java, getString(R.string.database_playlist_name)).build()
 
-        val ids = activity?.getPreferences(Context.MODE_PRIVATE)?.getString("account_playlists", "")?.split(", ")
+        val ids = activity?.getPreferences(Context.MODE_PRIVATE)?.getString(getString(R.string.account_playlists_key), "")?.split(", ")
 
         adapter = PlaylistsListRecyclerviewAdapter(true, playlists, object : PlaylistsListRecyclerviewAdapter.OnListItemClick {
             override fun onListItemClick(playlist: Playlist?) {

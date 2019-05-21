@@ -50,7 +50,7 @@ class AddPlaylistFragment : DialogFragment() {
             }
         }
         db = Room.databaseBuilder(this.context!!,
-                PlaylistDatabase::class.java, "database-playlists").build()
+                PlaylistDatabase::class.java, getString(R.string.database_playlist_name)).build()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

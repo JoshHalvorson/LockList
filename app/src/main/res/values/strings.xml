@@ -8,6 +8,9 @@
     <string name="account_key">account_password</string>
     <string name="age_range_key">age_range</string>
     <string name="dark_mode_key">dark_mode</string>
+    <string name="database_playlist_name">database-playlists</string>
+    <string name="account_playlists_key">account_playlists</string>
+    <string name="account_name_key">account_name</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

@@ -45,11 +45,11 @@ class PlaylistsListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         db = Room.databaseBuilder(this.context!!,
-                PlaylistDatabase::class.java, "database-playlists").build()
+                PlaylistDatabase::class.java, getString(R.string.database_playlist_name)).build()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val ids = activity?.getPreferences(Context.MODE_PRIVATE)?.getString("account_playlists", "")?.split(", ")
+        val ids = activity?.getPreferences(Context.MODE_PRIVATE)?.getString(getString(R.string.account_playlists_key), "")?.split(", ")
         adapter = PlaylistsListRecyclerviewAdapter(false, playlists, object : PlaylistsListRecyclerviewAdapter.OnListItemClick {
             override fun onListItemClick(playlist: Playlist?) {
                 val watchFrag = WatchPlaylistFragment()
@@ -197,7 +197,7 @@ class PlaylistsListFragment : Fragment() {
             } else {
                 val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
                 val editor = prefs?.edit()
-                editor?.putString("account_playlists", output.joinToString { it.playlistId })
+                editor?.putString(getString(R.string.account_playlists_key), output.joinToString { it.playlistId })
                 editor?.apply()
 
                 updatePlaylistsList()

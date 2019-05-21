@@ -41,8 +41,6 @@ class SettingsFragment : Fragment() {
     internal val REQUEST_GOOGLE_PLAY_SERVICES = 1002
     internal val REQUEST_PERMISSION_GET_ACCOUNTS = 1003
 
-    private val PREF_ACCOUNT_NAME = "account_name"
-
     private val SCOPES = arrayOf(YouTubeScopes.YOUTUBE_READONLY)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -130,7 +128,7 @@ class SettingsFragment : Fragment() {
 
     private fun checkLogIn() {
         val accountName = activity?.getPreferences(Context.MODE_PRIVATE)
-                ?.getString(PREF_ACCOUNT_NAME, null)
+                ?.getString(getString(R.string.account_name_key), null)
         if (accountName != null) {
             googleAccountCredential.selectedAccountName = accountName
             log_in_to_youtube_button.text = "Log out of $accountName"
@@ -148,11 +146,11 @@ class SettingsFragment : Fragment() {
 
     private fun signOut() {
         val db = Room.databaseBuilder(this.context!!,
-                PlaylistDatabase::class.java, "database-playlists").build()
+                PlaylistDatabase::class.java, getString(R.string.database_playlist_name)).build()
         val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
         val editor = prefs?.edit()
-        editor?.remove(PREF_ACCOUNT_NAME)
-        val ids = prefs?.getString("account_playlists", "")
+        editor?.remove(getString(R.string.account_name_key))
+        val ids = prefs?.getString(getString(R.string.account_playlists_key), "")
         val idParts = ids?.split(", ")
         idParts?.forEach {
             Thread(Runnable {
@@ -191,7 +189,7 @@ class SettingsFragment : Fragment() {
 
     private fun clearDb() {
         val db = Room.databaseBuilder(this.context!!,
-                PlaylistDatabase::class.java, "database-playlists").build()
+                PlaylistDatabase::class.java, getString(R.string.database_playlist_name)).build()
         Thread(Runnable { db.clearAllTables() }).start()
         db.close()
     }
@@ -215,7 +213,7 @@ class SettingsFragment : Fragment() {
         if (EasyPermissions.hasPermissions(
                         context!!, Manifest.permission.GET_ACCOUNTS)) {
             val accountName = activity?.getPreferences(Context.MODE_PRIVATE)
-                    ?.getString(PREF_ACCOUNT_NAME, null)
+                    ?.getString(getString(R.string.account_name_key), null)
             if (accountName != null) {
                 googleAccountCredential.selectedAccountName = accountName
                 getResultsFromApi()
@@ -251,7 +249,7 @@ class SettingsFragment : Fragment() {
                 if (accountName != null) {
                     val settings = activity?.getPreferences(Context.MODE_PRIVATE)
                     val editor = settings?.edit()
-                    editor?.putString(PREF_ACCOUNT_NAME, accountName)
+                    editor?.putString(getString(R.string.account_name_key), accountName)
                     editor?.apply()
                     googleAccountCredential.selectedAccountName = accountName
                     getResultsFromApi()
