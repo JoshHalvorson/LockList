@@ -161,7 +161,7 @@ class PlaylistsListFragment : Fragment() {
 
             val tempList = ArrayList<Playlist>()
 
-            val result = youtubeService?.playlists()?.list("snippet, contentDetails")
+            val result = youtubeService?.playlists()?.list("status, snippet, contentDetails")
                     ?.setMine(true)
                     ?.execute()
 
@@ -173,7 +173,8 @@ class PlaylistsListFragment : Fragment() {
                     val playlist = Playlist(it.id,
                             it.snippet.title,
                             it.contentDetails.itemCount.toInt(),
-                            it.snippet.thumbnails.default.url)
+                            it.snippet.thumbnails.default.url,
+                            it.status.privacyStatus)
 
                     db?.playlistDao()?.insertAll(playlist)
                     tempList.add(playlist)

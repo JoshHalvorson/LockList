@@ -79,12 +79,14 @@ class AddPlaylistFragment : DialogFragment() {
                                     val title = item.snippet?.title
                                     val results = playlistResultOverview.pageInfo?.totalResults!!
                                     val thumbnailUrl = item.snippet?.thumbnails?.standard?.url!!
+                                    val status = item.status?.status
 
                                     db.playlistDao().insertAll(Playlist(
                                             playlistId,
                                             title,
                                             results,
-                                            thumbnailUrl))
+                                            thumbnailUrl,
+                                            status))
                                 }
                             }).start()
                             dismiss()
@@ -115,12 +117,14 @@ class AddPlaylistFragment : DialogFragment() {
                                         val title = item.snippet?.title
                                         val results = playlistResultOverview.pageInfo?.totalResults!!
                                         val thumbnailUrl = item.snippet?.thumbnails?.standard?.url!!
+                                        val status = item.status?.status
 
                                         db.playlistDao().insertAll(Playlist(
                                                 playlistId,
                                                 title,
                                                 results,
-                                                thumbnailUrl))
+                                                thumbnailUrl,
+                                                status))
                                     }
                                 }).start()
                                 dismiss()

@@ -28,6 +28,7 @@ object Models{
         var id: String? = null
         var contentDetails: ContentDetails? = null
         var snippet: Snippet? = null
+        var status: Status? = null
     }
 
     class Maxres{
@@ -91,5 +92,9 @@ object Models{
         var etag: String? = null
         var pageInfo: PageInfo? = null
         var items: List<Item>? = null
+    }
+
+    class Status{
+        var status: String? = null
     }
 }

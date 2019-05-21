@@ -22,7 +22,7 @@ class YoutubeDataApiRepository {
 
     fun getPlaylistOverview(playlistId: String): MutableLiveData<PlaylistResultOverview>{
         val playlistResultOverviewMutableLiveData = MutableLiveData<PlaylistResultOverview>()
-        val call = client.getPlaylistOverview("snippet", playlistId, "50", ApiKey.KEY)
+        val call = client.getPlaylistOverview("snippet, status", playlistId, "50", ApiKey.KEY)
         call.enqueue(object : Callback<PlaylistResultOverview> {
             override fun onResponse(call: Call<PlaylistResultOverview>, response: Response<PlaylistResultOverview>) {
                 playlistResultOverviewMutableLiveData.value = response.body()
@@ -37,7 +37,7 @@ class YoutubeDataApiRepository {
 
     fun getPlaylistInfo(playlistId: String): MutableLiveData<PlaylistResultOverview> {
         val playlistInfoMutableLiveData = MutableLiveData<PlaylistResultOverview>()
-        val call = client.getPlaylistInfo("snippet", playlistId, ApiKey.KEY)
+        val call = client.getPlaylistInfo("snippet, status", playlistId, ApiKey.KEY)
         call.enqueue(object : Callback<PlaylistResultOverview> {
             override fun onResponse(call: Call<PlaylistResultOverview>, response: Response<PlaylistResultOverview>) {
                 playlistInfoMutableLiveData.setValue(response.body())
