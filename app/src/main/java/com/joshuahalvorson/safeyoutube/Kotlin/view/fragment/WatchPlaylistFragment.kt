@@ -25,7 +25,9 @@ import com.google.api.services.youtube.YouTube
 import com.google.api.services.youtube.YouTubeScopes
 import com.google.api.services.youtube.model.PlaylistItem
 import com.joshuahalvorson.safeyoutube.ApiKey
+import com.joshuahalvorson.safeyoutube.Kotlin.adapter.ItemsRecyclerviewAdapter
 import com.joshuahalvorson.safeyoutube.Kotlin.adapter.PlaylistItemsListRecyclerviewAdapter
+import com.joshuahalvorson.safeyoutube.Kotlin.model.Models
 import com.joshuahalvorson.safeyoutube.Kotlin.network.YoutubeDataApiViewModel
 
 import kotlinx.android.synthetic.main.content_watch_playlist.*
@@ -34,12 +36,14 @@ import kotlinx.io.IOException
 import java.util.*
 
 class WatchPlaylistFragment : Fragment() {
-    private var items: ArrayList<PlaylistItem> = ArrayList()
+    private var youtubeItems: ArrayList<PlaylistItem> = ArrayList()
+    private var items: ArrayList<Models.Item> = ArrayList()
     private var sharedPref: SharedPreferences? = null
     private var ageValue: Int? = 0
     private var mYoutubePlayer: YouTubePlayer? = null
 
     private lateinit var adapter: PlaylistItemsListRecyclerviewAdapter
+    private lateinit var itemAdapter: ItemsRecyclerviewAdapter
     private lateinit var playlistId: String
     private lateinit var googleAccountCredential: GoogleAccountCredential
     private lateinit var youtubePlayerFragment: YouTubePlayerSupportFragment
@@ -76,17 +80,25 @@ class WatchPlaylistFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        adapter = PlaylistItemsListRecyclerviewAdapter(items, object: PlaylistItemsListRecyclerviewAdapter.OnVideoClicked{
+        val viewModel = ViewModelProviders.of(this).get(YoutubeDataApiViewModel::class.java)
+
+        youtubePlayerFragment = childFragmentManager.findFragmentById(R.id.youtube_fragment) as YouTubePlayerSupportFragment
+
+        adapter = PlaylistItemsListRecyclerviewAdapter(youtubeItems, object: PlaylistItemsListRecyclerviewAdapter.OnVideoClicked{
             override fun onVideoClicked(itemIndex: Int) {
                 mYoutubePlayer?.loadPlaylist(playlistId, itemIndex, 1)
                 mYoutubePlayer?.play()
             }
         })
 
-        youtubePlayerFragment = childFragmentManager.findFragmentById(R.id.youtube_fragment) as YouTubePlayerSupportFragment
+        itemAdapter = ItemsRecyclerviewAdapter(items, object: ItemsRecyclerviewAdapter.OnVideoClicked{
+            override fun onVideoClicked(itemIndex: Int) {
+                mYoutubePlayer?.loadPlaylist(playlistId, itemIndex, 1)
+                mYoutubePlayer?.play()
+            }
+        })
 
         videos_list.layoutManager = LinearLayoutManager(context)
-        videos_list.adapter = adapter
 
         googleAccountCredential = GoogleAccountCredential.usingOAuth2(
                 context, Arrays.asList(*arrayOf(YouTubeScopes.YOUTUBE_READONLY)))
@@ -102,7 +114,19 @@ class WatchPlaylistFragment : Fragment() {
         if (arguments != null) {
             playlistId = arguments!!.getString("playlist_id", "")
             if(accountName != null){
+                videos_list.adapter = adapter
                 GetPlaylistItemsTask().execute(playlistId)
+            }else{
+                //when not logged in, user network call method
+                val liveData = viewModel.getPlaylistOverview(playlistId)
+                liveData?.observe(this, android.arch.lifecycle.Observer { playlistResultOverview ->
+                    if (playlistResultOverview != null) {
+                        videos_list.adapter = itemAdapter
+                        items.addAll(playlistResultOverview.items)
+                        itemAdapter.notifyDataSetChanged()
+                        initializeVideo(youtubePlayerFragment, playlistId)
+                    }
+                })
             }
         }
     }
@@ -114,15 +138,11 @@ class WatchPlaylistFragment : Fragment() {
         ageValue = sharedPref?.getInt(getString(R.string.age_range_key), 1)
     }
 
-    private fun initializeVideo(isPlaylist: Boolean, fragment: YouTubePlayerSupportFragment, id: String) {
+    private fun initializeVideo(fragment: YouTubePlayerSupportFragment, id: String) {
         fragment.initialize(ApiKey.KEY, object : YouTubePlayer.OnInitializedListener {
             override fun onInitializationSuccess(provider: YouTubePlayer.Provider, youTubePlayer: YouTubePlayer, b: Boolean) {
                 mYoutubePlayer = youTubePlayer
-                if(isPlaylist){
-                    youTubePlayer.loadPlaylist(id)
-                }else{
-                    youTubePlayer.loadVideo(id)
-                }
+                youTubePlayer.loadPlaylist(id)
                 youTubePlayer.setPlayerStateChangeListener(playerStateChangeListener)
                 youTubePlayer.fullscreenControlFlags = 0
                 when (ageValue) {
@@ -191,9 +211,9 @@ class WatchPlaylistFragment : Fragment() {
             if (output == null || output.size == 0) {
 
             } else {
-                items.addAll(output)
+                youtubeItems.addAll(output)
                 adapter.notifyDataSetChanged()
-                initializeVideo(true, youtubePlayerFragment, playlistId)
+                initializeVideo(youtubePlayerFragment, playlistId)
             }
         }
 
