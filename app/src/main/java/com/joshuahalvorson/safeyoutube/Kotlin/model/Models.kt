@@ -8,6 +8,7 @@ object Models {
         var caption: String? = null
         var licensedContent: Boolean? = null
         var projection: String? = null
+        var videoId: String? = null
     }
 
     class Default {
