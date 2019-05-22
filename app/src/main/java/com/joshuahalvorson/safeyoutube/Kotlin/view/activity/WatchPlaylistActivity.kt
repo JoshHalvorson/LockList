@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.hardware.SensorManager
-import android.os.AsyncTask
 import android.os.Bundle
 import android.view.OrientationEventListener
 import android.view.View
@@ -13,27 +12,17 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.common.GoogleApiAvailability
-import com.google.android.youtube.player.YouTubeInitializationResult
-import com.google.android.youtube.player.YouTubePlayer
-import com.google.android.youtube.player.YouTubePlayerSupportFragment
-import com.google.api.client.extensions.android.http.AndroidHttp
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
-import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException
-import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
-import com.google.api.client.json.jackson2.JacksonFactory
-import com.google.api.client.util.ExponentialBackOff
-import com.google.api.services.youtube.YouTube
-import com.google.api.services.youtube.YouTubeScopes
-import com.google.api.services.youtube.model.PlaylistItem
-import com.joshuahalvorson.safeyoutube.ApiKey
+import com.joshuahalvorson.safeyoutube.Kotlin.util.Counter
 import com.joshuahalvorson.safeyoutube.Kotlin.adapter.ItemsRecyclerviewAdapter
-import com.joshuahalvorson.safeyoutube.Kotlin.adapter.PlaylistItemsListRecyclerviewAdapter
 import com.joshuahalvorson.safeyoutube.Kotlin.model.Models
 import com.joshuahalvorson.safeyoutube.Kotlin.network.YoutubeDataApiViewModel
 import com.joshuahalvorson.safeyoutube.R
+import com.joshuahalvorson.safeyoutube.Kotlin.youtubeplayer.YoutubePlayerController
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants.PlayerState.*
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import kotlinx.android.synthetic.main.activity_watch_playlist.*
-import kotlinx.io.IOException
 import java.util.*
 
 class WatchPlaylistActivity : AppCompatActivity() {
@@ -42,7 +31,8 @@ class WatchPlaylistActivity : AppCompatActivity() {
     private var ageValue: Int? = 0
 
     private lateinit var itemAdapter: ItemsRecyclerviewAdapter
-    private lateinit var playlistId: String
+    private lateinit var counter: Counter
+    private lateinit var playerController: YoutubePlayerController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,21 +42,26 @@ class WatchPlaylistActivity : AppCompatActivity() {
 
         val viewModel = ViewModelProviders.of(this).get(YoutubeDataApiViewModel::class.java)
 
+        val youtubePlayerView = findViewById<YouTubePlayerView>(R.id.youtube_player_view)
+        lifecycle.addObserver(youtubePlayerView)
+
         itemAdapter = ItemsRecyclerviewAdapter(items, object : ItemsRecyclerviewAdapter.OnVideoClicked {
             override fun onVideoClicked(itemIndex: Int) {
-
+                counter = Counter(0, itemIndex + 1, items.size)
+                items[itemIndex].contentDetails?.videoId?.let { playerController.playVideo(it) }
             }
         })
 
         videos_list.layoutManager = LinearLayoutManager(applicationContext)
+        videos_list.adapter = itemAdapter
 
         val liveData = viewModel.getPlaylistOverview(playlistId)
         liveData?.observe(this, androidx.lifecycle.Observer { playlistResultOverview ->
             if (playlistResultOverview != null) {
-                videos_list.adapter = itemAdapter
                 items.addAll(playlistResultOverview.items)
+                counter = Counter(0, 0, items.size)
                 itemAdapter.notifyDataSetChanged()
-
+                initializeYoutubePlayer(youtubePlayerView, items)
             }
         })
 
@@ -81,6 +76,26 @@ class WatchPlaylistActivity : AppCompatActivity() {
         if (orientationEventListener.canDetectOrientation()) {
             orientationEventListener.enable()
         }
+    }
+
+    private fun initializeYoutubePlayer(youtubePlayer: YouTubePlayerView, videoIds: ArrayList<Models.Item>){
+        youtubePlayer.addYouTubePlayerListener(object: AbstractYouTubePlayerListener(){
+            override fun onReady(youTubePlayer: com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer) {
+                videoIds[counter.increment()].contentDetails?.videoId.let { youTubePlayer.loadVideo(it.toString(), 0F) }
+                playerController = YoutubePlayerController(youTubePlayer)
+            }
+
+            override fun onStateChange(youTubePlayer: com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer, state: PlayerConstants.PlayerState) {
+                when(state){
+                    ENDED -> onReady(youTubePlayer)
+                    else -> return
+                }
+            }
+
+            override fun onError(youTubePlayer: com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer, error: PlayerConstants.PlayerError) {
+                Toast.makeText(applicationContext, "Error is: $error", Toast.LENGTH_LONG).show()
+            }
+        })
     }
 
     override fun onResume() {
