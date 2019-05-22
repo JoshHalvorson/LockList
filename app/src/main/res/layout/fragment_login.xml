@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="15dp"
-    tools:context=".kotlin.view.fragment.LoginFragment">
+    tools:context=".view.fragment.LoginFragment">
 
     <TextView
         android:id="@+id/log_in_frag_text"
