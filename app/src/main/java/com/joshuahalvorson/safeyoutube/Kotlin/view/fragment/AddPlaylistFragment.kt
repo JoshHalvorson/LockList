@@ -55,8 +55,8 @@ class AddPlaylistFragment : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         parentView = view.findViewById(R.id.add_playlist_frag_parent)
-        var urlEditText = view.findViewById<EditText>(R.id.video_url_edit_text)
-        var addPlaylistButton = view.findViewById<Button>(R.id.add_playlist_button)
+        val urlEditText = view.findViewById<EditText>(R.id.video_url_edit_text)
+        val addPlaylistButton = view.findViewById<Button>(R.id.add_playlist_button)
         val viewModel = ViewModelProviders.of(this).get(YoutubeDataApiViewModel::class.java)
 
         if (arguments != null) {

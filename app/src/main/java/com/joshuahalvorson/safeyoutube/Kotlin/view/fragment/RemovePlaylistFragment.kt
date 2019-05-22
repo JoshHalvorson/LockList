@@ -25,7 +25,7 @@ class RemovePlaylistFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        var playlists = ArrayList<Playlist>()
+        val playlists = ArrayList<Playlist>()
         db = Room.databaseBuilder<PlaylistDatabase>(context!!,
                 PlaylistDatabase::class.java, getString(R.string.database_playlist_name)).build()
 

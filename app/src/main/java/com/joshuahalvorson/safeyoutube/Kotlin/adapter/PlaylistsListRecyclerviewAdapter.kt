@@ -46,8 +46,8 @@ class PlaylistsListRecyclerviewAdapter(
             "private" -> viewHolder.playlistStatusImage.setImageResource(R.drawable.ic_playlist_private)
         }
 
-        if (ids != null){
-            if (ids.contains(playlist.playlistId)){
+        if (ids != null) {
+            if (ids.contains(playlist.playlistId)) {
                 viewHolder.userPlaylistImage.visibility = View.VISIBLE
             }
         }

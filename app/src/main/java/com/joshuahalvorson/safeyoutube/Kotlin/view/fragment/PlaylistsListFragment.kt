@@ -54,17 +54,6 @@ class PlaylistsListFragment : Fragment() {
         val ids = activity?.getPreferences(Context.MODE_PRIVATE)?.getString(getString(R.string.account_playlists_key), "")?.split(", ")
         adapter = PlaylistsListRecyclerviewAdapter(false, playlists, object : PlaylistsListRecyclerviewAdapter.OnListItemClick {
             override fun onListItemClick(playlist: Playlist?) {
-                /*val watchFrag = WatchPlaylistFragment()
-                val bundle = Bundle()
-                if (playlist != null) {
-                    bundle.putString("playlist_id", playlist.playlistId)
-                    watchFrag.arguments = bundle
-                }
-                fragmentManager?.beginTransaction()
-                        ?.add(R.id.fragment_container, watchFrag)
-                        ?.addToBackStack("")
-                        ?.commit()*/
-
                 val intent = Intent(activity, WatchPlaylistActivity::class.java).apply {
                     putExtra("playlist_id_key", playlist?.playlistId)
                 }
@@ -150,12 +139,12 @@ class PlaylistsListFragment : Fragment() {
         private var lastError: Exception? = null
 
         override fun doInBackground(vararg params: Void): ArrayList<Playlist>? {
-            try {
-                return getDataFromApi()
+            return try {
+                getDataFromApi()
             } catch (e: Exception) {
                 lastError = e
                 cancel(true)
-                return null
+                null
             }
 
         }
@@ -214,16 +203,14 @@ class PlaylistsListFragment : Fragment() {
         override fun onCancelled() {
             //mProgress.hide()
             if (lastError != null) {
-                if (lastError is GooglePlayServicesAvailabilityIOException) {
-                    showGooglePlayServicesAvailabilityErrorDialog(
+                when (lastError) {
+                    is GooglePlayServicesAvailabilityIOException -> showGooglePlayServicesAvailabilityErrorDialog(
                             (lastError as GooglePlayServicesAvailabilityIOException)
                                     .connectionStatusCode)
-                } else if (lastError is UserRecoverableAuthIOException) {
-                    startActivityForResult(
+                    is UserRecoverableAuthIOException -> startActivityForResult(
                             (lastError as UserRecoverableAuthIOException).intent,
                             1003)
-                } else {
-                    Toast.makeText(context, "The following error occurred:\n" + lastError!!.message, Toast.LENGTH_LONG).show()
+                    else -> Toast.makeText(context, "The following error occurred:\n" + lastError!!.message, Toast.LENGTH_LONG).show()
                 }
             } else {
                 Toast.makeText(context, "Request cancelled.", Toast.LENGTH_LONG).show()

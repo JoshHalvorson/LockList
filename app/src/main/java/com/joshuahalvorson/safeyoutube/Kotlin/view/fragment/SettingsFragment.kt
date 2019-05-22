@@ -41,8 +41,6 @@ class SettingsFragment : Fragment() {
     internal val REQUEST_GOOGLE_PLAY_SERVICES = 1002
     internal val REQUEST_PERMISSION_GET_ACCOUNTS = 1003
 
-    private val SCOPES = arrayOf(YouTubeScopes.YOUTUBE_READONLY)
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_settings, container, false)
@@ -120,7 +118,7 @@ class SettingsFragment : Fragment() {
         }
 
         googleAccountCredential = GoogleAccountCredential.usingOAuth2(
-                context, Arrays.asList(*arrayOf(YouTubeScopes.YOUTUBE_READONLY)))
+                context, Arrays.asList(YouTubeScopes.YOUTUBE_READONLY))
                 .setBackOff(ExponentialBackOff())
 
         checkLogIn()

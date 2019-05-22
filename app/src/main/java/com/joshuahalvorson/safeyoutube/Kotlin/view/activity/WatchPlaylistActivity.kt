@@ -1,16 +1,14 @@
 package com.joshuahalvorson.safeyoutube.Kotlin.view.activity
 
-import android.app.Activity
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
-import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.os.AsyncTask
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.OrientationEventListener
 import android.view.View
@@ -35,7 +33,6 @@ import com.joshuahalvorson.safeyoutube.Kotlin.model.Models
 import com.joshuahalvorson.safeyoutube.Kotlin.network.YoutubeDataApiViewModel
 import com.joshuahalvorson.safeyoutube.R
 import kotlinx.android.synthetic.main.activity_watch_playlist.*
-
 import kotlinx.io.IOException
 import java.util.*
 
@@ -133,7 +130,7 @@ class WatchPlaylistActivity : AppCompatActivity() {
 
         val orientationEventListener = object : OrientationEventListener(applicationContext, SensorManager.SENSOR_DELAY_UI) {
             override fun onOrientationChanged(orientation: Int) {
-                if(orientation <= 10){
+                if (orientation <= 10) {
                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
                 }
             }
@@ -179,9 +176,9 @@ class WatchPlaylistActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }else{
+        } else {
             super.onBackPressed()
         }
     }
@@ -191,12 +188,12 @@ class WatchPlaylistActivity : AppCompatActivity() {
         private var lastError: Exception? = null
 
         override fun doInBackground(vararg params: String): ArrayList<PlaylistItem>? {
-            try {
-                return getDataFromApi(params[0])
+            return try {
+                getDataFromApi(params[0])
             } catch (e: Exception) {
                 lastError = e
                 cancel(true)
-                return null
+                null
             }
 
         }
@@ -241,16 +238,14 @@ class WatchPlaylistActivity : AppCompatActivity() {
         override fun onCancelled() {
             //mProgress.hide()
             if (lastError != null) {
-                if (lastError is GooglePlayServicesAvailabilityIOException) {
-                    showGooglePlayServicesAvailabilityErrorDialog(
+                when (lastError) {
+                    is GooglePlayServicesAvailabilityIOException -> showGooglePlayServicesAvailabilityErrorDialog(
                             (lastError as GooglePlayServicesAvailabilityIOException)
                                     .connectionStatusCode)
-                } else if (lastError is UserRecoverableAuthIOException) {
-                    startActivityForResult(
+                    is UserRecoverableAuthIOException -> startActivityForResult(
                             (lastError as UserRecoverableAuthIOException).intent,
                             1003)
-                } else {
-                    Toast.makeText(applicationContext, "The following error occurred:\n" + lastError!!.message, Toast.LENGTH_LONG).show()
+                    else -> Toast.makeText(applicationContext, "The following error occurred:\n" + lastError!!.message, Toast.LENGTH_LONG).show()
                 }
             } else {
                 Toast.makeText(applicationContext, "Request cancelled.", Toast.LENGTH_LONG).show()
@@ -270,15 +265,14 @@ class WatchPlaylistActivity : AppCompatActivity() {
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
-        if (newConfig?.orientation == Configuration.ORIENTATION_LANDSCAPE){
+        if (newConfig?.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             mYoutubePlayer?.setFullscreen(true)
             hideSystemUI()
-        }else{
+        } else {
             mYoutubePlayer?.setFullscreen(false)
             showSystemUI()
         }
     }
-
 
     private fun hideSystemUI() {
         // Enables regular immersive mode.

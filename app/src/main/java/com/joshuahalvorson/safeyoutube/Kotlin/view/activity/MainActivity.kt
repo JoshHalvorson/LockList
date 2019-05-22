@@ -11,7 +11,7 @@ import com.joshuahalvorson.safeyoutube.Kotlin.view.fragment.PlaylistsListFragmen
 import com.joshuahalvorson.safeyoutube.R
 
 class MainActivity : AppCompatActivity() {
-    var isLoggedIn = false
+    private var isLoggedIn = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

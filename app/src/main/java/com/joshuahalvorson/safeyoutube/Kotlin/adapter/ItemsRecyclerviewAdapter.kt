@@ -11,7 +11,6 @@ import com.bumptech.glide.Glide
 import com.joshuahalvorson.safeyoutube.Kotlin.model.Models
 import com.joshuahalvorson.safeyoutube.R
 
-
 class ItemsRecyclerviewAdapter(
         private val items: List<Models.Item>, private val callback: OnVideoClicked
 ) : RecyclerView.Adapter<ItemsRecyclerviewAdapter.ViewHolder>() {
