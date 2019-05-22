@@ -15,11 +15,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Kotlin.view.activity.WatchPlaylistActivity"
+            android:name=".kotlin.view.activity.WatchPlaylistActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_watch_playlist"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Kotlin.view.activity.MainActivity">
+        <activity android:name=".kotlin.view.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
