@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.joshuahalvorson.safeyoutube.R
 import com.joshuahalvorson.safeyoutube.adapter.ItemsRecyclerviewAdapter
@@ -60,6 +61,7 @@ class WatchPlaylistActivity : AppCompatActivity() {
         })
 
         videos_list.layoutManager = LinearLayoutManager(applicationContext)
+        videos_list.addItemDecoration(DividerItemDecoration(applicationContext, LinearLayoutManager.VERTICAL))
         videos_list.adapter = itemAdapter
 
         val liveData = viewModel.getPlaylistOverview(playlistId)
