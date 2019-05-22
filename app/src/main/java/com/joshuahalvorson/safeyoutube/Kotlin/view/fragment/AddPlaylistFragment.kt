@@ -1,12 +1,7 @@
 package com.joshuahalvorson.safeyoutube.Kotlin.view.fragment
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
-import android.arch.persistence.room.Room
 import android.content.DialogInterface
 import android.os.Bundle
-import android.support.constraint.ConstraintLayout
-import android.support.v4.app.DialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,13 +9,17 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.room.Room
 import com.joshuahalvorson.safeyoutube.Kotlin.database.Playlist
 import com.joshuahalvorson.safeyoutube.Kotlin.database.PlaylistDatabase
 import com.joshuahalvorson.safeyoutube.Kotlin.model.Models
 import com.joshuahalvorson.safeyoutube.Kotlin.network.YoutubeDataApiViewModel
 import com.joshuahalvorson.safeyoutube.R
 
-class AddPlaylistFragment : DialogFragment() {
+class AddPlaylistFragment : androidx.fragment.app.DialogFragment() {
     private var onDismissListener: DialogInterface.OnDismissListener? = null
     val PLAYLIST_URL_KEY = "playlist_url"
     val SHOW_FRAG_KEY = "show_frag"

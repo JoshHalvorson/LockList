@@ -2,9 +2,9 @@ package com.joshuahalvorson.safeyoutube.Kotlin.view.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import com.facebook.stetho.Stetho
 import com.joshuahalvorson.safeyoutube.Kotlin.view.fragment.LoginFragment
 import com.joshuahalvorson.safeyoutube.Kotlin.view.fragment.PlaylistsListFragment

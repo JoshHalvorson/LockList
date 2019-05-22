@@ -1,7 +1,7 @@
 package com.joshuahalvorson.safeyoutube.Kotlin.network
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.joshuahalvorson.safeyoutube.Kotlin.model.Models.PlaylistResultOverview
 import com.joshuahalvorson.safeyoutube.Kotlin.model.Models.VideoInfo
 

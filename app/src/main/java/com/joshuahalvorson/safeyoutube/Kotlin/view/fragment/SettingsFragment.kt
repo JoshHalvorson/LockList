@@ -4,21 +4,19 @@ import android.Manifest
 import android.accounts.AccountManager
 import android.app.Activity
 import android.app.UiModeManager
-import android.arch.persistence.room.Room
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import android.widget.SeekBar
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.room.Room
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
@@ -33,7 +31,7 @@ import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import java.util.*
 
-class SettingsFragment : Fragment() {
+class SettingsFragment : androidx.fragment.app.Fragment() {
     lateinit var googleAccountCredential: GoogleAccountCredential
 
     internal val REQUEST_ACCOUNT_PICKER = 1000
@@ -59,7 +57,7 @@ class SettingsFragment : Fragment() {
             current_theme_text.text = "Day"
         }
 
-        day_night_switch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
+        day_night_switch.setOnCheckedChangeListener { buttonView, isChecked ->
             //TODO: add logic to switch day night mode
             if (isChecked) {
                 current_theme_text.text = "Night"
@@ -80,7 +78,7 @@ class SettingsFragment : Fragment() {
                     editor?.apply()
                 }
             }
-        })
+        }
 
         change_password_button.setOnClickListener {
             val changePasswordFragment = ChangePasswordFragment()

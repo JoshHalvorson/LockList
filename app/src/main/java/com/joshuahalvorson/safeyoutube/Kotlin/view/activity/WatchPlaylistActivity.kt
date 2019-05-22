@@ -1,6 +1,5 @@
 package com.joshuahalvorson.safeyoutube.Kotlin.view.activity
 
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
@@ -8,11 +7,12 @@ import android.content.res.Configuration
 import android.hardware.SensorManager
 import android.os.AsyncTask
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
 import android.view.OrientationEventListener
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
@@ -118,7 +118,7 @@ class WatchPlaylistActivity : AppCompatActivity() {
         } else {
             //when not logged in, user network call method
             val liveData = viewModel.getPlaylistOverview(playlistId)
-            liveData?.observe(this, android.arch.lifecycle.Observer { playlistResultOverview ->
+            liveData?.observe(this, androidx.lifecycle.Observer { playlistResultOverview ->
                 if (playlistResultOverview != null) {
                     videos_list.adapter = itemAdapter
                     items.addAll(playlistResultOverview.items)

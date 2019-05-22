@@ -1,21 +1,20 @@
 package com.joshuahalvorson.safeyoutube.Kotlin.view.fragment
 
-import android.arch.persistence.room.Room
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.room.Room
 import com.joshuahalvorson.safeyoutube.Kotlin.adapter.PlaylistsListRecyclerviewAdapter
 import com.joshuahalvorson.safeyoutube.Kotlin.database.Playlist
 import com.joshuahalvorson.safeyoutube.Kotlin.database.PlaylistDatabase
 import com.joshuahalvorson.safeyoutube.R
 import kotlinx.android.synthetic.main.fragment_remove_playlist.*
 
-class RemovePlaylistFragment : Fragment() {
+class RemovePlaylistFragment : androidx.fragment.app.Fragment() {
     private lateinit var adapter: PlaylistsListRecyclerviewAdapter
     private lateinit var db: PlaylistDatabase
 
