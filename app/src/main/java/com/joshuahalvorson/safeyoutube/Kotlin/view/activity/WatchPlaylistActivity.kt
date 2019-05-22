@@ -4,11 +4,15 @@ import android.app.Activity
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.pm.ActivityInfo
 import android.content.res.Configuration
+import android.hardware.Sensor
+import android.hardware.SensorManager
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager
+import android.view.OrientationEventListener
 import android.view.View
 import android.widget.Toast
 import com.google.android.gms.common.GoogleApiAvailability
@@ -65,7 +69,7 @@ class WatchPlaylistActivity : AppCompatActivity() {
         }
 
         override fun onError(p0: YouTubePlayer.ErrorReason?) {
-            var toastText = ""
+            var toastText = p0.toString()
             when (p0.toString()) {
                 "INTERNAL_ERROR" -> toastText = "Can't play this playlist, make sure it's not private on youtube"
                 "NOT_PLAYABLE" -> toastText = "Private videos can't be played"
@@ -126,6 +130,18 @@ class WatchPlaylistActivity : AppCompatActivity() {
                 }
             })
         }
+
+        val orientationEventListener = object : OrientationEventListener(applicationContext, SensorManager.SENSOR_DELAY_UI) {
+            override fun onOrientationChanged(orientation: Int) {
+                if(orientation <= 10){
+                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                }
+            }
+        }
+
+        if (orientationEventListener.canDetectOrientation()) {
+            orientationEventListener.enable()
+        }
     }
 
     override fun onResume() {
@@ -160,6 +176,14 @@ class WatchPlaylistActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    override fun onBackPressed() {
+        if(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }else{
+            super.onBackPressed()
+        }
     }
 
     private inner class GetPlaylistItemsTask : AsyncTask<String, Void, ArrayList<PlaylistItem>>() {
@@ -247,9 +271,29 @@ class WatchPlaylistActivity : AppCompatActivity() {
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
         if (newConfig?.orientation == Configuration.ORIENTATION_LANDSCAPE){
-           mYoutubePlayer?.setFullscreen(true)
+            mYoutubePlayer?.setFullscreen(true)
+            hideSystemUI()
         }else{
             mYoutubePlayer?.setFullscreen(false)
+            showSystemUI()
         }
     }
+
+
+    private fun hideSystemUI() {
+        // Enables regular immersive mode.
+        // For "lean back" mode, remove SYSTEM_UI_FLAG_IMMERSIVE.
+        // Or for "sticky immersive," replace it with SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
+                // Hide the nav bar and status bar
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_FULLSCREEN)
+    }
+
+    // Shows the system bars by removing all the flags
+// except for the ones that make the content appear under the system bars.
+    private fun showSystemUI() {
+        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
+    }
+
 }
