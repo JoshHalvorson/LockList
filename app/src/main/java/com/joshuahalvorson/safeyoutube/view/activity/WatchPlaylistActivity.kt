@@ -94,7 +94,7 @@ class WatchPlaylistActivity : AppCompatActivity() {
 
             override fun onStateChange(youTubePlayer: com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer, state: PlayerConstants.PlayerState) {
                 when (state) {
-                    ENDED -> onReady(youTubePlayer)
+                    ENDED -> videoIds[counter.increment()].contentDetails?.videoId.let { youTubePlayer.loadVideo(it.toString(), 0F) }
                     else -> return
                 }
             }
