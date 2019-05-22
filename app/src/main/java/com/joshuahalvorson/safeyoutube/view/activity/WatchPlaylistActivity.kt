@@ -22,6 +22,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstan
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants.PlayerState.ENDED
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.ui.PlayerUiController
 import kotlinx.android.synthetic.main.activity_watch_playlist.*
 import java.util.*
 
@@ -33,6 +34,8 @@ class WatchPlaylistActivity : AppCompatActivity() {
     private lateinit var itemAdapter: ItemsRecyclerviewAdapter
     private lateinit var counter: Counter
     private lateinit var playerController: YoutubePlayerController
+    private lateinit var uiController: PlayerUiController
+    //private lateinit var youtubePlayerView: YouTubePlayerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +47,10 @@ class WatchPlaylistActivity : AppCompatActivity() {
 
         val youtubePlayerView = findViewById<YouTubePlayerView>(R.id.youtube_player_view)
         lifecycle.addObserver(youtubePlayerView)
+        uiController = youtubePlayerView.getPlayerUiController()
+
+        uiController.showMenuButton(false)
+        uiController.showYouTubeButton(false)
 
         itemAdapter = ItemsRecyclerviewAdapter(items, object : ItemsRecyclerviewAdapter.OnVideoClicked {
             override fun onVideoClicked(itemIndex: Int) {
@@ -98,13 +105,6 @@ class WatchPlaylistActivity : AppCompatActivity() {
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-        sharedPref = getSharedPreferences(
-                getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        ageValue = sharedPref?.getInt(getString(R.string.age_range_key), 1)
-    }
-
     override fun onBackPressed() {
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -123,7 +123,7 @@ class WatchPlaylistActivity : AppCompatActivity() {
     }
 
     private fun hideSystemUI() {
-        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
+        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                 or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_FULLSCREEN)
     }
