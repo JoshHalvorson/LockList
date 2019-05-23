@@ -1,6 +1,5 @@
 package com.joshuahalvorson.safeyoutube.view.activity
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
@@ -36,7 +35,6 @@ class WatchPlaylistActivity : AppCompatActivity() {
     private lateinit var counter: Counter
     private lateinit var playerController: YoutubePlayerController
     private lateinit var uiController: PlayerUiController
-    //private lateinit var youtubePlayerView: YouTubePlayerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,8 +53,10 @@ class WatchPlaylistActivity : AppCompatActivity() {
 
         itemAdapter = ItemsRecyclerviewAdapter(items, object : ItemsRecyclerviewAdapter.OnVideoClicked {
             override fun onVideoClicked(itemIndex: Int) {
-                counter = Counter(0, itemIndex + 1, items.size)
-                items[itemIndex].contentDetails?.videoId?.let { playerController.playVideo(it) }
+                counter = Counter(0, itemIndex, items.size - 1)
+                items[itemIndex].contentDetails?.videoId?.let {
+                    playerController.playVideo(it)
+                }
             }
         })
 
@@ -68,7 +68,7 @@ class WatchPlaylistActivity : AppCompatActivity() {
         liveData?.observe(this, androidx.lifecycle.Observer { playlistResultOverview ->
             if (playlistResultOverview != null) {
                 items.addAll(playlistResultOverview.items)
-                counter = Counter(0, 0, items.size)
+                counter = Counter(0, 0, items.size - 1)
                 itemAdapter.notifyDataSetChanged()
                 initializeYoutubePlayer(youtubePlayerView, items)
             }
@@ -90,13 +90,13 @@ class WatchPlaylistActivity : AppCompatActivity() {
     private fun initializeYoutubePlayer(youtubePlayer: YouTubePlayerView, videoIds: ArrayList<Models.Item>) {
         youtubePlayer.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
             override fun onReady(youTubePlayer: com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer) {
-                videoIds[counter.increment()].contentDetails?.videoId.let { youTubePlayer.loadVideo(it.toString(), 0F) }
+                videoIds[0].let { youTubePlayer.loadVideo(it.contentDetails?.videoId.toString(), 0F) }
                 playerController = YoutubePlayerController(youTubePlayer)
             }
 
             override fun onStateChange(youTubePlayer: com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer, state: PlayerConstants.PlayerState) {
                 when (state) {
-                    ENDED -> videoIds[counter.increment()].contentDetails?.videoId.let { youTubePlayer.loadVideo(it.toString(), 0F) }
+                    ENDED -> { youTubePlayer.loadVideo(videoIds[counter.increment()].contentDetails?.videoId.toString(), 0F) }
                     else -> return
                 }
             }
