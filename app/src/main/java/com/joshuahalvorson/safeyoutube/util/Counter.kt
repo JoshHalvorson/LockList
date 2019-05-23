@@ -8,4 +8,8 @@ class Counter(private val start: Int, private var current: Int, private val maxV
         current = start
         return current
     }
+
+    fun getCurrent(): Int {
+        return current
+    }
 }
