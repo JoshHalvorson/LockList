@@ -149,6 +149,7 @@ class SettingsActivity : AppCompatActivity() {
         }
         supportFragmentManager.beginTransaction()
                 .replace(R.id.select_playlist_fragment_container, playlistsFrag)
+                .addToBackStack("")
                 .commit()
     }
 
