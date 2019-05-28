@@ -7,7 +7,8 @@ import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.hardware.SensorManager
 import android.os.Bundle
-import android.view.*
+import android.view.OrientationEventListener
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
@@ -31,8 +32,6 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTube
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.ui.PlayerUiController
 import kotlinx.android.synthetic.main.activity_watch_playlist.*
 import java.util.*
-import android.view.WindowManager
-import android.os.Build
 
 class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissListener {
     override fun onDismiss(dialog: DialogInterface?) {
@@ -64,7 +63,7 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
         uiController = youtubePlayerView.getPlayerUiController()
         uiController.showMenuButton(false)
         uiController.showYouTubeButton(false)
-        youtubePlayerView.addFullScreenListener(object: YouTubePlayerFullScreenListener{
+        youtubePlayerView.addFullScreenListener(object : YouTubePlayerFullScreenListener {
             override fun onYouTubePlayerEnterFullScreen() {
                 settings_fab.hide()
             }
@@ -108,7 +107,7 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
         super.onResume()
         hideSystemUI()
         val currentPlaylistId = sharedPref?.getString(getString(R.string.current_playlist_key), null)
-        if(currentPlaylistId != null){
+        if (currentPlaylistId != null) {
             val liveData = viewModel.getPlaylistOverview(currentPlaylistId)
             liveData?.observe(this, androidx.lifecycle.Observer { playlistResultOverview ->
                 if (playlistResultOverview != null) {
@@ -117,7 +116,7 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
                     counter = Counter(0, 0, items.size - 1)
                     itemAdapter.notifyDataSetChanged()
 
-                    youtube_player_view.getYouTubePlayerWhenReady(object: YouTubePlayerCallback{
+                    youtube_player_view.getYouTubePlayerWhenReady(object : YouTubePlayerCallback {
                         override fun onYouTubePlayer(youTubePlayer: YouTubePlayer) {
                             counter = Counter(0, 0, items.size - 1)
                             youtube_player_view.visibility = View.VISIBLE
@@ -135,7 +134,9 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
         youtubePlayer.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
             override fun onStateChange(youTubePlayer: YouTubePlayer, state: PlayerConstants.PlayerState) {
                 when (state) {
-                    ENDED -> { youTubePlayer.loadVideo(items[counter.increment()].contentDetails?.videoId.toString(), 0F) }
+                    ENDED -> {
+                        youTubePlayer.loadVideo(items[counter.increment()].contentDetails?.videoId.toString(), 0F)
+                    }
                     else -> return
                 }
             }

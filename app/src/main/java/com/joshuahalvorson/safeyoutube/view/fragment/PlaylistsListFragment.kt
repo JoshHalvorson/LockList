@@ -2,7 +2,6 @@ package com.joshuahalvorson.safeyoutube.view.fragment
 
 import android.content.Context
 import android.content.DialogInterface
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.AsyncTask
 import android.os.Bundle
@@ -27,7 +26,6 @@ import com.joshuahalvorson.safeyoutube.R
 import com.joshuahalvorson.safeyoutube.adapter.PlaylistsListRecyclerviewAdapter
 import com.joshuahalvorson.safeyoutube.database.Playlist
 import com.joshuahalvorson.safeyoutube.database.PlaylistDatabase
-import com.joshuahalvorson.safeyoutube.view.activity.WatchPlaylistActivity
 import kotlinx.android.synthetic.main.fragment_playlists_list.*
 import kotlinx.io.IOException
 import java.util.*
@@ -57,10 +55,6 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
         val ids = activity?.getPreferences(Context.MODE_PRIVATE)?.getString(getString(R.string.account_playlists_key), "")?.split(", ")
         adapter = PlaylistsListRecyclerviewAdapter(false, playlists, object : PlaylistsListRecyclerviewAdapter.OnListItemClick {
             override fun onListItemClick(playlist: Playlist?) {
-                /*val intent = Intent(activity, WatchPlaylistActivity::class.java).apply {
-                    putExtra("playlist_id_key", playlist?.playlistId)
-                }
-                startActivity(intent)*/
                 val editor = sharedPref.edit()
                 editor?.putString(getString(R.string.current_playlist_key), playlist?.playlistId)
                 editor?.apply()

@@ -9,11 +9,11 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
@@ -81,7 +81,7 @@ class SettingsActivity : AppCompatActivity() {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     val uiModeManager = getSystemService<UiModeManager>(UiModeManager::class.java)
                     uiModeManager?.nightMode = UiModeManager.MODE_NIGHT_YES
-                    val editor = sharedPref?.edit()
+                    val editor = sharedPref.edit()
                     editor?.putInt(getString(R.string.dark_mode_key), 2)
                     editor?.apply()
                 }
@@ -90,7 +90,7 @@ class SettingsActivity : AppCompatActivity() {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     val uiModeManager = getSystemService<UiModeManager>(UiModeManager::class.java)
                     uiModeManager?.nightMode = UiModeManager.MODE_NIGHT_NO
-                    val editor = sharedPref?.edit()
+                    val editor = sharedPref.edit()
                     editor?.putInt(getString(R.string.dark_mode_key), 1)
                     editor?.apply()
                 }
@@ -113,7 +113,7 @@ class SettingsActivity : AppCompatActivity() {
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                val editor: SharedPreferences.Editor? = sharedPref?.edit()
+                val editor: SharedPreferences.Editor? = sharedPref.edit()
                 editor?.putInt("age_range", seekBar?.progress!!)
                 editor?.apply()
             }
@@ -139,7 +139,7 @@ class SettingsActivity : AppCompatActivity() {
                 .setBackOff(ExponentialBackOff())
 
         checkLogIn()
-        
+
     }
 
     private fun launchPlaylistsListFragment(bundle: Bundle?) {
