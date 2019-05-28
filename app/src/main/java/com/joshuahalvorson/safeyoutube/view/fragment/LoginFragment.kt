@@ -1,6 +1,8 @@
 package com.joshuahalvorson.safeyoutube.view.fragment
 
 import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.joshuahalvorson.safeyoutube.R
+import com.joshuahalvorson.safeyoutube.view.activity.SettingsActivity
 import kotlinx.android.synthetic.main.fragment_login.*
 
 class LoginFragment : androidx.fragment.app.DialogFragment() {
@@ -53,14 +56,20 @@ class LoginFragment : androidx.fragment.app.DialogFragment() {
     }
 
     private fun startSettingsFragment() {
-        fragmentManager?.beginTransaction()
-                ?.replace(R.id.fragment_container, SettingsFragment())
-                ?.addToBackStack("")
-                ?.commit()
+        val intent = Intent(context, SettingsActivity::class.java)
+        startActivity(intent)
         dismiss()
     }
 
     private fun makeToast(toastText: String) {
         Toast.makeText(context, toastText, Toast.LENGTH_LONG).show()
+    }
+
+    override fun onDismiss(dialog: DialogInterface?) {
+        super.onDismiss(dialog)
+        val activity = activity
+        if (activity is DialogInterface.OnDismissListener) {
+            (activity as DialogInterface.OnDismissListener).onDismiss(dialog)
+        }
     }
 }

@@ -21,14 +21,23 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/remove_single_playlists"
+        android:id="@+id/select_playlist_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
         android:layout_marginTop="8dp"
-        android:text="Delete a playlist"
+        android:text="Select playlist"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/app_settings_text" />
+
+    <Button
+        android:id="@+id/remove_single_playlists"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:text="Delete a playlist"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/select_playlist_button" />
 
     <Button
         android:id="@+id/clear_cache_button"

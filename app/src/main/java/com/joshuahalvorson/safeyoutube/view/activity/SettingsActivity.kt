@@ -1,4 +1,4 @@
-package com.joshuahalvorson.safeyoutube.view.fragment
+package com.joshuahalvorson.safeyoutube.view.activity
 
 import android.Manifest
 import android.accounts.AccountManager
@@ -9,10 +9,8 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.os.Build
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -24,6 +22,9 @@ import com.google.api.client.util.ExponentialBackOff
 import com.google.api.services.youtube.YouTubeScopes
 import com.joshuahalvorson.safeyoutube.R
 import com.joshuahalvorson.safeyoutube.database.PlaylistDatabase
+import com.joshuahalvorson.safeyoutube.view.fragment.ChangePasswordFragment
+import com.joshuahalvorson.safeyoutube.view.fragment.PlaylistsListFragment
+import com.joshuahalvorson.safeyoutube.view.fragment.RemovePlaylistFragment
 import kotlinx.android.synthetic.main.account_settings_layout.*
 import kotlinx.android.synthetic.main.app_settings_layout.*
 import kotlinx.android.synthetic.main.kids_settings_layout.*
@@ -31,25 +32,41 @@ import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import java.util.*
 
-class SettingsFragment : androidx.fragment.app.Fragment() {
+class SettingsActivity : AppCompatActivity() {
     lateinit var googleAccountCredential: GoogleAccountCredential
+    lateinit var sharedPref: SharedPreferences
 
     internal val REQUEST_ACCOUNT_PICKER = 1000
     internal val REQUEST_AUTHORIZATION = 1001
     internal val REQUEST_GOOGLE_PLAY_SERVICES = 1002
     internal val REQUEST_PERMISSION_GET_ACCOUNTS = 1003
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_settings, container, false)
-    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_settings)
 
+        val intent = intent
+        val action = intent.action
+        val type = intent.type
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val sharedPref = activity?.getSharedPreferences(
+        if (savedInstanceState == null) {
+            if (Intent.ACTION_SEND == action && type != null) {
+                if ("text/plain" == type) {
+                    val bundle = Bundle()
+                    bundle.putString("playlist_url", intent.getStringExtra(Intent.EXTRA_TEXT))
+                    bundle.putBoolean("show_frag", false)
+
+                    launchPlaylistsListFragment(bundle)
+
+                    intent.removeExtra(intent.type)
+                }
+            }
+        }
+
+        sharedPref = getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE)
 
-        if (sharedPref?.getInt(getString(R.string.dark_mode_key), 1) == 2) {
+        if (sharedPref.getInt(getString(R.string.dark_mode_key), 1) == 2) {
             day_night_switch.isChecked = true
             current_theme_text.text = "Night"
         } else {
@@ -62,7 +79,7 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
             if (isChecked) {
                 current_theme_text.text = "Night"
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    val uiModeManager = activity?.getSystemService<UiModeManager>(UiModeManager::class.java)
+                    val uiModeManager = getSystemService<UiModeManager>(UiModeManager::class.java)
                     uiModeManager?.nightMode = UiModeManager.MODE_NIGHT_YES
                     val editor = sharedPref?.edit()
                     editor?.putInt(getString(R.string.dark_mode_key), 2)
@@ -71,7 +88,7 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
             } else {
                 current_theme_text.text = "Day"
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    val uiModeManager = activity?.getSystemService<UiModeManager>(UiModeManager::class.java)
+                    val uiModeManager = getSystemService<UiModeManager>(UiModeManager::class.java)
                     uiModeManager?.nightMode = UiModeManager.MODE_NIGHT_NO
                     val editor = sharedPref?.edit()
                     editor?.putInt(getString(R.string.dark_mode_key), 1)
@@ -82,13 +99,11 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
 
         change_password_button.setOnClickListener {
             val changePasswordFragment = ChangePasswordFragment()
-            changePasswordFragment.show(fragmentManager, "change_password_fragment")
+            changePasswordFragment.show(supportFragmentManager, "change_password_fragment")
         }
 
-        val ageRangeValue = sharedPref?.getInt(getString(R.string.age_range_key), 0)
-        if (ageRangeValue != null) {
-            age_range_seek_bar.progress = ageRangeValue
-        }
+        val ageRangeValue = sharedPref.getInt(getString(R.string.age_range_key), 0)
+        age_range_seek_bar.progress = ageRangeValue
 
         age_range_seek_bar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -109,22 +124,36 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
         }
 
         remove_single_playlists.setOnClickListener {
-            fragmentManager?.beginTransaction()
-                    ?.replace(R.id.fragment_container, RemovePlaylistFragment())
+            supportFragmentManager?.beginTransaction()
+                    ?.replace(R.id.select_playlist_fragment_container, RemovePlaylistFragment())
                     ?.addToBackStack("")
                     ?.commit()
         }
 
+        select_playlist_button.setOnClickListener {
+            launchPlaylistsListFragment(null)
+        }
+
         googleAccountCredential = GoogleAccountCredential.usingOAuth2(
-                context, Arrays.asList(YouTubeScopes.YOUTUBE_READONLY))
+                applicationContext, Arrays.asList(YouTubeScopes.YOUTUBE_READONLY))
                 .setBackOff(ExponentialBackOff())
 
         checkLogIn()
+        
+    }
+
+    private fun launchPlaylistsListFragment(bundle: Bundle?) {
+        val playlistsFrag = PlaylistsListFragment()
+        if (bundle != null) {
+            playlistsFrag.arguments = bundle
+        }
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.select_playlist_fragment_container, playlistsFrag)
+                .commit()
     }
 
     private fun checkLogIn() {
-        val accountName = activity?.getPreferences(Context.MODE_PRIVATE)
-                ?.getString(getString(R.string.account_name_key), null)
+        val accountName = sharedPref.getString(getString(R.string.account_name_key), null)
         if (accountName != null) {
             googleAccountCredential.selectedAccountName = accountName
             log_in_to_youtube_button.text = "Log out of $accountName"
@@ -141,12 +170,11 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun signOut() {
-        val db = Room.databaseBuilder(this.context!!,
+        val db = Room.databaseBuilder(this.applicationContext!!,
                 PlaylistDatabase::class.java, getString(R.string.database_playlist_name)).build()
-        val prefs = activity?.getPreferences(Context.MODE_PRIVATE)
-        val editor = prefs?.edit()
+        val editor = sharedPref.edit()
         editor?.remove(getString(R.string.account_name_key))
-        val ids = prefs?.getString(getString(R.string.account_playlists_key), "")
+        val ids = sharedPref.getString(getString(R.string.account_playlists_key), "")
         val idParts = ids?.split(", ")
         idParts?.forEach {
             Thread(Runnable {
@@ -155,12 +183,12 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
         }
         editor?.apply()
         log_in_to_youtube_button.text = "Log in"
-        Toast.makeText(context, "Logged out", Toast.LENGTH_LONG).show()
+        Toast.makeText(applicationContext, "Logged out", Toast.LENGTH_LONG).show()
         checkLogIn()
     }
 
     private fun showLogOutAlertDialog() {
-        val alertDialogBuilder = AlertDialog.Builder(this.context!!, R.style.AlertDialog)
+        val alertDialogBuilder = AlertDialog.Builder(this@SettingsActivity, R.style.AlertDialog)
         alertDialogBuilder.setMessage("Are you sure you want to log out of ${googleAccountCredential.selectedAccountName}?")
         alertDialogBuilder.setPositiveButton("Yes"
         ) { arg0, arg1 -> signOut() }
@@ -172,7 +200,7 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun showClearPlaylistsAlert() {
-        val alertDialogBuilder = AlertDialog.Builder(this.context!!, R.style.AlertDialog)
+        val alertDialogBuilder = AlertDialog.Builder(this@SettingsActivity, R.style.AlertDialog)
         alertDialogBuilder.setMessage("Are you sure you want to clear saved playlists?")
         alertDialogBuilder.setPositiveButton("Yes"
         ) { arg0, arg1 -> clearDb() }
@@ -184,7 +212,7 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun clearDb() {
-        val db = Room.databaseBuilder(this.context!!,
+        val db = Room.databaseBuilder(this.applicationContext!!,
                 PlaylistDatabase::class.java, getString(R.string.database_playlist_name)).build()
         Thread(Runnable { db.clearAllTables() }).start()
         db.close()
@@ -197,18 +225,18 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
         } else if (googleAccountCredential.selectedAccountName == null) {
             chooseAccount()
         } else if (!isDeviceOnline()) {
-            Toast.makeText(context, "No network connection available.", Toast.LENGTH_LONG).show()
+            Toast.makeText(applicationContext, "No network connection available.", Toast.LENGTH_LONG).show()
         } else {
             log_in_to_youtube_button.text = "Log out of ${googleAccountCredential.selectedAccountName}"
-            Toast.makeText(context, "Logged in to ${googleAccountCredential.selectedAccountName}", Toast.LENGTH_LONG).show()
+            Toast.makeText(applicationContext, "Logged in to ${googleAccountCredential.selectedAccountName}", Toast.LENGTH_LONG).show()
         }
     }
 
     @AfterPermissionGranted(1003)
     private fun chooseAccount() {
         if (EasyPermissions.hasPermissions(
-                        context!!, Manifest.permission.GET_ACCOUNTS)) {
-            val accountName = activity?.getPreferences(Context.MODE_PRIVATE)
+                        applicationContext!!, Manifest.permission.GET_ACCOUNTS)) {
+            val accountName = getPreferences(Context.MODE_PRIVATE)
                     ?.getString(getString(R.string.account_name_key), null)
             if (accountName != null) {
                 googleAccountCredential.selectedAccountName = accountName
@@ -233,7 +261,7 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
         when (requestCode) {
             REQUEST_GOOGLE_PLAY_SERVICES -> if (resultCode != Activity.RESULT_OK) {
                 Toast.makeText(
-                        context,
+                        applicationContext,
                         "This app requires Google Play Services. Please install " + "Google Play Services on your device and relaunch this app.",
                         Toast.LENGTH_LONG).show()
             } else {
@@ -243,8 +271,7 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
                     data.extras != null) {
                 val accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME)
                 if (accountName != null) {
-                    val settings = activity?.getPreferences(Context.MODE_PRIVATE)
-                    val editor = settings?.edit()
+                    val editor = sharedPref.edit()
                     editor?.putString(getString(R.string.account_name_key), accountName)
                     editor?.apply()
                     googleAccountCredential.selectedAccountName = accountName
@@ -274,20 +301,20 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun isDeviceOnline(): Boolean {
-        val connMgr = activity?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connMgr = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo = connMgr.activeNetworkInfo
         return networkInfo != null && networkInfo.isConnected
     }
 
     private fun isGooglePlayServicesAvailable(): Boolean {
         val apiAvailability = GoogleApiAvailability.getInstance()
-        val connectionStatusCode = apiAvailability.isGooglePlayServicesAvailable(context)
+        val connectionStatusCode = apiAvailability.isGooglePlayServicesAvailable(applicationContext)
         return connectionStatusCode == ConnectionResult.SUCCESS
     }
 
     private fun acquireGooglePlayServices() {
         val apiAvailability = GoogleApiAvailability.getInstance()
-        val connectionStatusCode = apiAvailability.isGooglePlayServicesAvailable(context)
+        val connectionStatusCode = apiAvailability.isGooglePlayServicesAvailable(applicationContext)
         if (apiAvailability.isUserResolvableError(connectionStatusCode)) {
             showGooglePlayServicesAvailabilityErrorDialog(connectionStatusCode)
         }
@@ -297,10 +324,9 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
             connectionStatusCode: Int) {
         val apiAvailability = GoogleApiAvailability.getInstance()
         val dialog = apiAvailability.getErrorDialog(
-                activity,
+                this@SettingsActivity,
                 connectionStatusCode,
                 REQUEST_GOOGLE_PLAY_SERVICES)
         dialog.show()
     }
-
 }
