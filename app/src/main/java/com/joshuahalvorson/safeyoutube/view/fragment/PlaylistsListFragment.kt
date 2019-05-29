@@ -52,7 +52,7 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         sharedPref = activity!!.getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        val ids = activity?.getPreferences(Context.MODE_PRIVATE)?.getString(getString(R.string.account_playlists_key), "")?.split(", ")
+        val ids = sharedPref.getString(getString(R.string.account_playlists_key), "")?.split(", ")
         adapter = PlaylistsListRecyclerviewAdapter(false, playlists, object : PlaylistsListRecyclerviewAdapter.OnListItemClick {
             override fun onListItemClick(playlist: Playlist?) {
                 val editor = sharedPref.edit()
