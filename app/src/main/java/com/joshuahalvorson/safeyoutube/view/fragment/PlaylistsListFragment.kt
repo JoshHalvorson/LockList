@@ -58,6 +58,7 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
                 val editor = sharedPref.edit()
                 editor?.putString(getString(R.string.current_playlist_key), playlist?.playlistId)
                 editor?.apply()
+                Toast.makeText(context, "Playlist ${playlist?.playlistName} selected", Toast.LENGTH_LONG).show()
                 fragmentManager?.popBackStack()
             }
         }, ids)
