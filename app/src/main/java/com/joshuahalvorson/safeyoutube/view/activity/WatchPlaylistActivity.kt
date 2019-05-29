@@ -119,7 +119,7 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
                     items.addAll(playlistResultOverview.items)
                     counter = Counter(0, 0, items.size - 1)
                     itemAdapter.notifyDataSetChanged()
-
+                    no_playlist_text.visibility = View.GONE
                     youtube_player_view.getYouTubePlayerWhenReady(object : YouTubePlayerCallback {
                         override fun onYouTubePlayer(youTubePlayer: YouTubePlayer) {
                             counter = Counter(0, 0, items.size - 1)
@@ -134,6 +134,7 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
         }else{
             items.clear()
             youtube_player_view.visibility = View.GONE
+            no_playlist_text.visibility = View.VISIBLE
         }
     }
 
