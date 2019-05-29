@@ -15,6 +15,9 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.facebook.stetho.Stetho
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
+import com.google.api.client.util.ExponentialBackOff
+import com.google.api.services.youtube.YouTubeScopes
 import com.joshuahalvorson.safeyoutube.R
 import com.joshuahalvorson.safeyoutube.adapter.ItemsRecyclerviewAdapter
 import com.joshuahalvorson.safeyoutube.model.Models
@@ -32,6 +35,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTube
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.ui.PlayerUiController
 import kotlinx.android.synthetic.main.activity_watch_playlist.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissListener {
     override fun onDismiss(dialog: DialogInterface?) {
@@ -39,10 +43,10 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
     }
 
     private var items: ArrayList<Models.Item> = ArrayList()
-    private var sharedPref: SharedPreferences? = null
     private var ageValue: Int? = 0
 
     private lateinit var itemAdapter: ItemsRecyclerviewAdapter
+    private lateinit var sharedPref: SharedPreferences
     private lateinit var counter: Counter
     private lateinit var playerController: YoutubePlayerController
     private lateinit var uiController: PlayerUiController
@@ -106,7 +110,7 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
     override fun onResume() {
         super.onResume()
         hideSystemUI()
-        val currentPlaylistId = sharedPref?.getString(getString(R.string.current_playlist_key), null)
+        val currentPlaylistId = sharedPref.getString(getString(R.string.current_playlist_key), null)
         if (currentPlaylistId != null) {
             val liveData = viewModel.getPlaylistOverview(currentPlaylistId)
             liveData?.observe(this, androidx.lifecycle.Observer { playlistResultOverview ->
@@ -127,6 +131,9 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
                     })
                 }
             })
+        }else{
+            items.clear()
+            youtube_player_view.visibility = View.GONE
         }
     }
 
@@ -173,5 +180,10 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
                 or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_FULLSCREEN)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        sharedPref.edit().remove(getString(R.string.current_playlist_key)).apply()
     }
 }

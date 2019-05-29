@@ -185,6 +185,7 @@ class SettingsActivity : AppCompatActivity() {
         editor?.apply()
         log_in_to_youtube_button.text = "Log in"
         Toast.makeText(applicationContext, "Logged out", Toast.LENGTH_LONG).show()
+        sharedPref.edit().remove(getString(R.string.current_playlist_key)).apply()
         checkLogIn()
     }
 
