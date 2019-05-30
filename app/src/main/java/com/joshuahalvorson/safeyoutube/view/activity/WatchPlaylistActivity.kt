@@ -14,10 +14,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.facebook.stetho.Stetho
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
-import com.google.api.client.util.ExponentialBackOff
-import com.google.api.services.youtube.YouTubeScopes
 import com.joshuahalvorson.safeyoutube.R
 import com.joshuahalvorson.safeyoutube.adapter.ItemsRecyclerviewAdapter
 import com.joshuahalvorson.safeyoutube.model.Models
@@ -55,7 +51,6 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_watch_playlist)
-        Stetho.initializeWithDefaults(this)
 
         sharedPref = getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE)
