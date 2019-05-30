@@ -26,6 +26,7 @@ class AddPlaylistFragment : androidx.fragment.app.DialogFragment() {
     private var parentView: ConstraintLayout? = null
 
     private lateinit var db: PlaylistDatabase
+    private lateinit var viewModel: YoutubeDataApiViewModel
 
     fun setOnDismissListener(onDismissListener: DialogInterface.OnDismissListener) {
         this.onDismissListener = onDismissListener
@@ -56,85 +57,56 @@ class AddPlaylistFragment : androidx.fragment.app.DialogFragment() {
         parentView = view.findViewById(R.id.add_playlist_frag_parent)
         val urlEditText = view.findViewById<EditText>(R.id.video_url_edit_text)
         val addPlaylistButton = view.findViewById<Button>(R.id.add_playlist_button)
-        val viewModel = ViewModelProviders.of(this).get(YoutubeDataApiViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(YoutubeDataApiViewModel::class.java)
 
         if (arguments != null) {
             val url = arguments!!.getString(PLAYLIST_URL_KEY)
-            val urlParts = url!!.split("list=".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            val playlistId = urlParts[1]
-            val liveData = viewModel.getPlaylistInfo(playlistId)
-            liveData?.observe(this, Observer<Models.PlaylistResultOverview> { playlistInfo ->
-                if (playlistInfo != null) {
-                    val liveData = viewModel.getPlaylistOverview(playlistId)
-                    liveData?.observe(viewLifecycleOwner, Observer<Models.PlaylistResultOverview> { playlistResultOverview ->
-                        if (playlistResultOverview != null) {
-                            Thread(Runnable {
-                                if (db.playlistDao().getPlaylistById(playlistId)) {
-                                    activity?.runOnUiThread {
-                                        Toast.makeText(context, "Playlist is already added", Toast.LENGTH_LONG).show()
-                                    }
-                                } else {
-                                    val item = playlistInfo.items[0]
-                                    val title = item.snippet?.title
-                                    val results = playlistResultOverview.pageInfo?.totalResults!!
-                                    val thumbnailUrl = item.snippet?.thumbnails?.standard?.url!!
-                                    val status = item.status?.privacyStatus
-
-                                    db.playlistDao().insertAll(Playlist(
-                                            playlistId,
-                                            title,
-                                            results,
-                                            thumbnailUrl,
-                                            status))
-
-                                    dismiss()
-                                }
-                            }).start()
-                        }
-                    })
-                }
-            })
+            addPlaylist(url)
         }
 
         addPlaylistButton?.setOnClickListener {
             if (urlEditText?.text.toString() != "") {
                 val url = urlEditText?.text.toString()
-                val urlParts = url.split("list=".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                val playlistId = urlParts[1]
-                val liveData = viewModel.getPlaylistInfo(playlistId)
-                liveData?.observe(viewLifecycleOwner, Observer<Models.PlaylistResultOverview> { playlistInfo ->
-                    if (playlistInfo != null) {
-                        val liveData = viewModel.getPlaylistOverview(playlistId)
-                        liveData?.observe(viewLifecycleOwner, Observer<Models.PlaylistResultOverview> { playlistResultOverview ->
-                            if (playlistResultOverview != null) {
-                                Thread(Runnable {
-                                    if (db.playlistDao().getPlaylistById(playlistId)) {
-                                        activity?.runOnUiThread {
-                                            Toast.makeText(context, "Playlist is already added", Toast.LENGTH_LONG).show()
-                                        }
-                                    } else {
-                                        val item = playlistInfo.items[0]
-                                        val title = item.snippet?.title
-                                        val results = playlistResultOverview.pageInfo?.totalResults!!
-                                        val thumbnailUrl = item.snippet?.thumbnails?.standard?.url!!
-                                        val status = item.status?.privacyStatus
+                addPlaylist(url)
+            }
+        }
+    }
 
-                                        db.playlistDao().insertAll(Playlist(
-                                                playlistId,
-                                                title,
-                                                results,
-                                                thumbnailUrl,
-                                                status))
-                                    }
+    private fun addPlaylist(url: String?) {
+        val urlParts = url!!.split("list=".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        val playlistId = urlParts[1]
+        val liveData = viewModel.getPlaylistInfo(playlistId)
+        liveData?.observe(this, Observer<Models.PlaylistResultOverview> { playlistInfo ->
+            if (playlistInfo != null) {
+                val liveData = viewModel.getPlaylistOverview(playlistId)
+                liveData?.observe(viewLifecycleOwner, Observer<Models.PlaylistResultOverview> { playlistResultOverview ->
+                    if (playlistResultOverview != null) {
+                        Thread(Runnable {
+                            if (db.playlistDao().getPlaylistById(playlistId)) {
+                                activity?.runOnUiThread {
+                                    Toast.makeText(context, "Playlist is already added", Toast.LENGTH_LONG).show()
+                                }
+                            } else {
+                                val item = playlistInfo.items[0]
+                                val title = item.snippet?.title
+                                val results = playlistResultOverview.pageInfo?.totalResults!!
+                                val thumbnailUrl = item.snippet?.thumbnails?.standard?.url!!
+                                val status = item.status?.privacyStatus
 
-                                    dismiss()
-                                }).start()
+                                db.playlistDao().insertAll(Playlist(
+                                        playlistId,
+                                        title,
+                                        results,
+                                        thumbnailUrl,
+                                        status))
+
+                                dismiss()
                             }
-                        })
+                        }).start()
                     }
                 })
             }
-        }
+        })
     }
 
     override fun onDismiss(dialog: DialogInterface?) {
