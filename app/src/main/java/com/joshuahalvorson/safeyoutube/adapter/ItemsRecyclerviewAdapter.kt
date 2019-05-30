@@ -7,9 +7,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.joshuahalvorson.safeyoutube.R
 import com.joshuahalvorson.safeyoutube.model.Models
+import com.squareup.picasso.Picasso
 
 class ItemsRecyclerviewAdapter(
         private val items: List<Models.Item>, private val callback: OnVideoClicked
@@ -26,7 +26,7 @@ class ItemsRecyclerviewAdapter(
         val item = items[position]
         val name = item.snippet?.title
         viewHolder.videoName.text = name
-        Glide.with(viewHolder.videoThumbnail.context)
+        Picasso.get()
                 .load(item.snippet?.thumbnails?.standard?.url)
                 .into(viewHolder.videoThumbnail)
 

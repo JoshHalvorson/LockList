@@ -8,9 +8,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.joshuahalvorson.safeyoutube.R
 import com.joshuahalvorson.safeyoutube.database.Playlist
+import com.squareup.picasso.Picasso
 
 class PlaylistsListRecyclerviewAdapter(
         private val isDeleting: Boolean,
@@ -30,7 +30,7 @@ class PlaylistsListRecyclerviewAdapter(
         val playlist = playlists.get(position)
         viewHolder.playlistName.text = playlist.playlistName
         viewHolder.playlistVideos.text = "${playlist.playlistVideoCount} videos"
-        Glide.with(viewHolder.playlistThumbnail.context)
+        Picasso.get()
                 .load(playlist.playlistThumbnail)
                 .into(viewHolder.playlistThumbnail)
         if (isDeleting) {
