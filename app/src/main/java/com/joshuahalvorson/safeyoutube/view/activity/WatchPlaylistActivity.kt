@@ -1,5 +1,6 @@
 package com.joshuahalvorson.safeyoutube.view.activity
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.content.SharedPreferences
@@ -7,6 +8,7 @@ import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.util.Log
 import android.view.OrientationEventListener
 import android.view.View
 import android.widget.Toast
@@ -29,7 +31,10 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.You
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerFullScreenListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.ui.PlayerUiController
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_watch_playlist.*
+import io.reactivex.disposables.CompositeDisposable
 
 class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissListener {
     override fun onDismiss(dialog: DialogInterface?) {
@@ -45,10 +50,14 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
     private lateinit var playerController: YoutubePlayerController
     private lateinit var uiController: PlayerUiController
     private lateinit var viewModel: YoutubeDataApiViewModel
+    private lateinit var disposable: CompositeDisposable
 
+    @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_watch_playlist)
+
+        disposable = CompositeDisposable()
 
         sharedPref = getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE)
@@ -98,6 +107,13 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
         if (orientationEventListener.canDetectOrientation()) {
             orientationEventListener.enable()
         }
+
+        viewModel.getPlaylistInfo("PL8mG-RkN2uTx1lbFS8z8wRYS3RrHCp8TG")
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe {
+                    Log.i("asda", it.items[0].snippet?.title)
+                }
     }
 
     override fun onResume() {
@@ -105,30 +121,41 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
         hideSystemUI()
         val currentPlaylistId = sharedPref.getString(getString(R.string.current_playlist_key), null)
         if (currentPlaylistId != null) {
-            val liveData = viewModel.getPlaylistOverview(currentPlaylistId)
-            liveData?.observe(this, androidx.lifecycle.Observer { playlistResultOverview ->
-                if (playlistResultOverview != null) {
-                    items.clear()
-                    items.addAll(playlistResultOverview.items)
-                    counter = Counter(0, 0, items.size - 1)
-                    itemAdapter.notifyDataSetChanged()
-                    no_playlist_text.visibility = View.GONE
-                    youtube_player_view.getYouTubePlayerWhenReady(object : YouTubePlayerCallback {
-                        override fun onYouTubePlayer(youTubePlayer: YouTubePlayer) {
-                            counter = Counter(0, 0, items.size - 1)
-                            youtube_player_view.visibility = View.VISIBLE
-                            items[0].contentDetails?.videoId?.let { youTubePlayer.cueVideo(it, 0F) }
-                            playerController = YoutubePlayerController(youTubePlayer)
-                            initializeYoutubePlayer(youtube_player_view)
-                        }
-                    })
-                }
-            })
+            viewModel.getPlaylistOverview(currentPlaylistId)
+                    ?.subscribeOn(Schedulers.io())
+                    ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.subscribe {
+                        Log.i("asda", it.items[0].snippet?.title)
+                        items.clear()
+                        items.addAll(it.items)
+                        counter = Counter(0, 0, items.size - 1)
+                        itemAdapter.notifyDataSetChanged()
+                        no_playlist_text.visibility = View.GONE
+                        youtube_player_view.getYouTubePlayerWhenReady(object : YouTubePlayerCallback {
+                            override fun onYouTubePlayer(youTubePlayer: YouTubePlayer) {
+                                counter = Counter(0, 0, items.size - 1)
+                                youtube_player_view.visibility = View.VISIBLE
+                                items[0].contentDetails?.videoId?.let { youTubePlayer.cueVideo(it, 0F) }
+                                playerController = YoutubePlayerController(youTubePlayer)
+                                initializeYoutubePlayer(youtube_player_view)
+                            }
+                        })
+                    }?.let { subscribe ->
+                        disposable.add(
+                                subscribe
+                        )
+                    }
+
         } else {
             items.clear()
             youtube_player_view.visibility = View.GONE
             no_playlist_text.visibility = View.VISIBLE
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        disposable.dispose()
     }
 
     private fun initializeYoutubePlayer(youtubePlayer: YouTubePlayerView) {

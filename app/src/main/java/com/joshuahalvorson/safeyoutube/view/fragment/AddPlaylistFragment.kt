@@ -10,14 +10,15 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.room.Room
 import com.joshuahalvorson.safeyoutube.R
 import com.joshuahalvorson.safeyoutube.database.Playlist
 import com.joshuahalvorson.safeyoutube.database.PlaylistDatabase
-import com.joshuahalvorson.safeyoutube.model.Models
 import com.joshuahalvorson.safeyoutube.network.YoutubeDataApiViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 
 class AddPlaylistFragment : androidx.fragment.app.DialogFragment() {
     private var onDismissListener: DialogInterface.OnDismissListener? = null
@@ -27,6 +28,7 @@ class AddPlaylistFragment : androidx.fragment.app.DialogFragment() {
 
     private lateinit var db: PlaylistDatabase
     private lateinit var viewModel: YoutubeDataApiViewModel
+    private lateinit var disposable: CompositeDisposable
 
     fun setOnDismissListener(onDismissListener: DialogInterface.OnDismissListener) {
         this.onDismissListener = onDismissListener
@@ -73,44 +75,55 @@ class AddPlaylistFragment : androidx.fragment.app.DialogFragment() {
     }
 
     private fun addPlaylist(url: String?) {
+        disposable = CompositeDisposable()
         val urlParts = url!!.split("list=".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         val playlistId = urlParts[1]
-        val liveData = viewModel.getPlaylistInfo(playlistId)
-        liveData?.observe(this, Observer<Models.PlaylistResultOverview> { playlistInfo ->
-            if (playlistInfo != null) {
-                val liveData = viewModel.getPlaylistOverview(playlistId)
-                liveData?.observe(viewLifecycleOwner, Observer<Models.PlaylistResultOverview> { playlistResultOverview ->
-                    if (playlistResultOverview != null) {
-                        Thread(Runnable {
-                            if (db.playlistDao().getPlaylistById(playlistId)) {
-                                activity?.runOnUiThread {
-                                    Toast.makeText(context, "Playlist is already added", Toast.LENGTH_LONG).show()
-                                }
-                            } else {
-                                val item = playlistInfo.items[0]
-                                val title = item.snippet?.title
-                                val results = playlistResultOverview.pageInfo?.totalResults!!
-                                val thumbnailUrl = item.snippet?.thumbnails?.standard?.url!!
-                                val status = item.status?.privacyStatus
+        viewModel.getPlaylistInfo(playlistId)
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe { playlistInfo ->
+                    viewModel.getPlaylistOverview(playlistId)
+                            ?.subscribeOn(Schedulers.io())
+                            ?.observeOn(AndroidSchedulers.mainThread())
+                            ?.subscribe { playlistResultOverview ->
+                                Thread(Runnable {
+                                    if (db.playlistDao().getPlaylistById(playlistId)) {
+                                        activity?.runOnUiThread {
+                                            Toast.makeText(context, "Playlist is already added", Toast.LENGTH_LONG).show()
+                                        }
+                                    } else {
+                                        val item = playlistInfo.items[0]
+                                        val title = item.snippet?.title
+                                        val results = playlistResultOverview.pageInfo?.totalResults!!
+                                        val thumbnailUrl = item.snippet?.thumbnails?.standard?.url!!
+                                        val status = item.status?.privacyStatus
 
-                                db.playlistDao().insertAll(Playlist(
-                                        playlistId,
-                                        title,
-                                        results,
-                                        thumbnailUrl,
-                                        status))
+                                        db.playlistDao().insertAll(Playlist(
+                                                playlistId,
+                                                title,
+                                                results,
+                                                thumbnailUrl,
+                                                status))
 
-                                dismiss()
+                                        dismiss()
+                                    }
+                                }).start()
                             }
-                        }).start()
-                    }
-                })
-            }
-        })
+                }?.let { subscribe ->
+                    disposable.add(
+                            subscribe
+                    )
+                }
+
     }
 
     override fun onDismiss(dialog: DialogInterface?) {
         super.onDismiss(dialog)
         onDismissListener?.onDismiss(dialog)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        disposable.dispose()
     }
 }
