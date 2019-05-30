@@ -30,8 +30,6 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.You
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.ui.PlayerUiController
 import kotlinx.android.synthetic.main.activity_watch_playlist.*
-import java.util.*
-import kotlin.collections.ArrayList
 
 class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissListener {
     override fun onDismiss(dialog: DialogInterface?) {
@@ -126,7 +124,7 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
                     })
                 }
             })
-        }else{
+        } else {
             items.clear()
             youtube_player_view.visibility = View.GONE
             no_playlist_text.visibility = View.VISIBLE
