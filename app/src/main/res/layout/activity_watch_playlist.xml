@@ -36,7 +36,7 @@
         app:fabCustomSize="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_settings_black_24dp" />
+        android:focusable="true" app:srcCompat="@drawable/ic_settings_black_24dp" />
 
     <TextView
         android:id="@+id/no_playlist_text"
