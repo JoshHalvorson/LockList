@@ -28,7 +28,6 @@
         app:layout_constraintTop_toBottomOf="@+id/kids_settings" />
 
     <include
-        android:id="@+id/app_settings"
         layout="@layout/app_settings_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
