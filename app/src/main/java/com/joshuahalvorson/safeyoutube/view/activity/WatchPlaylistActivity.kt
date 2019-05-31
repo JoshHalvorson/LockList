@@ -32,9 +32,9 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.You
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.ui.PlayerUiController
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_watch_playlist.*
-import io.reactivex.disposables.CompositeDisposable
 
 class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissListener {
     override fun onDismiss(dialog: DialogInterface?) {
@@ -107,13 +107,6 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
         if (orientationEventListener.canDetectOrientation()) {
             orientationEventListener.enable()
         }
-
-        viewModel.getPlaylistInfo("PL8mG-RkN2uTx1lbFS8z8wRYS3RrHCp8TG")
-                ?.subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe {
-                    Log.i("asda", it.items[0].snippet?.title)
-                }
     }
 
     override fun onResume() {

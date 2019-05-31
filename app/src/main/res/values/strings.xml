@@ -10,6 +10,37 @@
     <string name="account_playlists_key">account_playlists</string>
     <string name="account_name_key">account_name</string>
     <string name="current_playlist_key">current_playlist</string>
+    <string name="log_in_to_youtube_button_text">Log in to youtube</string>
+    <string name="change_local_account_password_button_text">Change local account password</string>
+    <string name="account_settings_textview_text">Account Settings</string>
+    <string name="no_playlist_textview_text">No playlist selected, enter the settings to add one</string>
+    <string name="app_settings_textview_text">App Settings</string>
+    <string name="select_playlist_button_text">Select playlist</string>
+    <string name="delete_a_playlist_button_text">Delete a playlist</string>
+    <string name="delete_all_playlists_button_text">Delete all playlists</string>
+    <string name="current_theme_textview_text">Day</string>
+    <string name="add_a_playlist_textview_text">Add a playlist</string>
+    <string name="paste_playlist_url_hint_text">Paste playlist URL</string>
+    <string name="add_playlist_button_text">Add playlist</string>
+    <string name="change_password_textview_text">Change password</string>
+    <string name="old_password_textview_text">Old password</string>
+    <string name="old_password_edittext_hint_text">Old password</string>
+    <string name="new_password_textview_text">New password</string>
+    <string name="new_password_edittext_hint_text">New password</string>
+    <string name="change_password_button_text">change password</string>
+    <string name="enter_your_password_textview_text">Enter your password</string>
+    <string name="enter_password_edittext_hint_text">Enter password</string>
+    <string name="confirm_password_edittext_hint_text">Confirm password</string>
+    <string name="sign_in_button_text">Sign in</string>
+    <string name="kids_settings_textview_text">Kids Settings</string>
+    <string name="age_range_textview_text">Age Range</string>
+    <string name="seekbar_5_and_under_textview_text">5 and under</string>
+    <string name="seekbar_11_and_up_textview_text">11+</string>
+    <string name="video_thumbnail_imageview_content_description">video thumbnail</string>
+    <string name="playlist_thumbnail_imageview_content_description">playlist thumbnail</string>
+    <string name="delete_playlist_button_imagebutton_content_description">delete playlist button</string>
+    <string name="playlist_status_image_content_description">playlist status image</string>
+    <string name="user_playlist_image_content_description">user playlist image</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

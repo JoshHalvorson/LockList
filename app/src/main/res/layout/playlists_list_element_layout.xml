@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/playlist_item_parent"
@@ -14,16 +13,16 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:adjustViewBounds="true"
+        android:contentDescription="@string/playlist_thumbnail_imageview_content_description"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="TODO" tools:srcCompat="@tools:sample/avatars" />
+        tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/playlists_list_element_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:text="TextView"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,7 +34,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:text="TextView"
         app:layout_constraintStart_toEndOf="@+id/playlist_thumbnail"
         app:layout_constraintTop_toBottomOf="@+id/playlists_list_element_name" />
 
@@ -46,7 +44,8 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:background="#00FFFFFF"
-        android:contentDescription="TODO" android:src="@drawable/ic_delete_forever_black_24dp"
+        android:contentDescription="@string/delete_playlist_button_imagebutton_content_description"
+        android:src="@drawable/ic_delete_forever_black_24dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -58,7 +57,8 @@
         android:layout_marginStart="15dp"
         android:adjustViewBounds="true"
         android:background="#00FFFFFF"
-        android:contentDescription="TODO" android:src="@drawable/ic_playlist_unlisted"
+        android:contentDescription="@string/playlist_status_image_content_description"
+        android:src="@drawable/ic_playlist_unlisted"
         android:visibility="visible"
         app:layout_constraintStart_toEndOf="@+id/playlist_thumbnail"
         app:layout_constraintTop_toBottomOf="@+id/playlist_videos" />
@@ -70,7 +70,8 @@
         android:layout_marginStart="8dp"
         android:adjustViewBounds="true"
         android:background="#00FFFFFF"
-        android:contentDescription="TODO" android:src="@drawable/ic_person_outline_black_24dp"
+        android:contentDescription="@string/user_playlist_image_content_description"
+        android:src="@drawable/ic_person_outline_black_24dp"
         android:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/playlist_status_image"
         app:layout_constraintTop_toBottomOf="@+id/playlist_videos" />

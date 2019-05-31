@@ -34,7 +34,7 @@ class ItemsRecyclerviewAdapter(
         private val videoName: TextView = itemView.video_name
         private val videoThumbnail: ImageView = itemView.video_thumbnail
 
-        fun bindModel(item: Models.Item, callback: OnVideoClicked, position: Int){
+        fun bindModel(item: Models.Item, callback: OnVideoClicked, position: Int) {
             val name = item.snippet?.title
             videoName.text = name
             Picasso.get()

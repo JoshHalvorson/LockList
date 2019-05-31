@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/add_playlist_frag_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,7 +13,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Add a playlist"
+        android:text="@string/add_a_playlist_textview_text"
         android:textColor="@android:color/black"
         android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,8 +27,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
-        android:hint="Paste playlist URL"
-        android:inputType="textWebEditText"
+        android:hint="@string/paste_playlist_url_hint_text"
+        android:inputType="textUri"
         android:selectAllOnFocus="false"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textSize="24sp"
@@ -45,7 +43,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Add playlist"
+        android:text="@string/add_playlist_button_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/video_url_edit_text" />

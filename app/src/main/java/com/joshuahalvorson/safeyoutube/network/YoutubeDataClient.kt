@@ -3,7 +3,6 @@ package com.joshuahalvorson.safeyoutube.network
 import com.joshuahalvorson.safeyoutube.model.Models.PlaylistResultOverview
 import com.joshuahalvorson.safeyoutube.model.Models.VideoInfo
 import io.reactivex.Flowable
-import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 

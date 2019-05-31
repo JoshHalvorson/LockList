@@ -12,7 +12,7 @@ class YoutubeDataApiViewModel : ViewModel() {
     private var retrofit: Retrofit? = null
     private var client: YoutubeDataClient? = null
 
-    private fun buildRetrofit(){
+    private fun buildRetrofit() {
         retrofit = Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -22,14 +22,14 @@ class YoutubeDataApiViewModel : ViewModel() {
     }
 
     fun getPlaylistOverview(playlistId: String): Flowable<PlaylistResultOverview>? {
-        if (retrofit == null || client == null){
+        if (retrofit == null || client == null) {
             buildRetrofit()
         }
         return client?.getPlaylistOverview("snippet, status, contentDetails", playlistId, "50", ApiKey.KEY)
     }
 
     fun getPlaylistInfo(playlistId: String): Flowable<PlaylistResultOverview>? {
-        if (retrofit == null || client == null){
+        if (retrofit == null || client == null) {
             buildRetrofit()
         }
         return client?.getPlaylistInfo("snippet, status", playlistId, ApiKey.KEY)

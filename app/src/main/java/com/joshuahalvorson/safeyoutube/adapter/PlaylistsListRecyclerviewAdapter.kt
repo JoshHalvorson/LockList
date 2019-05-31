@@ -42,7 +42,7 @@ class PlaylistsListRecyclerviewAdapter(
         private val playlistStatusImage: ImageView = view.playlist_status_image
         private val userPlaylistImage: ImageView = view.user_playlist_image
 
-        fun bindModel(playlist: Playlist, isDeleting: Boolean, callback: OnListItemClick, ids: List<String>){
+        fun bindModel(playlist: Playlist, isDeleting: Boolean, callback: OnListItemClick, ids: List<String>) {
             playlistName.text = playlist.playlistName
             playlistVideos.text = "${playlist.playlistVideoCount} videos"
             Picasso.get()
