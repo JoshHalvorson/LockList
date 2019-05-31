@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.joshuahalvorson.safeyoutube.R
 import com.joshuahalvorson.safeyoutube.model.Models
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.playlist_items_list_element_layout.view.*
 
 class ItemsRecyclerviewAdapter(
         private val items: List<Models.Item>, private val callback: OnVideoClicked
@@ -23,24 +24,25 @@ class ItemsRecyclerviewAdapter(
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        val item = items[position]
-        val name = item.snippet?.title
-        viewHolder.videoName.text = name
-        Picasso.get()
-                .load(item.snippet?.thumbnails?.standard?.url)
-                .into(viewHolder.videoThumbnail)
-
-        viewHolder.videoParent.setOnClickListener { callback.onVideoClicked(position) }
+        viewHolder.bindModel(items[position], callback)
     }
 
-    override fun getItemCount(): Int {
-        return items.size
-    }
+    override fun getItemCount() = items.size
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val videoParent = itemView.findViewById<ConstraintLayout>(R.id.video_parent)
-        val videoName = itemView.findViewById<TextView>(R.id.video_name)
-        val videoThumbnail = itemView.findViewById<ImageView>(R.id.video_thumbnail)
+        private val videoParent: ConstraintLayout = itemView.video_parent
+        private val videoName: TextView = itemView.video_name
+        private val videoThumbnail: ImageView = itemView.video_thumbnail
+
+        fun bindModel(item: Models.Item, callback: OnVideoClicked){
+            val name = item.snippet?.title
+            videoName.text = name
+            Picasso.get()
+                    .load(item.snippet?.thumbnails?.standard?.url)
+                    .into(videoThumbnail)
+
+            videoParent.setOnClickListener { callback.onVideoClicked(position) }
+        }
     }
 
     interface OnVideoClicked {

@@ -11,12 +11,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.joshuahalvorson.safeyoutube.R
 import com.joshuahalvorson.safeyoutube.database.Playlist
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.playlists_list_element_layout.view.*
 
 class PlaylistsListRecyclerviewAdapter(
         private val isDeleting: Boolean,
         private val playlists: MutableList<Playlist>,
         private val callback: OnListItemClick,
-        private val ids: List<String>?
+        private val ids: List<String>
 ) : RecyclerView.Adapter<PlaylistsListRecyclerviewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, p1: Int): ViewHolder {
@@ -27,44 +28,43 @@ class PlaylistsListRecyclerviewAdapter(
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        val playlist = playlists.get(position)
-        viewHolder.playlistName.text = playlist.playlistName
-        viewHolder.playlistVideos.text = "${playlist.playlistVideoCount} videos"
-        Picasso.get()
-                .load(playlist.playlistThumbnail)
-                .into(viewHolder.playlistThumbnail)
-        if (isDeleting) {
-            viewHolder.deletePlaylistButton.visibility = View.VISIBLE
-            viewHolder.deletePlaylistButton.setOnClickListener { callback.onListItemClick(playlist) }
-        } else {
-            viewHolder.parent.setOnClickListener { callback.onListItemClick(playlist) }
-        }
-
-        when (playlist.privacyStatus) {
-            "public" -> viewHolder.playlistStatusImage.setImageResource(R.drawable.ic_playlist_public)
-            "unlisted" -> viewHolder.playlistStatusImage.setImageResource(R.drawable.ic_playlist_unlisted)
-            "private" -> viewHolder.playlistStatusImage.setImageResource(R.drawable.ic_playlist_private)
-        }
-
-        if (ids != null) {
-            if (ids.contains(playlist.playlistId)) {
-                viewHolder.userPlaylistImage.visibility = View.VISIBLE
-            }
-        }
+        viewHolder.bindModel(playlists[position], isDeleting, callback, ids)
     }
 
-    override fun getItemCount(): Int {
-        return playlists.size
-    }
+    override fun getItemCount() = playlists.size
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val playlistName: TextView = view.findViewById(R.id.playlists_list_element_name)
-        val playlistVideos: TextView = view.findViewById(R.id.playlist_videos)
-        val playlistThumbnail: ImageView = view.findViewById(R.id.playlist_thumbnail)
-        val parent: ConstraintLayout = view.findViewById(R.id.playlist_item_parent)
-        val deletePlaylistButton: ImageButton = view.findViewById(R.id.delete_playlist_button)
-        val playlistStatusImage: ImageView = view.findViewById(R.id.playlist_status_image)
-        val userPlaylistImage: ImageView = view.findViewById(R.id.user_playlist_image)
+        private val parent: ConstraintLayout = view.playlist_item_parent
+        private val playlistName: TextView = view.playlists_list_element_name
+        private val playlistVideos: TextView = view.playlist_videos
+        private val playlistThumbnail: ImageView = view.playlist_thumbnail
+        private val deletePlaylistButton: ImageButton = view.delete_playlist_button
+        private val playlistStatusImage: ImageView = view.playlist_status_image
+        private val userPlaylistImage: ImageView = view.user_playlist_image
+
+        fun bindModel(playlist: Playlist, isDeleting: Boolean, callback: OnListItemClick, ids: List<String>){
+            playlistName.text = playlist.playlistName
+            playlistVideos.text = "${playlist.playlistVideoCount} videos"
+            Picasso.get()
+                    .load(playlist.playlistThumbnail)
+                    .into(playlistThumbnail)
+            if (isDeleting) {
+                deletePlaylistButton.visibility = View.VISIBLE
+                deletePlaylistButton.setOnClickListener { callback.onListItemClick(playlist) }
+            } else {
+                parent.setOnClickListener { callback.onListItemClick(playlist) }
+            }
+
+            when (playlist.privacyStatus) {
+                "public" -> playlistStatusImage.setImageResource(R.drawable.ic_playlist_public)
+                "unlisted" -> playlistStatusImage.setImageResource(R.drawable.ic_playlist_unlisted)
+                "private" -> playlistStatusImage.setImageResource(R.drawable.ic_playlist_private)
+            }
+
+            if (ids.contains(playlist.playlistId)) {
+                userPlaylistImage.visibility = View.VISIBLE
+            }
+        }
     }
 
     interface OnListItemClick {
