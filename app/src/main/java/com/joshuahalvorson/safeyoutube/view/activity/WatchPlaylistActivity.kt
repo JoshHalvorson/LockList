@@ -22,7 +22,7 @@ import com.joshuahalvorson.safeyoutube.model.Models
 import com.joshuahalvorson.safeyoutube.network.YoutubeDataApiViewModel
 import com.joshuahalvorson.safeyoutube.util.Counter
 import com.joshuahalvorson.safeyoutube.view.fragment.LoginFragment
-import com.joshuahalvorson.safeyoutube.youtubeplayer.YoutubePlayerController
+import com.joshuahalvorson.safeyoutube.util.YoutubePlayerController
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants.PlayerState.ENDED
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
