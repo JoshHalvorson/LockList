@@ -15,7 +15,7 @@ import com.joshuahalvorson.safeyoutube.database.PlaylistDatabase
 import kotlinx.android.synthetic.main.fragment_remove_playlist.*
 
 class RemovePlaylistFragment : androidx.fragment.app.Fragment() {
-    private lateinit var adapter: PlaylistsListRecyclerviewAdapter
+    private var adapter: PlaylistsListRecyclerviewAdapter? = null
     private lateinit var db: PlaylistDatabase
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -30,19 +30,21 @@ class RemovePlaylistFragment : androidx.fragment.app.Fragment() {
 
         val ids = activity?.getPreferences(Context.MODE_PRIVATE)?.getString(getString(R.string.account_playlists_key), "")?.split(", ")
 
-        adapter = PlaylistsListRecyclerviewAdapter(true, playlists, object : PlaylistsListRecyclerviewAdapter.OnListItemClick {
-            override fun onListItemClick(playlist: Playlist?) {
-                if (playlist != null) {
-                    Thread(Runnable {
-                        db.playlistDao().delete(playlist)
-                        playlists.remove(playlist)
-                        activity?.runOnUiThread {
-                            adapter.notifyDataSetChanged()
-                        }
-                    }).start()
+        adapter = ids?.let {
+            PlaylistsListRecyclerviewAdapter(true, playlists, object : PlaylistsListRecyclerviewAdapter.OnListItemClick {
+                override fun onListItemClick(playlist: Playlist?) {
+                    if (playlist != null) {
+                        Thread(Runnable {
+                            db.playlistDao().delete(playlist)
+                            playlists.remove(playlist)
+                            activity?.runOnUiThread {
+                                adapter?.notifyDataSetChanged()
+                            }
+                        }).start()
+                    }
                 }
-            }
-        }, ids)
+            }, it)
+        }
 
         playlists_to_remove_list.layoutManager = LinearLayoutManager(context)
         playlists_to_remove_list.addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
@@ -53,7 +55,7 @@ class RemovePlaylistFragment : androidx.fragment.app.Fragment() {
             activity?.runOnUiThread {
                 playlists.clear()
                 playlists.addAll(tempPlaylists)
-                adapter.notifyDataSetChanged()
+                adapter?.notifyDataSetChanged()
             }
         }).start()
     }

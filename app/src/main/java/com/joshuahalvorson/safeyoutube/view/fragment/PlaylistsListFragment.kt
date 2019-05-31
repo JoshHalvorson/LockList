@@ -33,10 +33,10 @@ import kotlin.collections.ArrayList
 
 class PlaylistsListFragment : androidx.fragment.app.Fragment() {
     private var playlists: ArrayList<Playlist> = ArrayList()
-    private lateinit var adapter: PlaylistsListRecyclerviewAdapter
+    private var adapter: PlaylistsListRecyclerviewAdapter? = null
     private var db: PlaylistDatabase? = null
+    private var sharedPref: SharedPreferences? = null
     private lateinit var googleAccountCredential: GoogleAccountCredential
-    private lateinit var sharedPref: SharedPreferences
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -50,18 +50,21 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        sharedPref = activity!!.getSharedPreferences(
+        sharedPref = activity?.getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        val ids = sharedPref.getString(getString(R.string.account_playlists_key), "")?.split(", ")
-        adapter = PlaylistsListRecyclerviewAdapter(false, playlists, object : PlaylistsListRecyclerviewAdapter.OnListItemClick {
-            override fun onListItemClick(playlist: Playlist?) {
-                val editor = sharedPref.edit()
-                editor?.putString(getString(R.string.current_playlist_key), playlist?.playlistId)
-                editor?.apply()
-                Toast.makeText(context, "Playlist ${playlist?.playlistName} selected", Toast.LENGTH_LONG).show()
-                fragmentManager?.popBackStack()
-            }
-        }, ids)
+        val ids =
+                sharedPref?.getString(getString(R.string.account_playlists_key), "")?.split(", ")
+        adapter = ids?.let {
+            PlaylistsListRecyclerviewAdapter(false, playlists, object : PlaylistsListRecyclerviewAdapter.OnListItemClick {
+                override fun onListItemClick(playlist: Playlist?) {
+                    val editor = sharedPref?.edit()
+                    editor?.putString(getString(R.string.current_playlist_key), playlist?.playlistId)
+                    editor?.apply()
+                    Toast.makeText(context, "Playlist ${playlist?.playlistName} selected", Toast.LENGTH_LONG).show()
+                    fragmentManager?.popBackStack()
+                }
+            }, it)
+        }
 
         playlists_list.layoutManager = LinearLayoutManager(context)
         playlists_list.addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
@@ -84,7 +87,7 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
         googleAccountCredential = GoogleAccountCredential.usingOAuth2(
                 context, Arrays.asList(YouTubeScopes.YOUTUBE_READONLY))
                 .setBackOff(ExponentialBackOff())
-        val accountName = sharedPref.getString("account_name", null)
+        val accountName = sharedPref?.getString("account_name", null)
         if (accountName != null) {
             googleAccountCredential.selectedAccountName = accountName
             MakeRequestTask().execute()
@@ -119,7 +122,7 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
                 if (tempPlaylists != null) {
                     playlists.clear()
                     playlists.addAll(tempPlaylists)
-                    adapter.notifyDataSetChanged()
+                    adapter?.notifyDataSetChanged()
                 }
             }
         }).start()
@@ -192,7 +195,7 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
             if (output == null || output.size == 0) {
                 //account playlists already added
             } else {
-                val editor = sharedPref.edit()
+                val editor = sharedPref?.edit()
                 editor?.putString(getString(R.string.account_playlists_key), output.joinToString { it.playlistId })
                 editor?.apply()
 
