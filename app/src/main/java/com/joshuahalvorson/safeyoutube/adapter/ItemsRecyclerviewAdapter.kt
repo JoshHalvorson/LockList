@@ -24,7 +24,7 @@ class ItemsRecyclerviewAdapter(
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        viewHolder.bindModel(items[position], callback)
+        viewHolder.bindModel(items[position], callback, position)
     }
 
     override fun getItemCount() = items.size
@@ -34,7 +34,7 @@ class ItemsRecyclerviewAdapter(
         private val videoName: TextView = itemView.video_name
         private val videoThumbnail: ImageView = itemView.video_thumbnail
 
-        fun bindModel(item: Models.Item, callback: OnVideoClicked){
+        fun bindModel(item: Models.Item, callback: OnVideoClicked, position: Int){
             val name = item.snippet?.title
             videoName.text = name
             Picasso.get()
