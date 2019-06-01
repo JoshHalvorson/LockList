@@ -81,7 +81,7 @@ object Models {
     }
 
     class Thumbnails {
-        var _default: Default? = null
+        var default: Default? = null
         var medium: Medium? = null
         var high: High? = null
         var standard: Standard? = null
