@@ -119,7 +119,6 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
                     ?.subscribeOn(Schedulers.io())
                     ?.observeOn(AndroidSchedulers.mainThread())
                     ?.subscribe {
-                        Log.i("asda", it.items[0].snippet?.title)
                         items.clear()
                         items.addAll(it.items)
                         counter = Counter(0, 0, items.size - 1)
@@ -129,7 +128,7 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
                             override fun onYouTubePlayer(youTubePlayer: YouTubePlayer) {
                                 counter = Counter(0, 0, items.size - 1)
                                 youtube_player_view.visibility = View.VISIBLE
-                                items[0].contentDetails?.videoId?.let { youTubePlayer.cueVideo(it, 0F) }
+                                items[0].contentDetails?.videoId?.let { id -> youTubePlayer.cueVideo(id, 0F) }
                                 playerController = YoutubePlayerController(youTubePlayer)
                                 initializeYoutubePlayer(youtube_player_view)
                             }
