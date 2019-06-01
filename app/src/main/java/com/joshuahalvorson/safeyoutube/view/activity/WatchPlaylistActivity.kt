@@ -93,7 +93,7 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
         })
 
         videos_list.layoutManager = LinearLayoutManager(applicationContext)
-        videos_list.addItemDecoration(DividerItemDecoration(applicationContext, LinearLayoutManager.VERTICAL))
+        //videos_list.addItemDecoration(DividerItemDecoration(applicationContext, LinearLayoutManager.VERTICAL))
         videos_list.adapter = itemAdapter
 
         val orientationEventListener = object : OrientationEventListener(applicationContext, SensorManager.SENSOR_DELAY_UI) {

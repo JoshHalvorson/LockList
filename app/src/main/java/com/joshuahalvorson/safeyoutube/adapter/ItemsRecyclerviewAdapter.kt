@@ -38,7 +38,7 @@ class ItemsRecyclerviewAdapter(
             val name = item.snippet?.title
             videoName.text = name
             Picasso.get()
-                    .load(item.snippet?.thumbnails?.standard?.url)
+                    .load(item.snippet?.thumbnails?.default?.url)
                     .into(videoThumbnail)
 
             videoParent.setOnClickListener { callback.onVideoClicked(position) }

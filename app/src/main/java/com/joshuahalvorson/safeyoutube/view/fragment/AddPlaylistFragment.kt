@@ -97,7 +97,7 @@ class AddPlaylistFragment : androidx.fragment.app.DialogFragment() {
                                             val item = playlistInfo.items[0]
                                             val title = item.snippet?.title
                                             val results = playlistResultOverview.pageInfo?.totalResults
-                                            val thumbnailUrl = item.snippet?.thumbnails?.standard?.url
+                                            val thumbnailUrl = item.snippet?.thumbnails?.default?.url
                                             val status = item.status?.privacyStatus
 
                                             db?.playlistDao()?.insertAll(Playlist(
