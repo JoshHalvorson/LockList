@@ -114,7 +114,7 @@ class SettingsActivity : AppCompatActivity() {
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 val editor: SharedPreferences.Editor? = sharedPref.edit()
-                editor?.putInt("age_range", seekBar?.progress!!)
+                seekBar?.progress?.let { editor?.putInt("age_range", it) }
                 editor?.apply()
             }
         })
@@ -171,7 +171,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun signOut() {
-        val db = Room.databaseBuilder(this.applicationContext!!,
+        val db = Room.databaseBuilder(this.applicationContext,
                 PlaylistDatabase::class.java, getString(R.string.database_playlist_name)).build()
         val editor = sharedPref.edit()
         editor?.remove(getString(R.string.account_name_key))
@@ -214,7 +214,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun clearDb() {
-        val db = Room.databaseBuilder(this.applicationContext!!,
+        val db = Room.databaseBuilder(this.applicationContext,
                 PlaylistDatabase::class.java, getString(R.string.database_playlist_name)).build()
         Thread(Runnable { db.clearAllTables() }).start()
         db.close()
@@ -237,7 +237,7 @@ class SettingsActivity : AppCompatActivity() {
     @AfterPermissionGranted(1003)
     private fun chooseAccount() {
         if (EasyPermissions.hasPermissions(
-                        applicationContext!!, Manifest.permission.GET_ACCOUNTS)) {
+                        applicationContext, Manifest.permission.GET_ACCOUNTS)) {
             val accountName = getPreferences(Context.MODE_PRIVATE)
                     ?.getString(getString(R.string.account_name_key), null)
             if (accountName != null) {

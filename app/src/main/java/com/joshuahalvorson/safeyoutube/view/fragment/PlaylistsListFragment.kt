@@ -45,8 +45,10 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        db = Room.databaseBuilder(this.context!!,
+        db = context?.let {
+            Room.databaseBuilder(it,
                 PlaylistDatabase::class.java, getString(R.string.database_playlist_name)).build()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -75,12 +77,11 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
         }
 
         if (savedInstanceState == null) {
-            if (arguments != null) {
-                val playlistUrl = arguments!!.getString("playlist_url")
-                val showFrag = arguments!!.getBoolean("show_frag")
-                if (playlistUrl != null && !showFrag) {
-                    startAddPlaylistFragment(playlistUrl, showFrag)
-                }
+            val bundle = arguments
+            val playlistUrl = bundle?.getString("playlist_url")
+            val showFrag = bundle?.getBoolean("show_frag")
+            if (playlistUrl != null && showFrag == false) {
+                startAddPlaylistFragment(playlistUrl, showFrag)
             }
         }
 
@@ -169,7 +170,7 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
                     ?.execute()
 
             result?.items?.forEach {
-                if (db?.playlistDao()?.getPlaylistById(it.id)!!) {
+                if (db?.playlistDao()?.getPlaylistById(it.id) == true) {
                     //playlist already in db
                     return tempList
                 } else {

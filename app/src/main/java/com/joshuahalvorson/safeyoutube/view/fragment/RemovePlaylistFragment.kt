@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.fragment_remove_playlist.*
 
 class RemovePlaylistFragment : androidx.fragment.app.Fragment() {
     private var adapter: PlaylistsListRecyclerviewAdapter? = null
-    private lateinit var db: PlaylistDatabase
+    private var db: PlaylistDatabase? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -25,8 +25,10 @@ class RemovePlaylistFragment : androidx.fragment.app.Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val playlists = ArrayList<Playlist>()
-        db = Room.databaseBuilder<PlaylistDatabase>(context!!,
+        db = context?.let {
+            Room.databaseBuilder<PlaylistDatabase>(it,
                 PlaylistDatabase::class.java, getString(R.string.database_playlist_name)).build()
+        }
 
         val ids = activity?.getPreferences(Context.MODE_PRIVATE)?.getString(getString(R.string.account_playlists_key), "")?.split(", ")
 
@@ -35,7 +37,7 @@ class RemovePlaylistFragment : androidx.fragment.app.Fragment() {
                 override fun onListItemClick(playlist: Playlist?) {
                     if (playlist != null) {
                         Thread(Runnable {
-                            db.playlistDao().delete(playlist)
+                            db?.playlistDao()?.delete(playlist)
                             playlists.remove(playlist)
                             activity?.runOnUiThread {
                                 adapter?.notifyDataSetChanged()
@@ -51,10 +53,10 @@ class RemovePlaylistFragment : androidx.fragment.app.Fragment() {
         playlists_to_remove_list.adapter = adapter
 
         Thread(Runnable {
-            val tempPlaylists = db.playlistDao().getAllPlaylists()
+            val tempPlaylists = db?.playlistDao()?.getAllPlaylists()
             activity?.runOnUiThread {
                 playlists.clear()
-                playlists.addAll(tempPlaylists)
+                tempPlaylists?.let { playlists.addAll(it) }
                 adapter?.notifyDataSetChanged()
             }
         }).start()
@@ -62,6 +64,6 @@ class RemovePlaylistFragment : androidx.fragment.app.Fragment() {
 
     override fun onDetach() {
         super.onDetach()
-        db.close()
+        db?.close()
     }
 }
