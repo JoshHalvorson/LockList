@@ -68,9 +68,10 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
             }, it)
         }
 
-        playlists_list.layoutManager = LinearLayoutManager(context)
-        //playlists_list.addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
-        playlists_list.adapter = adapter
+        playlists_list.apply {
+            playlists_list.layoutManager = LinearLayoutManager(context)
+            playlists_list.adapter = adapter
+        }
 
         activity?.findViewById<FloatingActionButton>(R.id.add_playlist_button)?.setOnClickListener {
             startAddPlaylistFragment(null, true)
