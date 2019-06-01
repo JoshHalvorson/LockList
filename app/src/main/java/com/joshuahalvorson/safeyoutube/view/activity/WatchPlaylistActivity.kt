@@ -89,6 +89,7 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
                 items[itemIndex].contentDetails?.videoId?.let {
                     playerController.playVideo(it)
                 }
+                current_video_title_text.text = items[counter.current].snippet?.title
             }
         })
 
@@ -129,6 +130,7 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
                                 counter = Counter(0, 0, items.size - 1)
                                 youtube_player_view.visibility = View.VISIBLE
                                 items[0].contentDetails?.videoId?.let { id -> youTubePlayer.cueVideo(id, 0F) }
+                                items[0].snippet?.title?.let { title -> current_video_title_text.text = title }
                                 playerController = YoutubePlayerController(youTubePlayer)
                                 initializeYoutubePlayer(youtube_player_view)
                             }
@@ -149,6 +151,8 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
     override fun onDestroy() {
         super.onDestroy()
         disposable.dispose()
+        sharedPref.edit().remove(getString(R.string.current_playlist_key)).apply()
+        current_video_title_text.text = ""
     }
 
     private fun initializeYoutubePlayer(youtubePlayer: YouTubePlayerView) {
@@ -157,6 +161,7 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
                 when (state) {
                     ENDED -> {
                         youTubePlayer.loadVideo(items[counter.increment()].contentDetails?.videoId.toString(), 0F)
+                        current_video_title_text.text = items[counter.current].snippet?.title
                     }
                     else -> return
                 }
@@ -196,8 +201,4 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
                 or View.SYSTEM_UI_FLAG_FULLSCREEN)
     }
 
-    override fun onStop() {
-        super.onStop()
-        sharedPref.edit().remove(getString(R.string.current_playlist_key)).apply()
-    }
 }
