@@ -109,11 +109,16 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
         if (orientationEventListener.canDetectOrientation()) {
             orientationEventListener.enable()
         }
+        counter = Counter()
+        loadPlaylist()
     }
 
     override fun onResume() {
         super.onResume()
         hideSystemUI()
+    }
+
+    private fun loadPlaylist(){
         val currentPlaylistId = sharedPref.getString(getString(R.string.current_playlist_key), null)
         if (currentPlaylistId != null) {
             viewModel.getPlaylistOverview(currentPlaylistId)
@@ -122,12 +127,11 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
                     ?.subscribe {
                         items.clear()
                         items.addAll(it.items)
-                        counter = Counter(0, 0, items.size - 1)
                         itemAdapter.notifyDataSetChanged()
                         no_playlist_text.visibility = View.GONE
                         youtube_player_view.getYouTubePlayerWhenReady(object : YouTubePlayerCallback {
                             override fun onYouTubePlayer(youTubePlayer: YouTubePlayer) {
-                                counter = Counter(0, 0, items.size - 1)
+                                counter.maxValue = items.size - 1
                                 youtube_player_view.visibility = View.VISIBLE
                                 items[0].contentDetails?.videoId?.let { id -> youTubePlayer.cueVideo(id, 0F) }
                                 items[0].snippet?.title?.let { title -> current_video_title_text.text = title }
@@ -196,8 +200,8 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
 
     override fun onStop() {
         super.onStop()
-        sharedPref.edit().remove(getString(R.string.current_playlist_key)).apply()
-        current_video_title_text.text = ""
+        //sharedPref.edit().remove(getString(R.string.current_playlist_key)).apply()
+        //current_video_title_text.text = ""
     }
 
     override fun onDestroy() {
