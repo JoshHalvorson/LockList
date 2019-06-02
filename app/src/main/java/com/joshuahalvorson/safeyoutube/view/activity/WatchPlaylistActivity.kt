@@ -148,13 +148,6 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        disposable.dispose()
-        sharedPref.edit().remove(getString(R.string.current_playlist_key)).apply()
-        current_video_title_text.text = ""
-    }
-
     private fun initializeYoutubePlayer(youtubePlayer: YouTubePlayerView) {
         youtubePlayer.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
             override fun onStateChange(youTubePlayer: YouTubePlayer, state: PlayerConstants.PlayerState) {
@@ -201,4 +194,14 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
                 or View.SYSTEM_UI_FLAG_FULLSCREEN)
     }
 
+    override fun onStop() {
+        super.onStop()
+        sharedPref.edit().remove(getString(R.string.current_playlist_key)).apply()
+        current_video_title_text.text = ""
+    }
+
+    override fun onDestroy() {
+        disposable.dispose()
+        super.onDestroy()
+    }
 }
