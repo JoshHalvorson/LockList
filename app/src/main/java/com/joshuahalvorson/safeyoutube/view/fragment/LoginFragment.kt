@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.joshuahalvorson.safeyoutube.R
+import com.joshuahalvorson.safeyoutube.util.SharedPrefsHelper
 import com.joshuahalvorson.safeyoutube.view.activity.SettingsActivity
 import kotlinx.android.synthetic.main.fragment_login.*
 
@@ -21,9 +22,9 @@ class LoginFragment : androidx.fragment.app.DialogFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val sharedPref = activity?.getSharedPreferences(
-                getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        val password = sharedPref?.getString(getString(R.string.account_key), "")
+        val sharedPrefsHelper = SharedPrefsHelper(activity?.getSharedPreferences(
+                SharedPrefsHelper.PREFERENCE_FILE_KEY, Context.MODE_PRIVATE))
+        val password = sharedPrefsHelper.get(SharedPrefsHelper.ACCOUNT_KEY, "")
 
         if (password.equals("")) {
             log_in_frag_text.text = "Create a password"
@@ -32,9 +33,7 @@ class LoginFragment : androidx.fragment.app.DialogFragment() {
             log_in_button.setOnClickListener {
                 if (password_edit_text.text.toString() != "" && confirm_password_edit_text.text.toString() != "") {
                     if (password_edit_text.text.toString() == confirm_password_edit_text.text.toString()) {
-                        val editor: SharedPreferences.Editor? = sharedPref?.edit()
-                        editor?.putString(getString(R.string.account_key), password_edit_text.text.toString())
-                        editor?.apply()
+                        sharedPrefsHelper.put(SharedPrefsHelper.ACCOUNT_KEY, password_edit_text.text.toString())
                         startSettingsFragment()
                     } else {
                         makeToast("Passwords do not match")

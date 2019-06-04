@@ -22,6 +22,7 @@ import com.google.api.client.util.ExponentialBackOff
 import com.google.api.services.youtube.YouTubeScopes
 import com.joshuahalvorson.safeyoutube.R
 import com.joshuahalvorson.safeyoutube.database.PlaylistDatabase
+import com.joshuahalvorson.safeyoutube.util.SharedPrefsHelper
 import com.joshuahalvorson.safeyoutube.view.fragment.ChangePasswordFragment
 import com.joshuahalvorson.safeyoutube.view.fragment.PlaylistsListFragment
 import com.joshuahalvorson.safeyoutube.view.fragment.RemovePlaylistFragment
@@ -33,13 +34,15 @@ import pub.devrel.easypermissions.EasyPermissions
 import java.util.*
 
 class SettingsActivity : AppCompatActivity() {
-    lateinit var googleAccountCredential: GoogleAccountCredential
-    lateinit var sharedPref: SharedPreferences
+    private lateinit var googleAccountCredential: GoogleAccountCredential
+    private lateinit var sharedPrefsHelper: SharedPrefsHelper
 
-    internal val REQUEST_ACCOUNT_PICKER = 1000
-    internal val REQUEST_AUTHORIZATION = 1001
-    internal val REQUEST_GOOGLE_PLAY_SERVICES = 1002
-    internal val REQUEST_PERMISSION_GET_ACCOUNTS = 1003
+    companion object {
+        const val REQUEST_ACCOUNT_PICKER = 1000
+        const val REQUEST_AUTHORIZATION = 1001
+        const val REQUEST_GOOGLE_PLAY_SERVICES = 1002
+        const val REQUEST_PERMISSION_GET_ACCOUNTS = 1003
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,10 +66,10 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        sharedPref = getSharedPreferences(
-                getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        sharedPrefsHelper = SharedPrefsHelper(getSharedPreferences(
+                SharedPrefsHelper.PREFERENCE_FILE_KEY, Context.MODE_PRIVATE))
 
-        if (sharedPref.getInt(getString(R.string.dark_mode_key), 1) == 2) {
+        if (sharedPrefsHelper.get(SharedPrefsHelper.DARK_MODE_KEY, 1) == 2) {
             day_night_switch.isChecked = true
             current_theme_text.text = "Night"
         } else {
@@ -81,18 +84,14 @@ class SettingsActivity : AppCompatActivity() {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     val uiModeManager = getSystemService<UiModeManager>(UiModeManager::class.java)
                     uiModeManager?.nightMode = UiModeManager.MODE_NIGHT_YES
-                    val editor = sharedPref.edit()
-                    editor?.putInt(getString(R.string.dark_mode_key), 2)
-                    editor?.apply()
+                    sharedPrefsHelper.put(SharedPrefsHelper.DARK_MODE_KEY, 2)
                 }
             } else {
                 current_theme_text.text = "Day"
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     val uiModeManager = getSystemService<UiModeManager>(UiModeManager::class.java)
                     uiModeManager?.nightMode = UiModeManager.MODE_NIGHT_NO
-                    val editor = sharedPref.edit()
-                    editor?.putInt(getString(R.string.dark_mode_key), 1)
-                    editor?.apply()
+                    sharedPrefsHelper.put(SharedPrefsHelper.DARK_MODE_KEY, 1)
                 }
             }
         }
@@ -102,8 +101,10 @@ class SettingsActivity : AppCompatActivity() {
             changePasswordFragment.show(supportFragmentManager, "change_password_fragment")
         }
 
-        val ageRangeValue = sharedPref.getInt(getString(R.string.age_range_key), 0)
-        age_range_seek_bar.progress = ageRangeValue
+        val ageRangeValue = sharedPrefsHelper.get(SharedPrefsHelper.AGE_RANGE_KEY, 0)
+        ageRangeValue?.let {
+            age_range_seek_bar.progress = it
+        }
 
         age_range_seek_bar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -113,9 +114,7 @@ class SettingsActivity : AppCompatActivity() {
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                val editor: SharedPreferences.Editor? = sharedPref.edit()
-                seekBar?.progress?.let { editor?.putInt("age_range", it) }
-                editor?.apply()
+                seekBar?.progress?.let { sharedPrefsHelper.put("age_range", it) }
             }
         })
 
@@ -154,7 +153,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun checkLogIn() {
-        val accountName = sharedPref.getString(getString(R.string.account_name_key), null)
+        val accountName = sharedPrefsHelper.get(SharedPrefsHelper.ACCOUNT_NAME_KEY, null)
         if (accountName != null) {
             googleAccountCredential.selectedAccountName = accountName
             log_in_to_youtube_button.text = "Log out of $accountName"
@@ -173,19 +172,17 @@ class SettingsActivity : AppCompatActivity() {
     private fun signOut() {
         val db = Room.databaseBuilder(this.applicationContext,
                 PlaylistDatabase::class.java, getString(R.string.database_playlist_name)).build()
-        val editor = sharedPref.edit()
-        editor?.remove(getString(R.string.account_name_key))
-        val ids = sharedPref.getString(getString(R.string.account_playlists_key), "")
+        sharedPrefsHelper.remove(SharedPrefsHelper.ACCOUNT_NAME_KEY)
+        val ids = sharedPrefsHelper.get(SharedPrefsHelper.ACCOUNT_PLAYLISTS_KEY, "")
         val idParts = ids?.split(", ")
         idParts?.forEach {
             Thread(Runnable {
                 db.playlistDao().deletePlaylistById(it)
             }).start()
         }
-        editor?.apply()
         log_in_to_youtube_button.text = "Log in"
         Toast.makeText(applicationContext, "Logged out", Toast.LENGTH_LONG).show()
-        sharedPref.edit().remove(getString(R.string.current_playlist_key)).apply()
+        sharedPrefsHelper.remove(SharedPrefsHelper.CURRENT_PLAYLIST_KEY)
         checkLogIn()
     }
 
@@ -238,8 +235,7 @@ class SettingsActivity : AppCompatActivity() {
     private fun chooseAccount() {
         if (EasyPermissions.hasPermissions(
                         applicationContext, Manifest.permission.GET_ACCOUNTS)) {
-            val accountName = getPreferences(Context.MODE_PRIVATE)
-                    ?.getString(getString(R.string.account_name_key), null)
+            val accountName = sharedPrefsHelper.get(SharedPrefsHelper.ACCOUNT_NAME_KEY, null)
             if (accountName != null) {
                 googleAccountCredential.selectedAccountName = accountName
                 getResultsFromApi()
@@ -273,9 +269,7 @@ class SettingsActivity : AppCompatActivity() {
                     data.extras != null) {
                 val accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME)
                 if (accountName != null) {
-                    val editor = sharedPref.edit()
-                    editor?.putString(getString(R.string.account_name_key), accountName)
-                    editor?.apply()
+                    sharedPrefsHelper.put(SharedPrefsHelper.ACCOUNT_NAME_KEY, accountName)
                     googleAccountCredential.selectedAccountName = accountName
                     getResultsFromApi()
                 }

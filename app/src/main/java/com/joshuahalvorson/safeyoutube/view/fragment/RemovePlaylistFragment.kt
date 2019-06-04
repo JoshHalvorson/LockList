@@ -12,6 +12,7 @@ import com.joshuahalvorson.safeyoutube.R
 import com.joshuahalvorson.safeyoutube.adapter.PlaylistsListRecyclerviewAdapter
 import com.joshuahalvorson.safeyoutube.database.Playlist
 import com.joshuahalvorson.safeyoutube.database.PlaylistDatabase
+import com.joshuahalvorson.safeyoutube.util.SharedPrefsHelper
 import kotlinx.android.synthetic.main.fragment_remove_playlist.*
 
 class RemovePlaylistFragment : androidx.fragment.app.Fragment() {
@@ -29,8 +30,9 @@ class RemovePlaylistFragment : androidx.fragment.app.Fragment() {
             Room.databaseBuilder<PlaylistDatabase>(it,
                 PlaylistDatabase::class.java, getString(R.string.database_playlist_name)).build()
         }
-
-        val ids = activity?.getPreferences(Context.MODE_PRIVATE)?.getString(getString(R.string.account_playlists_key), "")?.split(", ")
+        val sharedPrefsHelper = SharedPrefsHelper(activity?.getSharedPreferences(
+                SharedPrefsHelper.PREFERENCE_FILE_KEY, Context.MODE_PRIVATE))
+        val ids = sharedPrefsHelper.get(SharedPrefsHelper.ACCOUNT_PLAYLISTS_KEY, "")?.split(", ")
 
         adapter = ids?.let {
             PlaylistsListRecyclerviewAdapter(true, playlists, object : PlaylistsListRecyclerviewAdapter.OnListItemClick {

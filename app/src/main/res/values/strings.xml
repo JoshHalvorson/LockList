@@ -1,15 +1,7 @@
 <resources>
     <string name="app_name">SafeYoutube</string>
     <string name="title_activity_watch_playlist">WatchPlaylistActivity</string>
-
-    <string name="preference_file_key">safeyoutube_shared_prefs</string>
-    <string name="account_key">account_password</string>
-    <string name="age_range_key">age_range</string>
-    <string name="dark_mode_key">dark_mode</string>
     <string name="database_playlist_name">database-playlists</string>
-    <string name="account_playlists_key">account_playlists</string>
-    <string name="account_name_key">account_name</string>
-    <string name="current_playlist_key">current_playlist</string>
     <string name="log_in_to_youtube_button_text">Log in to youtube</string>
     <string name="change_local_account_password_button_text">Change local account password</string>
     <string name="account_settings_textview_text">Account Settings</string>

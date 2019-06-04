@@ -21,6 +21,7 @@ import com.joshuahalvorson.safeyoutube.adapter.ItemsRecyclerviewAdapter
 import com.joshuahalvorson.safeyoutube.model.Models
 import com.joshuahalvorson.safeyoutube.network.YoutubeDataApiViewModel
 import com.joshuahalvorson.safeyoutube.util.Counter
+import com.joshuahalvorson.safeyoutube.util.SharedPrefsHelper
 import com.joshuahalvorson.safeyoutube.view.fragment.LoginFragment
 import com.joshuahalvorson.safeyoutube.util.YoutubePlayerController
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
@@ -44,8 +45,8 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
     private var items: ArrayList<Models.Item> = ArrayList()
     private var ageValue: Int? = 0
 
+    private lateinit var sharedPrefsHelper: SharedPrefsHelper
     private lateinit var itemAdapter: ItemsRecyclerviewAdapter
-    private lateinit var sharedPref: SharedPreferences
     private lateinit var counter: Counter
     private lateinit var playerController: YoutubePlayerController
     private lateinit var uiController: PlayerUiController
@@ -59,8 +60,8 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
 
         disposable = CompositeDisposable()
 
-        sharedPref = getSharedPreferences(
-                getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        sharedPrefsHelper = SharedPrefsHelper(getSharedPreferences(
+                SharedPrefsHelper.PREFERENCE_FILE_KEY, Context.MODE_PRIVATE))
 
         viewModel = ViewModelProviders.of(this).get(YoutubeDataApiViewModel::class.java)
 
@@ -119,7 +120,7 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
     }
 
     private fun loadPlaylist(){
-        val currentPlaylistId = sharedPref.getString(getString(R.string.current_playlist_key), null)
+        val currentPlaylistId = sharedPrefsHelper.get(SharedPrefsHelper.CURRENT_PLAYLIST_KEY, null)
         if (currentPlaylistId != null) {
             viewModel.getPlaylistOverview(currentPlaylistId)
                     ?.subscribeOn(Schedulers.io())

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.joshuahalvorson.safeyoutube.R
+import com.joshuahalvorson.safeyoutube.util.SharedPrefsHelper
 import kotlinx.android.synthetic.main.fragment_change_password.*
 
 class ChangePasswordFragment : androidx.fragment.app.DialogFragment() {
@@ -17,16 +18,14 @@ class ChangePasswordFragment : androidx.fragment.app.DialogFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val sharedPref = activity?.getSharedPreferences(
-                getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        val password = sharedPref?.getString(getString(R.string.account_key), "")
+        val sharedPrefsHelper = SharedPrefsHelper(activity?.getSharedPreferences(
+                SharedPrefsHelper.PREFERENCE_FILE_KEY, Context.MODE_PRIVATE))
+        val password = sharedPrefsHelper.get(SharedPrefsHelper.ACCOUNT_KEY, "")
 
         change_password_button.setOnClickListener {
             if (old_password_edit_text.text.toString() == password) {
                 if (new_password_edit_text.text.toString() != password) {
-                    val editor = sharedPref.edit()
-                    editor.putString(getString(R.string.account_key), new_password_edit_text.text.toString())
-                    editor.apply()
+                    sharedPrefsHelper.put(SharedPrefsHelper.ACCOUNT_KEY, new_password_edit_text.text.toString())
                     Toast.makeText(context, "Password changed", Toast.LENGTH_LONG).show()
                     dismiss()
                 } else {

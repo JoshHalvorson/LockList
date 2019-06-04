@@ -2,14 +2,12 @@ package com.joshuahalvorson.safeyoutube.view.fragment
 
 import android.content.Context
 import android.content.DialogInterface
-import android.content.SharedPreferences
 import android.os.AsyncTask
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.google.android.gms.common.GoogleApiAvailability
@@ -23,6 +21,7 @@ import com.google.api.client.util.ExponentialBackOff
 import com.google.api.services.youtube.YouTube
 import com.google.api.services.youtube.YouTubeScopes
 import com.joshuahalvorson.safeyoutube.R
+import com.joshuahalvorson.safeyoutube.util.SharedPrefsHelper
 import com.joshuahalvorson.safeyoutube.adapter.PlaylistsListRecyclerviewAdapter
 import com.joshuahalvorson.safeyoutube.database.Playlist
 import com.joshuahalvorson.safeyoutube.database.PlaylistDatabase
@@ -35,8 +34,9 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
     private var playlists: ArrayList<Playlist> = ArrayList()
     private var adapter: PlaylistsListRecyclerviewAdapter? = null
     private var db: PlaylistDatabase? = null
-    private var sharedPref: SharedPreferences? = null
+
     private lateinit var googleAccountCredential: GoogleAccountCredential
+    private lateinit var sharedPrefsHelper: SharedPrefsHelper
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -52,16 +52,14 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        sharedPref = activity?.getSharedPreferences(
-                getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        val ids =
-                sharedPref?.getString(getString(R.string.account_playlists_key), "")?.split(", ")
+        sharedPrefsHelper = SharedPrefsHelper(activity?.getSharedPreferences(
+                SharedPrefsHelper.PREFERENCE_FILE_KEY, Context.MODE_PRIVATE))
+
+        val ids = sharedPrefsHelper.get(SharedPrefsHelper.ACCOUNT_PLAYLISTS_KEY, "")?.split(", ")
         adapter = ids?.let {
             PlaylistsListRecyclerviewAdapter(false, playlists, object : PlaylistsListRecyclerviewAdapter.OnListItemClick {
                 override fun onListItemClick(playlist: Playlist?) {
-                    val editor = sharedPref?.edit()
-                    editor?.putString(getString(R.string.current_playlist_key), playlist?.playlistId)
-                    editor?.apply()
+                    sharedPrefsHelper.put(SharedPrefsHelper.CURRENT_PLAYLIST_KEY, playlist?.playlistId)
                     Toast.makeText(context, "Playlist ${playlist?.playlistName} selected", Toast.LENGTH_LONG).show()
                     fragmentManager?.popBackStack()
                 }
@@ -87,7 +85,7 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
         googleAccountCredential = GoogleAccountCredential.usingOAuth2(
                 context, Arrays.asList(YouTubeScopes.YOUTUBE_READONLY))
                 .setBackOff(ExponentialBackOff())
-        val accountName = sharedPref?.getString("account_name", null)
+        val accountName = sharedPrefsHelper.get("account_name", null)
         if (accountName != null) {
             googleAccountCredential.selectedAccountName = accountName
             MakeRequestTask().execute()
@@ -195,9 +193,7 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
             if (output == null || output.size == 0) {
                 //account playlists already added
             } else {
-                val editor = sharedPref?.edit()
-                editor?.putString(getString(R.string.account_playlists_key), output.joinToString { it.playlistId })
-                editor?.apply()
+                sharedPrefsHelper.put(SharedPrefsHelper.ACCOUNT_PLAYLISTS_KEY, output.joinToString { it.playlistId })
 
                 updatePlaylistsList()
             }
