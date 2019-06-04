@@ -110,13 +110,16 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
         if (orientationEventListener.canDetectOrientation()) {
             orientationEventListener.enable()
         }
+
         counter = Counter()
-        loadPlaylist()
+
+        initializeYoutubePlayer(youtube_player_view)
     }
 
     override fun onResume() {
         super.onResume()
         hideSystemUI()
+        loadPlaylist()
     }
 
     private fun loadPlaylist(){
@@ -134,10 +137,12 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
                             override fun onYouTubePlayer(youTubePlayer: YouTubePlayer) {
                                 counter.maxValue = items.size - 1
                                 youtube_player_view.visibility = View.VISIBLE
-                                items[0].contentDetails?.videoId?.let { id -> youTubePlayer.cueVideo(id, 0F) }
-                                items[0].snippet?.title?.let { title -> current_video_title_text.text = title }
-                                playerController = YoutubePlayerController(youTubePlayer)
-                                initializeYoutubePlayer(youtube_player_view)
+                                items[counter.current].contentDetails?.videoId?.let { id ->
+                                    youTubePlayer.cueVideo(id, playerController.getTime())
+                                }
+                                items[counter.current].snippet?.title?.let { title ->
+                                    current_video_title_text.text = title
+                                }
                             }
                         })
                     }?.let { subscribe ->
@@ -155,6 +160,10 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
 
     private fun initializeYoutubePlayer(youtubePlayer: YouTubePlayerView) {
         youtubePlayer.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
+            override fun onReady(youTubePlayer: YouTubePlayer) {
+                playerController = YoutubePlayerController(youTubePlayer)
+            }
+
             override fun onStateChange(youTubePlayer: YouTubePlayer, state: PlayerConstants.PlayerState) {
                 when (state) {
                     ENDED -> {
@@ -163,6 +172,10 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
                     }
                     else -> return
                 }
+            }
+
+            override fun onCurrentSecond(youTubePlayer: YouTubePlayer, second: Float) {
+                playerController.saveTime(second)
             }
 
             override fun onError(youTubePlayer: YouTubePlayer, error: PlayerConstants.PlayerError) {
@@ -197,12 +210,6 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
                 or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_FULLSCREEN)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        //sharedPref.edit().remove(getString(R.string.current_playlist_key)).apply()
-        //current_video_title_text.text = ""
     }
 
     override fun onDestroy() {
