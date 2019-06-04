@@ -114,6 +114,7 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
         counter = Counter()
 
         initializeYoutubePlayer(youtube_player_view)
+        playerController = YoutubePlayerController(youtube_player_view)
     }
 
     override fun onResume() {
@@ -160,10 +161,6 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
 
     private fun initializeYoutubePlayer(youtubePlayer: YouTubePlayerView) {
         youtubePlayer.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
-            override fun onReady(youTubePlayer: YouTubePlayer) {
-                playerController = YoutubePlayerController(youTubePlayer)
-            }
-
             override fun onStateChange(youTubePlayer: YouTubePlayer, state: PlayerConstants.PlayerState) {
                 when (state) {
                     ENDED -> {
