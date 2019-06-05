@@ -39,6 +39,7 @@ class ItemsRecyclerviewAdapter(
             videoName.text = name
             Picasso.get()
                     .load(item.snippet?.thumbnails?.default?.url)
+                    .placeholder(R.drawable.placeholder_120x_90x)
                     .into(videoThumbnail)
 
             videoParent.setOnClickListener { callback.onVideoClicked(position) }
