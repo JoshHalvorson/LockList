@@ -54,7 +54,7 @@ class AddPlaylistFragment : androidx.fragment.app.DialogFragment() {
         }
         db = context?.let {
             Room.databaseBuilder(it,
-                PlaylistDatabase::class.java, getString(R.string.database_playlist_name)).build()
+                    PlaylistDatabase::class.java, getString(R.string.database_playlist_name)).build()
         }
     }
 

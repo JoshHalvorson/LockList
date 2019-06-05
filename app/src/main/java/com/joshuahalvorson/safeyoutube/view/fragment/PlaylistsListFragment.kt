@@ -21,10 +21,10 @@ import com.google.api.client.util.ExponentialBackOff
 import com.google.api.services.youtube.YouTube
 import com.google.api.services.youtube.YouTubeScopes
 import com.joshuahalvorson.safeyoutube.R
-import com.joshuahalvorson.safeyoutube.util.SharedPrefsHelper
 import com.joshuahalvorson.safeyoutube.adapter.PlaylistsListRecyclerviewAdapter
 import com.joshuahalvorson.safeyoutube.database.Playlist
 import com.joshuahalvorson.safeyoutube.database.PlaylistDatabase
+import com.joshuahalvorson.safeyoutube.util.SharedPrefsHelper
 import kotlinx.android.synthetic.main.fragment_playlists_list.*
 import kotlinx.io.IOException
 import java.util.*
@@ -47,7 +47,7 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
         super.onCreate(savedInstanceState)
         db = context?.let {
             Room.databaseBuilder(it,
-                PlaylistDatabase::class.java, getString(R.string.database_playlist_name)).build()
+                    PlaylistDatabase::class.java, getString(R.string.database_playlist_name)).build()
         }
     }
 

@@ -3,18 +3,15 @@ package com.joshuahalvorson.safeyoutube.view.activity
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
-import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.hardware.SensorManager
 import android.os.Bundle
-import android.util.Log
 import android.view.OrientationEventListener
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.joshuahalvorson.safeyoutube.R
 import com.joshuahalvorson.safeyoutube.adapter.ItemsRecyclerviewAdapter
@@ -22,8 +19,8 @@ import com.joshuahalvorson.safeyoutube.model.Models
 import com.joshuahalvorson.safeyoutube.network.YoutubeDataApiViewModel
 import com.joshuahalvorson.safeyoutube.util.Counter
 import com.joshuahalvorson.safeyoutube.util.SharedPrefsHelper
-import com.joshuahalvorson.safeyoutube.view.fragment.LoginFragment
 import com.joshuahalvorson.safeyoutube.util.YoutubePlayerController
+import com.joshuahalvorson.safeyoutube.view.fragment.LoginFragment
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants.PlayerState.ENDED
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
@@ -123,7 +120,7 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
         loadPlaylist()
     }
 
-    private fun loadPlaylist(){
+    private fun loadPlaylist() {
         val currentPlaylistId = sharedPrefsHelper.get(SharedPrefsHelper.CURRENT_PLAYLIST_KEY, null)
         if (currentPlaylistId != null) {
             viewModel.getPlaylistOverview(currentPlaylistId)

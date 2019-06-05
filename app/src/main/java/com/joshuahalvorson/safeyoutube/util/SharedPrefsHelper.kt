@@ -3,7 +3,7 @@ package com.joshuahalvorson.safeyoutube.util
 import android.content.SharedPreferences
 
 class SharedPrefsHelper(private val sharedPrefs: SharedPreferences?) {
-    companion object{
+    companion object {
         const val PREFERENCE_FILE_KEY = "safeyoutube_shared_prefs"
         const val ACCOUNT_KEY = "account_password"
         const val AGE_RANGE_KEY = "age_range"
@@ -29,7 +29,7 @@ class SharedPrefsHelper(private val sharedPrefs: SharedPreferences?) {
         return sharedPrefs?.getInt(key, defaultValue)
     }
 
-    fun remove(key: String){
+    fun remove(key: String) {
         sharedPrefs?.edit()?.remove(key)?.apply()
     }
 }

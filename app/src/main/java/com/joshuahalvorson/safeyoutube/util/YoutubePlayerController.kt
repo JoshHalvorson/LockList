@@ -14,10 +14,10 @@ class YoutubePlayerController(
         initialize()
     }
 
-    private fun initialize(){
-        playerView.addYouTubePlayerListener(object: AbstractYouTubePlayerListener(){
+    private fun initialize() {
+        playerView.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
             override fun onReady(youTubePlayer: YouTubePlayer) {
-               youtubePlayer = youTubePlayer
+                youtubePlayer = youTubePlayer
             }
 
         })
@@ -27,7 +27,7 @@ class YoutubePlayerController(
         youtubePlayer.loadVideo(videoId, startTime)
     }
 
-    fun saveTime(currentTime: Float){
+    fun saveTime(currentTime: Float) {
         time = currentTime
     }
 

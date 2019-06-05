@@ -28,7 +28,7 @@ class RemovePlaylistFragment : androidx.fragment.app.Fragment() {
         val playlists = ArrayList<Playlist>()
         db = context?.let {
             Room.databaseBuilder<PlaylistDatabase>(it,
-                PlaylistDatabase::class.java, getString(R.string.database_playlist_name)).build()
+                    PlaylistDatabase::class.java, getString(R.string.database_playlist_name)).build()
         }
         val sharedPrefsHelper = SharedPrefsHelper(activity?.getSharedPreferences(
                 SharedPrefsHelper.PREFERENCE_FILE_KEY, Context.MODE_PRIVATE))
