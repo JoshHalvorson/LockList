@@ -27,6 +27,7 @@ import com.joshuahalvorson.safeyoutube.view.fragment.ChangePasswordFragment
 import com.joshuahalvorson.safeyoutube.view.fragment.PlaylistsListFragment
 import com.joshuahalvorson.safeyoutube.view.fragment.RemovePlaylistFragment
 import kotlinx.android.synthetic.main.account_settings_layout.*
+import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.android.synthetic.main.app_settings_layout.*
 import kotlinx.android.synthetic.main.kids_settings_layout.*
 import pub.devrel.easypermissions.AfterPermissionGranted
@@ -47,6 +48,7 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+        setSupportActionBar(toolbar)
 
         val intent = intent
         val action = intent.action
