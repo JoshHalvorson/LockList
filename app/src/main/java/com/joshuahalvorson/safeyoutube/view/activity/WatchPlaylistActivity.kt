@@ -131,6 +131,7 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
                         items.addAll(it.items)
                         itemAdapter.notifyDataSetChanged()
                         no_playlist_text.visibility = View.GONE
+                        video_title_container.visibility = View.VISIBLE
                         youtube_player_view.getYouTubePlayerWhenReady(object : YouTubePlayerCallback {
                             override fun onYouTubePlayer(youTubePlayer: YouTubePlayer) {
                                 counter.maxValue = items.size - 1
@@ -153,6 +154,8 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
             items.clear()
             youtube_player_view.visibility = View.GONE
             no_playlist_text.visibility = View.VISIBLE
+            current_video_title_text.text = ""
+            video_title_container.visibility = View.GONE
         }
     }
 

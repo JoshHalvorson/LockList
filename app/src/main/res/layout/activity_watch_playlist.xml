@@ -17,7 +17,7 @@
     </com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView>
 
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/video_title_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/border"
@@ -40,7 +40,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintTop_toBottomOf="@+id/video_title_container"
         tools:visibility="visible" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
