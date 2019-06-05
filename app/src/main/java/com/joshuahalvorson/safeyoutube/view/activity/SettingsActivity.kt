@@ -49,6 +49,7 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
         setSupportActionBar(toolbar)
+        toolbar.title = "Settings"
 
         val intent = intent
         val action = intent.action
