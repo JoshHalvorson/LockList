@@ -39,6 +39,7 @@ class ItemsRecyclerviewAdapter(
             videoName.text = name
             Picasso.get()
                     .load(item.snippet?.thumbnails?.default?.url)
+                    .error(R.drawable.ic_broken_image_black_24dp)
                     .placeholder(R.drawable.placeholder_120x_90x)
                     .into(videoThumbnail)
 

@@ -47,6 +47,7 @@ class PlaylistsListRecyclerviewAdapter(
             playlistVideos.text = "${playlist.playlistVideoCount} videos"
             Picasso.get()
                     .load(playlist.playlistThumbnail)
+                    .error(R.drawable.ic_broken_image_black_24dp)
                     .placeholder(R.drawable.placeholder_120x_90x)
                     .into(playlistThumbnail)
             if (isDeleting) {
