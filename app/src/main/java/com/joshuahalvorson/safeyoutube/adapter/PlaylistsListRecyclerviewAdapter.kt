@@ -1,5 +1,6 @@
 package com.joshuahalvorson.safeyoutube.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +11,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuahalvorson.safeyoutube.R
 import com.joshuahalvorson.safeyoutube.database.Playlist
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.playlists_list_element_layout.view.*
+import java.lang.Exception
 
 class PlaylistsListRecyclerviewAdapter(
         private val isDeleting: Boolean,
@@ -43,13 +46,22 @@ class PlaylistsListRecyclerviewAdapter(
         private val userPlaylistImage: ImageView = view.user_playlist_image
 
         fun bindModel(playlist: Playlist, isDeleting: Boolean, callback: OnListItemClick, ids: List<String>) {
+            itemView.playlist_loading_circle.visibility = View.VISIBLE
             playlistName.text = playlist.playlistName
             playlistVideos.text = "${playlist.playlistVideoCount} videos"
             Picasso.get()
                     .load(playlist.playlistThumbnail)
                     .error(R.drawable.ic_broken_image_black_24dp)
                     .placeholder(R.drawable.placeholder_120x_90x)
-                    .into(playlistThumbnail)
+                    .into(playlistThumbnail, object: Callback{
+                        override fun onSuccess() {
+                            itemView.playlist_loading_circle.visibility = View.GONE
+                        }
+
+                        override fun onError(e: Exception?) {
+                            Log.i("playlistImageLoad", e.toString())
+                        }
+                    })
             if (isDeleting) {
                 deletePlaylistButton.visibility = View.VISIBLE
                 deletePlaylistButton.setOnClickListener { callback.onListItemClick(playlist) }
