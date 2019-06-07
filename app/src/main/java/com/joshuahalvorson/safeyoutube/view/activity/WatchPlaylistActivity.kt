@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.util.Log
 import android.view.OrientationEventListener
 import android.view.View
 import android.widget.Toast
@@ -65,8 +66,7 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
         val youtubePlayerView = findViewById<YouTubePlayerView>(R.id.youtube_player_view)
         lifecycle.addObserver(youtubePlayerView)
         uiController = youtubePlayerView.getPlayerUiController()
-        uiController.showMenuButton(false)
-        uiController.showYouTubeButton(false)
+
         youtubePlayerView.addFullScreenListener(object : YouTubePlayerFullScreenListener {
             override fun onYouTubePlayerEnterFullScreen() {
                 settings_fab.hide()
@@ -118,6 +118,38 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
         super.onResume()
         hideSystemUI()
         loadPlaylist()
+        val currentAge = sharedPrefsHelper.get(SharedPrefsHelper.AGE_RANGE_KEY, 0)
+        if (currentAge != ageValue){
+            currentAge?.let { setPlayerOptions(it) }
+        }
+    }
+
+    private fun setPlayerOptions(age: Int) {
+        resetPlayerOptions()
+        when (age) {
+            0 -> {
+                uiController.showUi(false)
+                ageValue = 0
+            }
+            1 -> {
+                uiController.showMenuButton(false)
+                uiController.showYouTubeButton(false)
+                uiController.showFullscreenButton(false)
+                ageValue = 1
+            }
+            2 -> {
+                uiController.showMenuButton(false)
+                ageValue = 2
+            }
+        }
+    }
+
+    private fun resetPlayerOptions() {
+        uiController.showUi(true)
+        uiController.showMenuButton(true)
+        uiController.showYouTubeButton(true)
+        uiController.showFullscreenButton(true)
+        uiController.showMenuButton(true)
     }
 
     private fun loadPlaylist() {
@@ -137,7 +169,7 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
                                 counter.maxValue = items.size - 1
                                 youtube_player_view.visibility = View.VISIBLE
                                 items[counter.current].contentDetails?.videoId?.let { id ->
-                                    youTubePlayer.cueVideo(id, playerController.getTime())
+                                    youTubePlayer.loadVideo(id, playerController.getTime())
                                 }
                                 items[counter.current].snippet?.title?.let { title ->
                                     current_video_title_text.text = title
