@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SafeYoutube</string>
+    <string name="app_name">Locklist</string>
     <string name="title_activity_watch_playlist">WatchPlaylistActivity</string>
     <string name="database_playlist_name">database-playlists</string>
     <string name="log_in_to_youtube_button_text">Log in to youtube</string>
