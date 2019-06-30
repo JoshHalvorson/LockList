@@ -116,7 +116,6 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
 
     override fun onResume() {
         super.onResume()
-        hideSystemUI()
         loadPlaylist()
         val currentAge = sharedPrefsHelper.get(SharedPrefsHelper.AGE_RANGE_KEY, 0)
         if (currentAge != ageValue){
@@ -224,9 +223,11 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
         if (newConfig?.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            hideSystemUI()
             youtube_player_view.enterFullScreen()
             uiController.showFullscreenButton(false)
         } else {
+            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_VISIBLE)
             youtube_player_view.exitFullScreen()
             uiController.showFullscreenButton(true)
         }
