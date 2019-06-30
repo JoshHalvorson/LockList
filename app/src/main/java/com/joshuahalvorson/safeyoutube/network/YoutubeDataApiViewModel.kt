@@ -2,7 +2,7 @@ package com.joshuahalvorson.safeyoutube.network
 
 import androidx.lifecycle.ViewModel
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import com.joshuahalvorson.safeyoutube.ApiKey
+import com.joshuahalvorson.safeyoutube.BuildConfig
 import com.joshuahalvorson.safeyoutube.model.Models.PlaylistResultOverview
 import io.reactivex.Flowable
 import retrofit2.Retrofit
@@ -25,14 +25,14 @@ class YoutubeDataApiViewModel : ViewModel() {
         if (retrofit == null || client == null) {
             buildRetrofit()
         }
-        return client?.getPlaylistOverview("snippet, status, contentDetails", playlistId, "50", ApiKey.KEY)
+        return client?.getPlaylistOverview("snippet, status, contentDetails", playlistId, "50", BuildConfig.API_KEY)
     }
 
     fun getPlaylistInfo(playlistId: String): Flowable<PlaylistResultOverview>? {
         if (retrofit == null || client == null) {
             buildRetrofit()
         }
-        return client?.getPlaylistInfo("snippet, status", playlistId, ApiKey.KEY)
+        return client?.getPlaylistInfo("snippet, status", playlistId, BuildConfig.API_KEY)
     }
 
     companion object {
