@@ -91,7 +91,7 @@ class AddPlaylistFragment : androidx.fragment.app.DialogFragment() {
                                     Thread(Runnable {
                                         if (db?.localPlaylistDao()?.getPlaylistById(playlistId) == true) {
                                             activity?.runOnUiThread {
-                                                Toast.makeText(context, "RemotePlaylist is already added", Toast.LENGTH_LONG).show()
+                                                Toast.makeText(context, "Playlist is already added", Toast.LENGTH_LONG).show()
                                             }
                                         } else {
                                             val item = playlistInfo.items[0]
