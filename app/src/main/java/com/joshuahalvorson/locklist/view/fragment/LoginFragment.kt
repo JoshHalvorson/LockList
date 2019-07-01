@@ -62,12 +62,4 @@ class LoginFragment : androidx.fragment.app.DialogFragment() {
     private fun makeToast(toastText: String) {
         Toast.makeText(context, toastText, Toast.LENGTH_LONG).show()
     }
-
-    override fun onDismiss(dialog: DialogInterface?) {
-        super.onDismiss(dialog)
-        val activity = activity
-        if (activity is DialogInterface.OnDismissListener) {
-            (activity as DialogInterface.OnDismissListener).onDismiss(dialog)
-        }
-    }
 }

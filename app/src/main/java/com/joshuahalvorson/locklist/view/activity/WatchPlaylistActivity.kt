@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.util.Log
 import android.view.OrientationEventListener
 import android.view.View
 import android.widget.Toast
@@ -35,10 +36,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_watch_playlist.*
 
-class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissListener {
-    override fun onDismiss(dialog: DialogInterface?) {
-        hideSystemUI()
-    }
+class WatchPlaylistActivity : AppCompatActivity() {
 
     private var items: ArrayList<Models.Item> = ArrayList()
     private var ageValue: Int? = 0
@@ -224,6 +222,7 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
+        Log.i("asdas", newConfig.toString())
         if (newConfig?.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             hideSystemUI()
             youtube_player_view.enterFullScreen()
