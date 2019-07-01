@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.joshuahalvorson.safeyoutube">
+    package="com.joshuahalvorson.locklist">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".view.activity.SettingsActivity">
+        <activity android:name="com.joshuahalvorson.locklist.view.activity.SettingsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.activity.WatchPlaylistActivity"
+            android:name="com.joshuahalvorson.locklist.view.activity.WatchPlaylistActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_watch_playlist">
             <intent-filter>
