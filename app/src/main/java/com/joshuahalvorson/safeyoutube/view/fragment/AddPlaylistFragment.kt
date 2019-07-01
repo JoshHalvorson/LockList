@@ -13,7 +13,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProviders
 import androidx.room.Room
 import com.joshuahalvorson.safeyoutube.R
-import com.joshuahalvorson.safeyoutube.database.Playlist
+import com.joshuahalvorson.safeyoutube.database.LocalPlaylist
+import com.joshuahalvorson.safeyoutube.database.RemotePlaylist
 import com.joshuahalvorson.safeyoutube.database.PlaylistDatabase
 import com.joshuahalvorson.safeyoutube.network.YoutubeDataApiViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -89,9 +90,9 @@ class AddPlaylistFragment : androidx.fragment.app.DialogFragment() {
                                 ?.observeOn(AndroidSchedulers.mainThread())
                                 ?.subscribe { playlistResultOverview ->
                                     Thread(Runnable {
-                                        if (db?.playlistDao()?.getPlaylistById(playlistId) == true) {
+                                        if (db?.localPlaylistDao()?.getPlaylistById(playlistId) == true) {
                                             activity?.runOnUiThread {
-                                                Toast.makeText(context, "Playlist is already added", Toast.LENGTH_LONG).show()
+                                                Toast.makeText(context, "RemotePlaylist is already added", Toast.LENGTH_LONG).show()
                                             }
                                         } else {
                                             val item = playlistInfo.items[0]
@@ -100,7 +101,7 @@ class AddPlaylistFragment : androidx.fragment.app.DialogFragment() {
                                             val thumbnailUrl = item.snippet?.thumbnails?.default?.url
                                             val status = item.status?.privacyStatus
 
-                                            db?.playlistDao()?.insertAll(Playlist(
+                                            db?.localPlaylistDao()?.insertAll(LocalPlaylist(
                                                     playlistId,
                                                     title,
                                                     results,

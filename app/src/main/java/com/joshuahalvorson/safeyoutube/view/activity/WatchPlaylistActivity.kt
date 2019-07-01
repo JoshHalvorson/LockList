@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.facebook.stetho.Stetho
 import com.joshuahalvorson.safeyoutube.R
 import com.joshuahalvorson.safeyoutube.adapter.ItemsRecyclerviewAdapter
 import com.joshuahalvorson.safeyoutube.model.Models
@@ -55,6 +56,8 @@ class WatchPlaylistActivity : AppCompatActivity(), DialogInterface.OnDismissList
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_watch_playlist)
+
+        Stetho.initializeWithDefaults(applicationContext)
 
         disposable = CompositeDisposable()
 

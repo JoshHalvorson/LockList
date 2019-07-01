@@ -22,7 +22,8 @@ import com.google.api.services.youtube.YouTube
 import com.google.api.services.youtube.YouTubeScopes
 import com.joshuahalvorson.safeyoutube.R
 import com.joshuahalvorson.safeyoutube.adapter.PlaylistsListRecyclerviewAdapter
-import com.joshuahalvorson.safeyoutube.database.Playlist
+import com.joshuahalvorson.safeyoutube.model.Playlist
+import com.joshuahalvorson.safeyoutube.database.RemotePlaylist
 import com.joshuahalvorson.safeyoutube.database.PlaylistDatabase
 import com.joshuahalvorson.safeyoutube.util.SharedPrefsHelper
 import kotlinx.android.synthetic.main.fragment_playlists_list.*
@@ -55,16 +56,13 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
         sharedPrefsHelper = SharedPrefsHelper(activity?.getSharedPreferences(
                 SharedPrefsHelper.PREFERENCE_FILE_KEY, Context.MODE_PRIVATE))
 
-        val ids = sharedPrefsHelper.get(SharedPrefsHelper.ACCOUNT_PLAYLISTS_KEY, "")?.split(", ")
-        adapter = ids?.let {
-            PlaylistsListRecyclerviewAdapter(false, playlists, object : PlaylistsListRecyclerviewAdapter.OnListItemClick {
-                override fun onListItemClick(playlist: Playlist?) {
-                    sharedPrefsHelper.put(SharedPrefsHelper.CURRENT_PLAYLIST_KEY, playlist?.playlistId)
-                    Toast.makeText(context, "Playlist ${playlist?.playlistName} selected", Toast.LENGTH_LONG).show()
-                    fragmentManager?.popBackStack()
-                }
-            }, it)
-        }
+        adapter = PlaylistsListRecyclerviewAdapter(false, playlists, object : PlaylistsListRecyclerviewAdapter.OnListItemClick {
+            override fun onListItemClick(playlist: Playlist?) {
+                sharedPrefsHelper.put(SharedPrefsHelper.CURRENT_PLAYLIST_KEY, playlist?.playlistId)
+                Toast.makeText(context, "RemotePlaylist ${playlist?.playlistName} selected", Toast.LENGTH_LONG).show()
+                fragmentManager?.popBackStack()
+            }
+        })
 
         playlists_list.layoutManager = LinearLayoutManager(context)
         playlists_list.adapter = adapter
@@ -115,11 +113,32 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
 
     private fun updatePlaylistsList() {
         Thread(Runnable {
-            val tempPlaylists = db?.playlistDao()?.getAllPlaylists()
+            playlists.clear()
+            val localPlaylists = db?.localPlaylistDao()?.getAllPlaylists()
+            val remotePlaylists = db?.remotePlaylistDao()?.getAllPlaylists()
+
+            localPlaylists?.forEach {
+                playlists.add(Playlist(
+                        it.playlistId,
+                        it.playlistName,
+                        it.playlistVideoCount,
+                        it.playlistThumbnail,
+                        it.privacyStatus,
+                        false))
+            }
+
+            remotePlaylists?.forEach {
+                playlists.add(Playlist(
+                        it.playlistId,
+                        it.playlistName,
+                        it.playlistVideoCount,
+                        it.playlistThumbnail,
+                        it.privacyStatus,
+                        true))
+            }
+
             activity?.runOnUiThread {
-                if (tempPlaylists != null) {
-                    playlists.clear()
-                    playlists.addAll(tempPlaylists)
+                if (localPlaylists != null && remotePlaylists != null) {
                     adapter?.notifyDataSetChanged()
                 }
             }
@@ -136,23 +155,22 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
         db?.close()
     }
 
-    private inner class MakeRequestTask : AsyncTask<Void, Void, ArrayList<Playlist>>() {
+    private inner class MakeRequestTask : AsyncTask<Void, Void, Void>() {
         private var youtubeService: YouTube? = null
         private var lastError: Exception? = null
 
-        override fun doInBackground(vararg params: Void): ArrayList<Playlist>? {
-            return try {
+        override fun doInBackground(vararg params: Void): Void? {
+            try {
                 getDataFromApi()
             } catch (e: Exception) {
                 lastError = e
                 cancel(true)
-                null
             }
-
+            return null
         }
 
         @Throws(IOException::class)
-        private fun getDataFromApi(): ArrayList<Playlist> {
+        private fun getDataFromApi() {
             val transport = AndroidHttp.newCompatibleTransport()
             val jsonFactory = JacksonFactory.getDefaultInstance()
             youtubeService = YouTube.Builder(
@@ -166,37 +184,25 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
                     ?.setMine(true)
                     ?.execute()
 
+            db?.remotePlaylistDao()?.deleteAll()
             result?.items?.forEach {
-                if (db?.playlistDao()?.getPlaylistById(it.id) == true) {
-                    //playlist already in db
-                    return tempList
-                } else {
-                    val playlist = Playlist(it.id,
-                            it.snippet.title,
-                            it.contentDetails.itemCount.toInt(),
-                            it.snippet.thumbnails.default.url,
-                            it.status.privacyStatus)
-
-                    db?.playlistDao()?.insertAll(playlist)
-                    tempList.add(playlist)
-                }
+                val remotePlaylists = RemotePlaylist(
+                        it.id,
+                        it.snippet.title,
+                        it.contentDetails.itemCount.toInt(),
+                        it.snippet.thumbnails.default.url,
+                        it.status.privacyStatus)
+                db?.remotePlaylistDao()?.insertAll(remotePlaylists)
             }
-            return tempList
         }
 
         override fun onPreExecute() {
             //mProgress.show()
         }
 
-        override fun onPostExecute(output: ArrayList<Playlist>?) {
+        override fun onPostExecute(output: Void?) {
             //mProgress.hide()
-            if (output == null || output.size == 0) {
-                //account playlists already added
-            } else {
-                sharedPrefsHelper.put(SharedPrefsHelper.ACCOUNT_PLAYLISTS_KEY, output.joinToString { it.playlistId })
-
-                updatePlaylistsList()
-            }
+            updatePlaylistsList()
         }
 
         override fun onCancelled() {

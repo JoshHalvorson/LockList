@@ -179,7 +179,7 @@ class SettingsActivity : AppCompatActivity() {
         val idParts = ids?.split(", ")
         idParts?.forEach {
             Thread(Runnable {
-                db.playlistDao().deletePlaylistById(it)
+                db.remotePlaylistDao().deletePlaylistById(it)
             }).start()
         }
         log_in_to_youtube_button.text = "Log in"
@@ -215,7 +215,7 @@ class SettingsActivity : AppCompatActivity() {
     private fun clearDb() {
         val db = Room.databaseBuilder(this.applicationContext,
                 PlaylistDatabase::class.java, getString(R.string.database_playlist_name)).build()
-        Thread(Runnable { db.clearAllTables() }).start()
+        Thread(Runnable { db?.remotePlaylistDao()?.deleteAll() }).start()
         db.close()
     }
 

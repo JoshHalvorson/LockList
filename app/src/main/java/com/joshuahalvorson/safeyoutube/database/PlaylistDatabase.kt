@@ -3,7 +3,8 @@ package com.joshuahalvorson.safeyoutube.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 
-@Database(entities = [Playlist::class], version = 1)
+@Database(entities = [RemotePlaylist::class, LocalPlaylist::class], version = 1)
 abstract class PlaylistDatabase : RoomDatabase() {
-    abstract fun playlistDao(): PlaylistDao
+    abstract fun remotePlaylistDao(): RemotePlaylistDao
+    abstract fun localPlaylistDao(): LocalPlaylistDao
 }

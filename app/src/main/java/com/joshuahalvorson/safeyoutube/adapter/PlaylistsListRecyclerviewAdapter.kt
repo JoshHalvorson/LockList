@@ -10,7 +10,8 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuahalvorson.safeyoutube.R
-import com.joshuahalvorson.safeyoutube.database.Playlist
+import com.joshuahalvorson.safeyoutube.model.Playlist
+import com.joshuahalvorson.safeyoutube.database.RemotePlaylist
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.playlists_list_element_layout.view.*
@@ -19,8 +20,7 @@ import java.lang.Exception
 class PlaylistsListRecyclerviewAdapter(
         private val isDeleting: Boolean,
         private val playlists: MutableList<Playlist>,
-        private val callback: OnListItemClick,
-        private val ids: List<String>
+        private val callback: OnListItemClick
 ) : RecyclerView.Adapter<PlaylistsListRecyclerviewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, p1: Int): ViewHolder {
@@ -31,7 +31,7 @@ class PlaylistsListRecyclerviewAdapter(
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        viewHolder.bindModel(playlists[position], isDeleting, callback, ids)
+        viewHolder.bindModel(playlists[position], isDeleting, callback)
     }
 
     override fun getItemCount() = playlists.size
@@ -45,7 +45,7 @@ class PlaylistsListRecyclerviewAdapter(
         private val playlistStatusImage: ImageView = view.playlist_status_image
         private val userPlaylistImage: ImageView = view.user_playlist_image
 
-        fun bindModel(playlist: Playlist, isDeleting: Boolean, callback: OnListItemClick, ids: List<String>) {
+        fun bindModel(playlist: Playlist, isDeleting: Boolean, callback: OnListItemClick) {
             itemView.playlist_loading_circle.visibility = View.VISIBLE
             playlistName.text = playlist.playlistName
             playlistVideos.text = "${playlist.playlistVideoCount} videos"
@@ -75,7 +75,7 @@ class PlaylistsListRecyclerviewAdapter(
                 "private" -> playlistStatusImage.setImageResource(R.drawable.ic_playlist_private)
             }
 
-            if (ids.contains(playlist.playlistId)) {
+            if (playlist.isRemote) {
                 userPlaylistImage.visibility = View.VISIBLE
             }
         }

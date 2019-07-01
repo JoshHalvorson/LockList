@@ -1,19 +1,19 @@
 <resources>
     <string name="app_name">Locklist</string>
     <string name="title_activity_watch_playlist">WatchPlaylistActivity</string>
-    <string name="database_playlist_name">database-playlists</string>
+    <string name="database_playlist_name">database-remotePlaylists</string>
     <string name="log_in_to_youtube_button_text">Log in to youtube</string>
     <string name="change_local_account_password_button_text">Change local account password</string>
     <string name="account_settings_textview_text">Account Settings</string>
-    <string name="no_playlist_textview_text">No playlist selected, enter the settings to add one</string>
+    <string name="no_playlist_textview_text">No remotePlaylist selected, enter the settings to add one</string>
     <string name="app_settings_textview_text">App Settings</string>
-    <string name="select_playlist_button_text">Select playlist</string>
-    <string name="delete_a_playlist_button_text">Delete a playlist</string>
-    <string name="delete_all_playlists_button_text">Delete all playlists</string>
+    <string name="select_playlist_button_text">Select remotePlaylist</string>
+    <string name="delete_a_playlist_button_text">Delete a remotePlaylist</string>
+    <string name="delete_all_playlists_button_text">Delete all remotePlaylists</string>
     <string name="current_theme_textview_text">Day</string>
-    <string name="add_a_playlist_textview_text">Add a playlist</string>
-    <string name="paste_playlist_url_hint_text">Paste playlist URL</string>
-    <string name="add_playlist_button_text">Add playlist</string>
+    <string name="add_a_playlist_textview_text">Add a remotePlaylist</string>
+    <string name="paste_playlist_url_hint_text">Paste remotePlaylist URL</string>
+    <string name="add_playlist_button_text">Add remotePlaylist</string>
     <string name="change_password_textview_text">Change password</string>
     <string name="old_password_textview_text">Old password</string>
     <string name="old_password_edittext_hint_text">Old password</string>
@@ -29,10 +29,10 @@
     <string name="seekbar_5_and_under_textview_text">5 and under</string>
     <string name="seekbar_11_and_up_textview_text">11+</string>
     <string name="video_thumbnail_imageview_content_description">video thumbnail</string>
-    <string name="playlist_thumbnail_imageview_content_description">playlist thumbnail</string>
-    <string name="delete_playlist_button_imagebutton_content_description">delete playlist button</string>
-    <string name="playlist_status_image_content_description">playlist status image</string>
-    <string name="user_playlist_image_content_description">user playlist image</string>
+    <string name="playlist_thumbnail_imageview_content_description">remotePlaylist thumbnail</string>
+    <string name="delete_playlist_button_imagebutton_content_description">delete remotePlaylist button</string>
+    <string name="playlist_status_image_content_description">remotePlaylist status image</string>
+    <string name="user_playlist_image_content_description">user remotePlaylist image</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

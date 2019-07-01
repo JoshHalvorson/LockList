@@ -10,8 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.joshuahalvorson.safeyoutube.R
 import com.joshuahalvorson.safeyoutube.adapter.PlaylistsListRecyclerviewAdapter
-import com.joshuahalvorson.safeyoutube.database.Playlist
+import com.joshuahalvorson.safeyoutube.database.RemotePlaylist
 import com.joshuahalvorson.safeyoutube.database.PlaylistDatabase
+import com.joshuahalvorson.safeyoutube.model.Playlist
 import com.joshuahalvorson.safeyoutube.util.SharedPrefsHelper
 import kotlinx.android.synthetic.main.fragment_remove_playlist.*
 
@@ -32,14 +33,16 @@ class RemovePlaylistFragment : androidx.fragment.app.Fragment() {
         }
         val sharedPrefsHelper = SharedPrefsHelper(activity?.getSharedPreferences(
                 SharedPrefsHelper.PREFERENCE_FILE_KEY, Context.MODE_PRIVATE))
-        val ids = sharedPrefsHelper.get(SharedPrefsHelper.ACCOUNT_PLAYLISTS_KEY, "")?.split(", ")
 
-        adapter = ids?.let {
-            PlaylistsListRecyclerviewAdapter(true, playlists, object : PlaylistsListRecyclerviewAdapter.OnListItemClick {
+        adapter = PlaylistsListRecyclerviewAdapter(true, playlists, object : PlaylistsListRecyclerviewAdapter.OnListItemClick {
                 override fun onListItemClick(playlist: Playlist?) {
                     if (playlist != null) {
                         Thread(Runnable {
-                            db?.playlistDao()?.delete(playlist)
+                            if (playlist.isRemote){
+                                db?.remotePlaylistDao()?.deletePlaylistById(playlist.playlistId)
+                            }else{
+                                db?.localPlaylistDao()?.deletePlaylistById(playlist.playlistId)
+                            }
                             playlists.remove(playlist)
                             activity?.runOnUiThread {
                                 adapter?.notifyDataSetChanged()
@@ -47,18 +50,40 @@ class RemovePlaylistFragment : androidx.fragment.app.Fragment() {
                         }).start()
                     }
                 }
-            }, it)
-        }
+            })
 
         playlists_to_remove_list.layoutManager = LinearLayoutManager(context)
         playlists_to_remove_list.addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
         playlists_to_remove_list.adapter = adapter
 
         Thread(Runnable {
-            val tempPlaylists = db?.playlistDao()?.getAllPlaylists()
+            val remotePlaylists = db?.remotePlaylistDao()?.getAllPlaylists()
+            val localPlaylists = db?.localPlaylistDao()?.getAllPlaylists()
+
+            remotePlaylists?.forEach {
+                playlists.add(Playlist(
+                        it.playlistId,
+                        it.playlistName,
+                        it.playlistVideoCount,
+                        it.playlistThumbnail,
+                        it.privacyStatus,
+                        true
+                ))
+            }
+
+            localPlaylists?.forEach {
+                playlists.add(Playlist(
+                        it.playlistId,
+                        it.playlistName,
+                        it.playlistVideoCount,
+                        it.playlistThumbnail,
+                        it.privacyStatus,
+                        false
+                ))
+            }
+
             activity?.runOnUiThread {
                 playlists.clear()
-                tempPlaylists?.let { playlists.addAll(it) }
                 adapter?.notifyDataSetChanged()
             }
         }).start()
