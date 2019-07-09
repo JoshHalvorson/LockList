@@ -58,7 +58,7 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
 
         adapter = PlaylistsListRecyclerviewAdapter(false, playlists, object : PlaylistsListRecyclerviewAdapter.OnListItemClick {
             override fun onListItemClick(playlist: Playlist?) {
-                sharedPrefsHelper.put(SharedPrefsHelper.CURRENT_PLAYLIST_KEY, playlist?.playlistId)
+                sharedPrefsHelper.put(SharedPrefsHelper.CURRENT_PLAYLIST_KEY, "${playlist?.playlistId}, ${playlist?.playlistName}")
                 Toast.makeText(context, "Playlist ${playlist?.playlistName} selected", Toast.LENGTH_LONG).show()
                 fragmentManager?.popBackStack()
             }
