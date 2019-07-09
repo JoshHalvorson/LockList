@@ -34,7 +34,9 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.ui.PlayerUiControlle
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.android.synthetic.main.activity_watch_playlist.*
+import kotlinx.android.synthetic.main.activity_watch_playlist.toolbar
 
 class WatchPlaylistActivity : AppCompatActivity() {
 
@@ -53,6 +55,7 @@ class WatchPlaylistActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_watch_playlist)
+        setSupportActionBar(toolbar)
 
         Stetho.initializeWithDefaults(applicationContext)
 
@@ -152,7 +155,16 @@ class WatchPlaylistActivity : AppCompatActivity() {
     }
 
     private fun loadPlaylist() {
-        val currentPlaylistId = sharedPrefsHelper.get(SharedPrefsHelper.CURRENT_PLAYLIST_KEY, null)
+        val currentPlaylistString = sharedPrefsHelper.get(SharedPrefsHelper.CURRENT_PLAYLIST_KEY, null)
+
+        val currentPlaylistParts = currentPlaylistString?.split(", ")
+        val currentPlaylistId = currentPlaylistParts?.get(0)
+        val currentPlaylistName = currentPlaylistParts?.get(1)
+
+        currentPlaylistName?.let {
+            toolbar.title = it
+        }
+
         if (currentPlaylistId != null) {
             viewModel.getPlaylistOverview(currentPlaylistId)
                     ?.subscribeOn(Schedulers.io())
