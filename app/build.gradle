@@ -11,7 +11,7 @@ localProperties.load(new FileInputStream(localPropertiesFile))
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.joshuahalvorson.safeyoutube"
+        applicationId "com.joshuahalvorson.locklist"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
