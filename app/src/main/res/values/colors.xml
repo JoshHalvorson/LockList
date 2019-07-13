@@ -6,7 +6,7 @@
     <!--<color name="colorPrimary">#440BD4</color>
     <color name="colorPrimaryDark">#04005E</color>
     <color name="colorAccent">#FF2079</color>-->
-    <color name="colorPrimary">#FDC7D7</color>
-    <color name="colorPrimaryDark">#CE96FB</color>
+    <color name="colorPrimary">#16324f</color>
+    <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#A5D8F3</color>
 </resources>
