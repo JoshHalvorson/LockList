@@ -241,12 +241,15 @@ class WatchPlaylistActivity : AppCompatActivity() {
             uiController.showFullscreenButton(false)
         } else {
             window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_VISIBLE)
+            toolbar.visibility = View.VISIBLE
             youtube_player_view.exitFullScreen()
             uiController.showFullscreenButton(true)
         }
     }
 
     private fun hideSystemUI() {
+        toolbar.visibility = View.GONE
+
         window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                 or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
