@@ -9,16 +9,22 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.initialization.InitializationStatus
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.util.ExponentialBackOff
 import com.google.api.services.youtube.YouTubeScopes
+import com.joshuahalvorson.locklist.BuildConfig
 import com.joshuahalvorson.locklist.R
 import com.joshuahalvorson.locklist.database.PlaylistDatabase
 import com.joshuahalvorson.locklist.util.SharedPrefsHelper
@@ -49,6 +55,11 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_settings)
         setSupportActionBar(toolbar)
         toolbar.title = "Settings"
+
+        MobileAds.initialize(this) {
+            val adRequest = AdRequest.Builder().addTestDevice(BuildConfig.test_device).build()
+            adView.loadAd(adRequest)
+        }
 
         val intent = intent
         val action = intent.action
