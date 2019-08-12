@@ -2,12 +2,11 @@ package com.joshuahalvorson.locklist.view.fragment
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProviders
@@ -16,9 +15,12 @@ import com.joshuahalvorson.locklist.R
 import com.joshuahalvorson.locklist.database.LocalPlaylist
 import com.joshuahalvorson.locklist.database.PlaylistDatabase
 import com.joshuahalvorson.locklist.network.YoutubeDataApiViewModel
+import com.joshuahalvorson.locklist.util.removeErrorOnTextChange
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_add_playlist.*
+
 
 class AddPlaylistFragment : androidx.fragment.app.DialogFragment() {
     private var onDismissListener: DialogInterface.OnDismissListener? = null
@@ -60,19 +62,31 @@ class AddPlaylistFragment : androidx.fragment.app.DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         parentView = view.findViewById(R.id.add_playlist_frag_parent)
-        val urlEditText = view.findViewById<EditText>(R.id.video_url_edit_text)
-        val addPlaylistButton = view.findViewById<Button>(R.id.add_playlist_button)
         viewModel = ViewModelProviders.of(this).get(YoutubeDataApiViewModel::class.java)
+
+        video_url_edit_text.removeErrorOnTextChange(video_url_edit_text_layout)
 
         val url = arguments?.getString(PLAYLIST_URL_KEY)
         addPlaylist(url)
 
-        addPlaylistButton?.setOnClickListener {
-            if (urlEditText?.text.toString() != "") {
-                val playlistUrl = urlEditText?.text.toString()
-                addPlaylist(playlistUrl)
+        add_playlist_button.setOnClickListener {
+            if (video_url_edit_text.text.toString() != "") {
+                if (isValidUrl(video_url_edit_text.text.toString())) {
+                    val playlistUrl = video_url_edit_text.text.toString()
+                    addPlaylist(playlistUrl)
+                } else {
+                    video_url_edit_text_layout.error = "Enter a valid url"
+                }
+            } else {
+                video_url_edit_text_layout.error = "Field is empty"
             }
         }
+    }
+
+    private fun isValidUrl(url: String): Boolean {
+        val pattern = Patterns.WEB_URL
+        val matcher = pattern.matcher(url.toLowerCase())
+        return matcher.matches()
     }
 
     private fun addPlaylist(url: String?) {

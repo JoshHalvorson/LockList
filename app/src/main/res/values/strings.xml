@@ -12,7 +12,7 @@
     <string name="delete_all_playlists_button_text">Delete all playlists</string>
     <string name="current_theme_textview_text">Day</string>
     <string name="add_a_playlist_textview_text">Add a playlist</string>
-    <string name="paste_playlist_url_hint_text">Paste playlist URL</string>
+    <string name="paste_playlist_url_hint_text">Paste URL</string>
     <string name="add_playlist_button_text">Add playlist</string>
     <string name="change_password_textview_text">Change password</string>
     <string name="old_password_textview_text">Old password</string>

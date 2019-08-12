@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.joshuahalvorson.locklist.R
 import com.joshuahalvorson.locklist.util.SharedPrefsHelper
+import com.joshuahalvorson.locklist.util.removeErrorOnTextChange
 import kotlinx.android.synthetic.main.fragment_change_password.*
 
 class ChangePasswordFragment : androidx.fragment.app.DialogFragment() {
@@ -22,6 +23,9 @@ class ChangePasswordFragment : androidx.fragment.app.DialogFragment() {
                 SharedPrefsHelper.PREFERENCE_FILE_KEY, Context.MODE_PRIVATE))
         val password = sharedPrefsHelper.get(SharedPrefsHelper.ACCOUNT_KEY, "")
 
+        old_password_edit_text.removeErrorOnTextChange(old_password_edit_text_layout)
+        new_password_edit_text.removeErrorOnTextChange(new_password_edit_text_layout)
+
         change_password_button.setOnClickListener {
             if (old_password_edit_text.text.toString() == password) {
                 if (new_password_edit_text.text.toString() != password) {
@@ -29,10 +33,10 @@ class ChangePasswordFragment : androidx.fragment.app.DialogFragment() {
                     Toast.makeText(context, "Password changed", Toast.LENGTH_LONG).show()
                     dismiss()
                 } else {
-                    Toast.makeText(context, "New password is the same as the old password", Toast.LENGTH_LONG).show()
+                    new_password_edit_text_layout.error = "New password matches old password"
                 }
             } else {
-                Toast.makeText(context, "Old password is not the same as the current password", Toast.LENGTH_LONG).show()
+                old_password_edit_text_layout.error = "Old password doesn't match current password"
             }
         }
     }
