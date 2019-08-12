@@ -127,16 +127,6 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
             val localPlaylists = db?.localPlaylistDao()?.getAllPlaylists()
             val remotePlaylists = db?.remotePlaylistDao()?.getAllPlaylists()
 
-            localPlaylists?.forEach {
-                playlists.add(Playlist(
-                        it.playlistId,
-                        it.playlistName,
-                        it.playlistVideoCount,
-                        it.playlistThumbnail,
-                        it.privacyStatus,
-                        false))
-            }
-
             remotePlaylists?.forEach {
                 playlists.add(Playlist(
                         it.playlistId,
@@ -145,6 +135,16 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
                         it.playlistThumbnail,
                         it.privacyStatus,
                         true))
+            }
+
+            localPlaylists?.forEach {
+                playlists.add(Playlist(
+                        it.playlistId,
+                        it.playlistName,
+                        it.playlistVideoCount,
+                        it.playlistThumbnail,
+                        it.privacyStatus,
+                        false))
             }
 
             activity?.runOnUiThread {
