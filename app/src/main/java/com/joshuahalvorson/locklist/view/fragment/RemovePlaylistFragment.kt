@@ -44,22 +44,22 @@ class RemovePlaylistFragment : androidx.fragment.app.Fragment() {
                 SharedPrefsHelper.PREFERENCE_FILE_KEY, Context.MODE_PRIVATE))
 
         adapter = PlaylistsListRecyclerviewAdapter(true, playlists, object : PlaylistsListRecyclerviewAdapter.OnListItemClick {
-                override fun onListItemClick(playlist: Playlist?) {
-                    if (playlist != null) {
-                        Thread(Runnable {
-                            if (playlist.isRemote){
-                                db?.remotePlaylistDao()?.deletePlaylistById(playlist.playlistId)
-                            }else{
-                                db?.localPlaylistDao()?.deletePlaylistById(playlist.playlistId)
-                            }
-                            playlists.remove(playlist)
-                            activity?.runOnUiThread {
-                                adapter?.notifyDataSetChanged()
-                            }
-                        }).start()
-                    }
+            override fun onListItemClick(playlist: Playlist?) {
+                if (playlist != null) {
+                    Thread(Runnable {
+                        if (playlist.isRemote) {
+                            db?.remotePlaylistDao()?.deletePlaylistById(playlist.playlistId)
+                        } else {
+                            db?.localPlaylistDao()?.deletePlaylistById(playlist.playlistId)
+                        }
+                        playlists.remove(playlist)
+                        activity?.runOnUiThread {
+                            adapter?.notifyDataSetChanged()
+                        }
+                    }).start()
                 }
-            })
+            }
+        })
 
         playlists_to_remove_list.layoutManager = LinearLayoutManager(context)
         playlists_to_remove_list.addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
@@ -92,7 +92,6 @@ class RemovePlaylistFragment : androidx.fragment.app.Fragment() {
             }
 
             activity?.runOnUiThread {
-                playlists.clear()
                 adapter?.notifyDataSetChanged()
             }
         }).start()
