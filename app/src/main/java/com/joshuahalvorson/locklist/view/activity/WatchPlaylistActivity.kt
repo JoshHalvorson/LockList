@@ -8,8 +8,7 @@ import android.content.res.Configuration
 import android.hardware.SensorManager
 import android.os.Bundle
 import android.util.Log
-import android.view.OrientationEventListener
-import android.view.View
+import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
@@ -69,20 +68,6 @@ class WatchPlaylistActivity : AppCompatActivity() {
         val youtubePlayerView = findViewById<YouTubePlayerView>(R.id.youtube_player_view)
         lifecycle.addObserver(youtubePlayerView)
         uiController = youtubePlayerView.getPlayerUiController()
-
-        youtubePlayerView.addFullScreenListener(object : YouTubePlayerFullScreenListener {
-            override fun onYouTubePlayerEnterFullScreen() {
-                settings_fab.hide()
-            }
-
-            override fun onYouTubePlayerExitFullScreen() {
-                settings_fab.show()
-            }
-        })
-
-        settings_fab.setOnClickListener {
-            LoginFragment().show(supportFragmentManager, "login_fragment")
-        }
 
         itemAdapter = ItemsRecyclerviewAdapter(items, object : ItemsRecyclerviewAdapter.OnVideoClicked {
             override fun onVideoClicked(itemIndex: Int) {
@@ -262,4 +247,22 @@ class WatchPlaylistActivity : AppCompatActivity() {
         disposable.dispose()
         super.onDestroy()
     }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.settings -> {
+                LoginFragment().show(supportFragmentManager, "login_fragment")
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+
 }
