@@ -26,7 +26,6 @@ import com.joshuahalvorson.locklist.model.Playlist
 import com.joshuahalvorson.locklist.database.RemotePlaylist
 import com.joshuahalvorson.locklist.database.PlaylistDatabase
 import com.joshuahalvorson.locklist.util.SharedPrefsHelper
-import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.android.synthetic.main.fragment_playlists_list.*
 import kotlinx.io.IOException
 import java.util.*

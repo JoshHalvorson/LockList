@@ -9,7 +9,6 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -17,8 +16,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.initialization.InitializationStatus
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
@@ -56,10 +53,10 @@ class SettingsActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         title = "Settings"
 
-        MobileAds.initialize(this) {
-            val adRequest = AdRequest.Builder().addTestDevice(BuildConfig.test_device).build()
-            adView.loadAd(adRequest)
-        }
+        MobileAds.initialize(this, BuildConfig.app_id)
+        val adRequest = AdRequest.Builder().addTestDevice(BuildConfig.test_device).build()
+        adView.loadAd(adRequest)
+
 
         val intent = intent
         val action = intent.action
