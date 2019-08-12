@@ -24,6 +24,16 @@ class RemovePlaylistFragment : androidx.fragment.app.Fragment() {
         return inflater.inflate(R.layout.fragment_remove_playlist, container, false)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        activity?.title = "Settings"
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        activity?.title = "Delete a playlist"
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val playlists = ArrayList<Playlist>()
         db = context?.let {

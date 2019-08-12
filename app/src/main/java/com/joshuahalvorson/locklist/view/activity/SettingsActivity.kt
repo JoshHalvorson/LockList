@@ -54,7 +54,7 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
         setSupportActionBar(toolbar)
-        toolbar.title = "Settings"
+        title = "Settings"
 
         MobileAds.initialize(this) {
             val adRequest = AdRequest.Builder().addTestDevice(BuildConfig.test_device).build()

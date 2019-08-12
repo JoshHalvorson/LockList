@@ -26,6 +26,7 @@ import com.joshuahalvorson.locklist.model.Playlist
 import com.joshuahalvorson.locklist.database.RemotePlaylist
 import com.joshuahalvorson.locklist.database.PlaylistDatabase
 import com.joshuahalvorson.locklist.util.SharedPrefsHelper
+import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.android.synthetic.main.fragment_playlists_list.*
 import kotlinx.io.IOException
 import java.util.*
@@ -50,6 +51,16 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
             Room.databaseBuilder(it,
                     PlaylistDatabase::class.java, getString(R.string.database_playlist_name)).build()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        activity?.title = "Settings"
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        activity?.title = "Select a playlist"
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
