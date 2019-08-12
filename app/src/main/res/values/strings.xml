@@ -8,7 +8,7 @@
     <string name="no_playlist_textview_text">No playlist selected, enter the settings to add one</string>
     <string name="app_settings_textview_text">App Settings</string>
     <string name="select_playlist_button_text">Select playlist</string>
-    <string name="delete_a_playlist_button_text">Delete a playlist</string>
+    <string name="delete_a_playlist_button_text">Delete local playlist</string>
     <string name="delete_all_playlists_button_text">Delete all playlists</string>
     <string name="current_theme_textview_text">Day</string>
     <string name="add_a_playlist_textview_text">Add a playlist</string>

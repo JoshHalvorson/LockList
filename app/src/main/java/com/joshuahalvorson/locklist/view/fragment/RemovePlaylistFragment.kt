@@ -31,7 +31,7 @@ class RemovePlaylistFragment : androidx.fragment.app.Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        activity?.title = "Delete a playlist"
+        activity?.title = "Delete local playlist"
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -40,18 +40,17 @@ class RemovePlaylistFragment : androidx.fragment.app.Fragment() {
             Room.databaseBuilder<PlaylistDatabase>(it,
                     PlaylistDatabase::class.java, getString(R.string.database_playlist_name)).build()
         }
-        val sharedPrefsHelper = SharedPrefsHelper(activity?.getSharedPreferences(
-                SharedPrefsHelper.PREFERENCE_FILE_KEY, Context.MODE_PRIVATE))
 
         adapter = PlaylistsListRecyclerviewAdapter(true, playlists, object : PlaylistsListRecyclerviewAdapter.OnListItemClick {
             override fun onListItemClick(playlist: Playlist?) {
                 if (playlist != null) {
                     Thread(Runnable {
-                        if (playlist.isRemote) {
+                        /*if (playlist.isRemote) {
                             db?.remotePlaylistDao()?.deletePlaylistById(playlist.playlistId)
                         } else {
                             db?.localPlaylistDao()?.deletePlaylistById(playlist.playlistId)
-                        }
+                        }*/
+                        db?.localPlaylistDao()?.deletePlaylistById(playlist.playlistId)
                         playlists.remove(playlist)
                         activity?.runOnUiThread {
                             adapter?.notifyDataSetChanged()
@@ -62,14 +61,13 @@ class RemovePlaylistFragment : androidx.fragment.app.Fragment() {
         })
 
         playlists_to_remove_list.layoutManager = LinearLayoutManager(context)
-        playlists_to_remove_list.addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
         playlists_to_remove_list.adapter = adapter
 
         Thread(Runnable {
-            val remotePlaylists = db?.remotePlaylistDao()?.getAllPlaylists()
+            //val remotePlaylists = db?.remotePlaylistDao()?.getAllPlaylists()
             val localPlaylists = db?.localPlaylistDao()?.getAllPlaylists()
 
-            remotePlaylists?.forEach {
+            /*remotePlaylists?.forEach {
                 playlists.add(Playlist(
                         it.playlistId,
                         it.playlistName,
@@ -78,7 +76,7 @@ class RemovePlaylistFragment : androidx.fragment.app.Fragment() {
                         it.privacyStatus,
                         true
                 ))
-            }
+            }*/
 
             localPlaylists?.forEach {
                 playlists.add(Playlist(

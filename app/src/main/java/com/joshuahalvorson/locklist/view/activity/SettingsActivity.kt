@@ -128,10 +128,6 @@ class SettingsActivity : AppCompatActivity() {
             }
         })
 
-        clear_cache_button.setOnClickListener {
-            showClearPlaylistsAlert()
-        }
-
         remove_single_playlists.setOnClickListener {
             supportFragmentManager?.beginTransaction()
                     ?.replace(R.id.select_playlist_fragment_container, RemovePlaylistFragment())
@@ -207,26 +203,6 @@ class SettingsActivity : AppCompatActivity() {
         val alertDialog = alertDialogBuilder.create()
         alertDialog.show()
     }
-
-    private fun showClearPlaylistsAlert() {
-        val alertDialogBuilder = AlertDialog.Builder(this@SettingsActivity, R.style.AlertDialog)
-        alertDialogBuilder.setMessage("Are you sure you want to clear saved playlists?")
-        alertDialogBuilder.setPositiveButton("Yes"
-        ) { arg0, arg1 -> clearDb() }
-
-        alertDialogBuilder.setNegativeButton("No") { dialog, which -> }
-
-        val alertDialog = alertDialogBuilder.create()
-        alertDialog.show()
-    }
-
-    private fun clearDb() {
-        val db = Room.databaseBuilder(this.applicationContext,
-                PlaylistDatabase::class.java, getString(R.string.database_playlist_name)).build()
-        Thread(Runnable { db?.remotePlaylistDao()?.deleteAll() }).start()
-        db.close()
-    }
-
 
     private fun getResultsFromApi() {
         if (!isGooglePlayServicesAvailable()) {
