@@ -119,7 +119,7 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
             updatePlaylistsList()
         })
 
-        addPlaylistDialogFragment.show(fragmentManager, "add_playlist")
+        fragmentManager?.let { addPlaylistDialogFragment.show(it, "add_playlist") }
     }
 
     private fun updatePlaylistsList() {

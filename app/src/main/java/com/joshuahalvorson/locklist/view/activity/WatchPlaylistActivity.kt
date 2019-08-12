@@ -217,7 +217,7 @@ class WatchPlaylistActivity : AppCompatActivity() {
         }
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration?) {
+    override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         Log.i("asdas", newConfig.toString())
         if (newConfig?.orientation == Configuration.ORIENTATION_LANDSCAPE) {

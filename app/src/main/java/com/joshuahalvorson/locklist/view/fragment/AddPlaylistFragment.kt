@@ -45,7 +45,7 @@ class AddPlaylistFragment : androidx.fragment.app.DialogFragment() {
         if (bundle != null) {
             if (bundle.getBoolean(SHOW_FRAG_KEY)) {
                 parentView?.visibility = View.GONE
-                val window = dialog.window
+                val window = dialog?.window
                 val windowParams = window?.attributes
                 windowParams?.dimAmount = 0.0f
                 windowParams?.flags = windowParams?.flags?.or(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
@@ -120,8 +120,7 @@ class AddPlaylistFragment : androidx.fragment.app.DialogFragment() {
 
     }
 
-    override fun onDismiss(dialog: DialogInterface?) {
-        super.onDismiss(dialog)
+    override fun onDismiss(dialog: DialogInterface) {
         onDismissListener?.onDismiss(dialog)
     }
 
