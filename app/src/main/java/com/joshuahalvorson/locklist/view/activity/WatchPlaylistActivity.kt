@@ -40,6 +40,8 @@ class WatchPlaylistActivity : AppCompatActivity() {
     private var items: ArrayList<Models.Item> = ArrayList()
     private var ageValue: Int? = 0
 
+    private var currentPlaylistId: String = ""
+
     private lateinit var sharedPrefsHelper: SharedPrefsHelper
     private lateinit var itemAdapter: ItemsRecyclerviewAdapter
     private lateinit var counter: Counter
@@ -140,16 +142,52 @@ class WatchPlaylistActivity : AppCompatActivity() {
     private fun loadPlaylist() {
         progress_circle.visibility = View.VISIBLE
         val currentPlaylistString = sharedPrefsHelper.get(SharedPrefsHelper.CURRENT_PLAYLIST_KEY, null)
-
         val currentPlaylistParts = currentPlaylistString?.split(", ")
-        val currentPlaylistId = currentPlaylistParts?.get(0)
+        currentPlaylistParts?.get(0)?.let { id ->
+            currentPlaylistId = id
+            no_playlist_text.visibility = View.GONE
+            viewModel.getPlaylistOverview(id)
+                    ?.subscribeOn(Schedulers.io())
+                    ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.subscribe {
+                        items.clear()
+                        items.addAll(it.items)
+                        itemAdapter.notifyDataSetChanged()
+                        youtube_player_view.getYouTubePlayerWhenReady(object : YouTubePlayerCallback {
+                            override fun onYouTubePlayer(youTubePlayer: YouTubePlayer) {
+                                progress_circle.visibility = View.GONE
+                                counter.maxValue = items.size - 1
+                                items[counter.current].contentDetails?.videoId?.let { id ->
+                                    youTubePlayer.loadVideo(id, playerController.getTime())
+                                    showViews()
+                                }
+                                items[counter.current].snippet?.title?.let { title ->
+                                    current_video_title_text.text = title
+                                }
+                            }
+                        })
+                    }?.let { subscribe ->
+                        disposable.add(
+                                subscribe
+                        )
+                    }
+        }
         val currentPlaylistName = currentPlaylistParts?.get(1)
-
         currentPlaylistName?.let {
             toolbar.title = it
         }
 
-        if (currentPlaylistId != null) {
+        if (currentPlaylistId == "") {
+            items.clear()
+            youtube_player_view.visibility = View.GONE
+            no_playlist_text.visibility = View.VISIBLE
+            current_video_title_text.text = ""
+            video_title_container.visibility = View.GONE
+            videos_list.visibility = View.GONE
+            progress_circle.visibility = View.GONE
+        }
+
+        /*if (currentPlaylistId != null) {
             no_playlist_text.visibility = View.GONE
             viewModel.getPlaylistOverview(currentPlaylistId)
                     ?.subscribeOn(Schedulers.io())
@@ -184,29 +222,35 @@ class WatchPlaylistActivity : AppCompatActivity() {
             video_title_container.visibility = View.GONE
             videos_list.visibility = View.GONE
             progress_circle.visibility = View.GONE
-        }
+        }*/
+    }
+
+    private fun showViews() {
+        progress_circle.visibility = View.GONE
+        no_playlist_text.visibility = View.GONE
+        videos_list.visibility = View.VISIBLE
+        youtube_player_view.visibility = View.VISIBLE
+        video_title_container.visibility = View.VISIBLE
+        YoYo.with(Techniques.FadeIn)
+                .repeat(0)
+                .duration(400)
+                .playOn(youtube_player_view)
+        YoYo.with(Techniques.FadeIn)
+                .repeat(0)
+                .duration(400)
+                .playOn(video_title_container)
+        YoYo.with(Techniques.FadeIn)
+                .repeat(0)
+                .duration(400)
+                .playOn(videos_list)
     }
 
     private fun initializeYoutubePlayer(youtubePlayer: YouTubePlayerView) {
         youtubePlayer.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
             override fun onReady(youTubePlayer: YouTubePlayer) {
-                progress_circle.visibility = View.GONE
-                no_playlist_text.visibility = View.GONE
-                videos_list.visibility = View.VISIBLE
-                youtube_player_view.visibility = View.VISIBLE
-                video_title_container.visibility = View.VISIBLE
-                YoYo.with(Techniques.FadeIn)
-                        .repeat(0)
-                        .duration(400)
-                        .playOn(youtube_player_view)
-                YoYo.with(Techniques.FadeIn)
-                        .repeat(0)
-                        .duration(400)
-                        .playOn(video_title_container)
-                YoYo.with(Techniques.FadeIn)
-                        .repeat(0)
-                        .duration(400)
-                        .playOn(videos_list)
+                if (currentPlaylistId != "") {
+                   showViews()
+                }
             }
 
             override fun onStateChange(youTubePlayer: YouTubePlayer, state: PlayerConstants.PlayerState) {
