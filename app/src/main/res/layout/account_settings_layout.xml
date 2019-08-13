@@ -53,7 +53,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:text="Log in with your google account to sync your YouTube playlists with this app"
+        android:text="Log in with your google account to sync your YouTube playlists with this app \nNote: You can still use the app without logging in. You will need to manually add playlists either through the app, or by sharing the playlist with the app via the YouTube app."
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
