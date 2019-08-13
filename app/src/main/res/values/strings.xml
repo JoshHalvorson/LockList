@@ -2,7 +2,7 @@
     <string name="app_name">LockList</string>
     <string name="title_activity_watch_playlist">LockList</string>
     <string name="database_playlist_name">database-playlists</string>
-    <string name="log_in_to_youtube_button_text">Log in to youtube</string>
+    <string name="log_in_to_youtube_button_text">Log in</string>
     <string name="change_local_account_password_button_text">Change local account password</string>
     <string name="account_settings_textview_text">Account Settings</string>
     <string name="no_playlist_textview_text">No playlist selected, enter the settings to add one</string>
