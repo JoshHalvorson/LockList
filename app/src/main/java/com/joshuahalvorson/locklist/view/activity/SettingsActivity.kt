@@ -162,7 +162,7 @@ class SettingsActivity : AppCompatActivity() {
         val accountName = sharedPrefsHelper.get(SharedPrefsHelper.ACCOUNT_NAME_KEY, null)
         if (accountName != null) {
             googleAccountCredential.selectedAccountName = accountName
-            log_in_to_youtube_button.text = "Log out of $accountName"
+            log_in_to_youtube_button.text = "Log out"
             log_in_to_youtube_button.setOnClickListener {
                 showLogOutAlertDialog()
             }
@@ -215,7 +215,7 @@ class SettingsActivity : AppCompatActivity() {
         } else if (!isDeviceOnline()) {
             Toast.makeText(applicationContext, "No network connection available.", Toast.LENGTH_LONG).show()
         } else {
-            log_in_to_youtube_button.text = "Log out of ${googleAccountCredential.selectedAccountName}"
+            log_in_to_youtube_button.text = "Log out"
             Toast.makeText(applicationContext, "Logged in to ${googleAccountCredential.selectedAccountName}", Toast.LENGTH_LONG).show()
             checkLogIn()
         }
