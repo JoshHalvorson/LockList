@@ -23,13 +23,23 @@
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
+    <ProgressBar
+        android:id="@+id/progress_circle"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+
     <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
         android:id="@+id/youtube_player_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
-        tools:visibility="visible">
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
 
     </com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView>
 
@@ -37,6 +47,7 @@
         android:id="@+id/video_title_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:visibility="gone"
         app:cardElevation="5dp"
         app:contentPadding="2dp"
         app:layout_constraintTop_toBottomOf="@+id/youtube_player_view">
@@ -60,11 +71,11 @@
         android:id="@+id/videos_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/video_title_container"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toBottomOf="@+id/video_title_container" />
 
     <TextView
         android:id="@+id/no_playlist_text"

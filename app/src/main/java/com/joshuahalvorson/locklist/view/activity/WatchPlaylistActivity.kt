@@ -6,12 +6,13 @@ import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.hardware.SensorManager
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.daimajia.androidanimations.library.Techniques
+import com.daimajia.androidanimations.library.YoYo
 import com.facebook.stetho.Stetho
 import com.joshuahalvorson.locklist.R
 import com.joshuahalvorson.locklist.adapter.ItemsRecyclerviewAdapter
@@ -23,6 +24,7 @@ import com.joshuahalvorson.locklist.util.YoutubePlayerController
 import com.joshuahalvorson.locklist.view.fragment.LoginFragment
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants.PlayerState.ENDED
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants.PlayerState.PLAYING
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerCallback
@@ -32,7 +34,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_watch_playlist.*
-import kotlinx.android.synthetic.main.activity_watch_playlist.toolbar
 
 class WatchPlaylistActivity : AppCompatActivity() {
 
@@ -103,7 +104,7 @@ class WatchPlaylistActivity : AppCompatActivity() {
         super.onResume()
         loadPlaylist()
         val currentAge = sharedPrefsHelper.get(SharedPrefsHelper.AGE_RANGE_KEY, 0)
-        if (currentAge != ageValue){
+        if (currentAge != ageValue) {
             currentAge?.let { setPlayerOptions(it) }
         }
     }
@@ -137,6 +138,7 @@ class WatchPlaylistActivity : AppCompatActivity() {
     }
 
     private fun loadPlaylist() {
+        progress_circle.visibility = View.VISIBLE
         val currentPlaylistString = sharedPrefsHelper.get(SharedPrefsHelper.CURRENT_PLAYLIST_KEY, null)
 
         val currentPlaylistParts = currentPlaylistString?.split(", ")
@@ -148,6 +150,7 @@ class WatchPlaylistActivity : AppCompatActivity() {
         }
 
         if (currentPlaylistId != null) {
+            no_playlist_text.visibility = View.GONE
             viewModel.getPlaylistOverview(currentPlaylistId)
                     ?.subscribeOn(Schedulers.io())
                     ?.observeOn(AndroidSchedulers.mainThread())
@@ -155,12 +158,10 @@ class WatchPlaylistActivity : AppCompatActivity() {
                         items.clear()
                         items.addAll(it.items)
                         itemAdapter.notifyDataSetChanged()
-                        no_playlist_text.visibility = View.GONE
-                        video_title_container.visibility = View.VISIBLE
                         youtube_player_view.getYouTubePlayerWhenReady(object : YouTubePlayerCallback {
                             override fun onYouTubePlayer(youTubePlayer: YouTubePlayer) {
+                                progress_circle.visibility = View.GONE
                                 counter.maxValue = items.size - 1
-                                youtube_player_view.visibility = View.VISIBLE
                                 items[counter.current].contentDetails?.videoId?.let { id ->
                                     youTubePlayer.loadVideo(id, playerController.getTime())
                                 }
@@ -181,11 +182,33 @@ class WatchPlaylistActivity : AppCompatActivity() {
             no_playlist_text.visibility = View.VISIBLE
             current_video_title_text.text = ""
             video_title_container.visibility = View.GONE
+            videos_list.visibility = View.GONE
+            progress_circle.visibility = View.GONE
         }
     }
 
     private fun initializeYoutubePlayer(youtubePlayer: YouTubePlayerView) {
         youtubePlayer.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
+            override fun onReady(youTubePlayer: YouTubePlayer) {
+                progress_circle.visibility = View.GONE
+                no_playlist_text.visibility = View.GONE
+                videos_list.visibility = View.VISIBLE
+                youtube_player_view.visibility = View.VISIBLE
+                video_title_container.visibility = View.VISIBLE
+                YoYo.with(Techniques.FadeIn)
+                        .repeat(0)
+                        .duration(400)
+                        .playOn(youtube_player_view)
+                YoYo.with(Techniques.FadeIn)
+                        .repeat(0)
+                        .duration(400)
+                        .playOn(video_title_container)
+                YoYo.with(Techniques.FadeIn)
+                        .repeat(0)
+                        .duration(400)
+                        .playOn(videos_list)
+            }
+
             override fun onStateChange(youTubePlayer: YouTubePlayer, state: PlayerConstants.PlayerState) {
                 when (state) {
                     ENDED -> {
@@ -216,7 +239,6 @@ class WatchPlaylistActivity : AppCompatActivity() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        Log.i("asdas", newConfig.toString())
         if (newConfig?.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             hideSystemUI()
             youtube_player_view.enterFullScreen()
