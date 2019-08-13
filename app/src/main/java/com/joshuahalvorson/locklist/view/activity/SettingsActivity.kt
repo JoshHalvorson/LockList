@@ -318,6 +318,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun acquireGooglePlayServices() {
+        signOut()
         val apiAvailability = GoogleApiAvailability.getInstance()
         val connectionStatusCode = apiAvailability.isGooglePlayServicesAvailable(applicationContext)
         if (apiAvailability.isUserResolvableError(connectionStatusCode)) {
