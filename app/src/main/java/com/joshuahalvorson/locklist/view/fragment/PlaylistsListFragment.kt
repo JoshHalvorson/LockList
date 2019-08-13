@@ -66,6 +66,8 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
         sharedPrefsHelper = SharedPrefsHelper(activity?.getSharedPreferences(
                 SharedPrefsHelper.PREFERENCE_FILE_KEY, Context.MODE_PRIVATE))
 
+        add_playlist_button.setColorFilter(resources.getColor(R.color.colorWhite))
+
         adapter = PlaylistsListRecyclerviewAdapter(false, playlists, object : PlaylistsListRecyclerviewAdapter.OnListItemClick {
             override fun onListItemClick(playlist: Playlist?) {
                 sharedPrefsHelper.put(SharedPrefsHelper.CURRENT_PLAYLIST_KEY, "${playlist?.playlistId}, ${playlist?.playlistName}")
