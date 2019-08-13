@@ -80,7 +80,7 @@ class SettingsActivity : AppCompatActivity() {
         sharedPrefsHelper = SharedPrefsHelper(getSharedPreferences(
                 SharedPrefsHelper.PREFERENCE_FILE_KEY, Context.MODE_PRIVATE))
 
-        if (sharedPrefsHelper.get(SharedPrefsHelper.DARK_MODE_KEY, 1) == 2) {
+        /*if (sharedPrefsHelper.get(SharedPrefsHelper.DARK_MODE_KEY, 1) == 2) {
             day_night_switch.isChecked = true
             current_theme_text.text = "Night"
         } else {
@@ -105,7 +105,7 @@ class SettingsActivity : AppCompatActivity() {
                     sharedPrefsHelper.put(SharedPrefsHelper.DARK_MODE_KEY, 1)
                 }
             }
-        }
+        }*/
 
         change_password_button.setOnClickListener {
             val changePasswordFragment = ChangePasswordFragment()
