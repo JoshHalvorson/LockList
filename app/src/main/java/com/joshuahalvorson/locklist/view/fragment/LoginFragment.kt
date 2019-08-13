@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.Constraints
 import com.joshuahalvorson.locklist.R
 import com.joshuahalvorson.locklist.util.SharedPrefsHelper
 import com.joshuahalvorson.locklist.util.removeErrorOnTextChange
@@ -17,6 +18,11 @@ class LoginFragment : androidx.fragment.app.DialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_login, container, false)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.setLayout(Constraints.LayoutParams.FILL_PARENT, Constraints.LayoutParams.WRAP_CONTENT)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
