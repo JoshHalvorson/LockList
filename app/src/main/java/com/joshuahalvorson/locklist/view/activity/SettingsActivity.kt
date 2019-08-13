@@ -216,7 +216,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun showLogOutAlertDialog() {
-        val alertDialogBuilder = AlertDialog.Builder(this@SettingsActivity, R.style.InfoAlertDialog)
+        val alertDialogBuilder = AlertDialog.Builder(this@SettingsActivity, R.style.AlertDialogLogOut)
         alertDialogBuilder.setMessage("Are you sure you want to log out of ${googleAccountCredential.selectedAccountName}?")
         alertDialogBuilder.setPositiveButton("Yes") { arg0, arg1 -> signOut() }
 

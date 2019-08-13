@@ -25,8 +25,8 @@
     </style>
 
     <style name="AlertDialogLogOut" parent="Base.Theme.AppCompat.Light.Dialog">
-        <item name="buttonBarPositiveButtonStyle">@style/AlertPositiveButtonStyle</item>
-        <item name="buttonBarNegativeButtonStyle">@style/AlertNegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/AlertLogOutPositiveButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/AlertLogOutNegativeButtonStyle</item>
     </style>
 
     <style name="AlertLogOutPositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
