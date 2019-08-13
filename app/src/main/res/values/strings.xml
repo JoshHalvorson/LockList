@@ -33,6 +33,7 @@
     <string name="delete_playlist_button_imagebutton_content_description">delete playlist button</string>
     <string name="playlist_status_image_content_description">Playlist status image</string>
     <string name="user_playlist_image_content_description">user playlist image</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="app_settings_dialog_content">Selecting a playlist will set the primary playlist for the app. \n\nYou can also delete a playlist that you\'ve added from the app.</string>
+    <string name="account_settings_dialog_content">Changing the local account password will let you change the password you created to enter the settings. \n\nLogging in will let you use your google and associated YouTube account to select playlists from your account to use in this app.</string>
+    <string name="kids_settings_dialog_content">Changing this slider will update the player with different interfaces. \n\nThe first option, "5 and under will" change the player to be as minimal as possible, the video will autoplay with no play or pause, no video scrubbing, and no buttons on the player itself. \n\nThe middle option will have play and pause ability and video scrubbing, but no buttons to external places. \n\nFinally, "11+" will have all options and also include a button to go to the video on YouTube.</string>
 </resources>

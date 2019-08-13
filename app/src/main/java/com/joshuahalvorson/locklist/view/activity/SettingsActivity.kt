@@ -9,7 +9,9 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
+import android.view.Gravity
 import android.widget.SeekBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -56,7 +58,6 @@ class SettingsActivity : AppCompatActivity() {
         MobileAds.initialize(this, BuildConfig.app_id)
         val adRequest = AdRequest.Builder().addTestDevice(BuildConfig.test_device).build()
         adView.loadAd(adRequest)
-
 
         val intent = intent
         val action = intent.action
@@ -129,10 +130,10 @@ class SettingsActivity : AppCompatActivity() {
         })
 
         remove_single_playlists.setOnClickListener {
-            supportFragmentManager?.beginTransaction()
-                    ?.replace(R.id.select_playlist_fragment_container, RemovePlaylistFragment())
-                    ?.addToBackStack("")
-                    ?.commit()
+            supportFragmentManager.beginTransaction()
+                    .replace(R.id.select_playlist_fragment_container, RemovePlaylistFragment())
+                    .addToBackStack("")
+                    .commit()
         }
 
         select_playlist_button.setOnClickListener {
@@ -144,7 +145,26 @@ class SettingsActivity : AppCompatActivity() {
                 .setBackOff(ExponentialBackOff())
 
         checkLogIn()
+        setInfoButtons()
+    }
 
+    private fun setInfoButtons() {
+        kids_settings_info_button.setOnClickListener {
+            createDialog("Kids settings", resources.getString(R.string.kids_settings_dialog_content))
+                    .show()
+        }
+    }
+
+    private fun createDialog(title: String, message: String): AlertDialog {
+        val textView = TextView(this)
+        textView.gravity = Gravity.CENTER
+        textView.textSize = 26f
+        textView.text = title
+        val alertDialogBuilder = AlertDialog.Builder(this@SettingsActivity, R.style.InfoAlertDialog)
+        alertDialogBuilder.setCustomTitle(textView)
+        alertDialogBuilder.setMessage(message)
+        alertDialogBuilder.setPositiveButton("Close") { arg0, arg1 -> }
+        return alertDialogBuilder.create()
     }
 
     private fun launchPlaylistsListFragment(bundle: Bundle?) {
@@ -196,10 +216,9 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun showLogOutAlertDialog() {
-        val alertDialogBuilder = AlertDialog.Builder(this@SettingsActivity, R.style.AlertDialog)
+        val alertDialogBuilder = AlertDialog.Builder(this@SettingsActivity, R.style.InfoAlertDialog)
         alertDialogBuilder.setMessage("Are you sure you want to log out of ${googleAccountCredential.selectedAccountName}?")
-        alertDialogBuilder.setPositiveButton("Yes"
-        ) { arg0, arg1 -> signOut() }
+        alertDialogBuilder.setPositiveButton("Yes") { arg0, arg1 -> signOut() }
 
         alertDialogBuilder.setNegativeButton("No") { dialog, which -> }
 

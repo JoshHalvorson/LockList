@@ -4,6 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageButton
+        android:id="@+id/kids_settings_info_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="@+id/kids_settings_text"
+        app:layout_constraintStart_toEndOf="@+id/kids_settings_text"
+        app:layout_constraintTop_toTopOf="@+id/kids_settings_text"
+        app:srcCompat="@drawable/ic_info_black_24dp" />
+
     <TextView
         android:id="@+id/kids_settings_text"
         android:layout_width="wrap_content"
@@ -22,7 +34,7 @@
         android:id="@+id/age_range_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
         android:text="@string/age_range_textview_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,6 +55,7 @@
         app:layout_constraintTop_toBottomOf="@+id/age_range_text" />
 
     <TextView
+        android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
