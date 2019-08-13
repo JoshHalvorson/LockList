@@ -126,6 +126,7 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun updatePlaylistsList() {
+        playlists_list_progress_circle.visibility = View.VISIBLE
         Thread(Runnable {
             playlists.clear()
             val localPlaylists = db?.localPlaylistDao()?.getAllPlaylists()
@@ -154,6 +155,7 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
             activity?.runOnUiThread {
                 if (localPlaylists != null && remotePlaylists != null) {
                     adapter?.notifyDataSetChanged()
+                    playlists_list_progress_circle.visibility = View.GONE
                 }
             }
         }).start()
