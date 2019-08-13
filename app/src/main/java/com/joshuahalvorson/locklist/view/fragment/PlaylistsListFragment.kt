@@ -98,6 +98,8 @@ class PlaylistsListFragment : androidx.fragment.app.Fragment() {
             googleAccountCredential.selectedAccountName = accountName
             MakeRequestTask().execute()
         } else {
+            Toast.makeText(context, "Not logged in, no remote playlists available", Toast.LENGTH_LONG)
+                    .show()
             //not logged in
         }
     }

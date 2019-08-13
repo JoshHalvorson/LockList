@@ -179,13 +179,16 @@ class SettingsActivity : AppCompatActivity() {
         val db = Room.databaseBuilder(this.applicationContext,
                 PlaylistDatabase::class.java, getString(R.string.database_playlist_name)).build()
         sharedPrefsHelper.remove(SharedPrefsHelper.ACCOUNT_NAME_KEY)
-        val ids = sharedPrefsHelper.get(SharedPrefsHelper.ACCOUNT_PLAYLISTS_KEY, "")
+        /*val ids = sharedPrefsHelper.get(SharedPrefsHelper.ACCOUNT_PLAYLISTS_KEY, "")
         val idParts = ids?.split(", ")
         idParts?.forEach {
             Thread(Runnable {
                 db.remotePlaylistDao().deletePlaylistById(it)
             }).start()
-        }
+        }*/
+        Thread(Runnable {
+            db.remotePlaylistDao().deleteAll()
+        }).start()
         log_in_to_youtube_button.text = "Log in"
         Toast.makeText(applicationContext, "Logged out", Toast.LENGTH_LONG).show()
         sharedPrefsHelper.remove(SharedPrefsHelper.CURRENT_PLAYLIST_KEY)
@@ -214,6 +217,7 @@ class SettingsActivity : AppCompatActivity() {
         } else {
             log_in_to_youtube_button.text = "Log out of ${googleAccountCredential.selectedAccountName}"
             Toast.makeText(applicationContext, "Logged in to ${googleAccountCredential.selectedAccountName}", Toast.LENGTH_LONG).show()
+            checkLogIn()
         }
     }
 
