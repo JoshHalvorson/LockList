@@ -53,6 +53,11 @@ class RemovePlaylistFragment : androidx.fragment.app.Fragment() {
                         db?.localPlaylistDao()?.deletePlaylistById(playlist.playlistId)
                         playlists.remove(playlist)
                         activity?.runOnUiThread {
+                            if (playlists.size > 0) {
+                                no_playlists_to_remove_text.visibility = View.GONE
+                            } else {
+                                no_playlists_to_remove_text.visibility = View.VISIBLE
+                            }
                             adapter?.notifyDataSetChanged()
                         }
                     }).start()
@@ -90,6 +95,11 @@ class RemovePlaylistFragment : androidx.fragment.app.Fragment() {
             }
 
             activity?.runOnUiThread {
+                if (playlists.size > 0) {
+                    no_playlists_to_remove_text.visibility = View.GONE
+                } else {
+                    no_playlists_to_remove_text.visibility = View.VISIBLE
+                }
                 adapter?.notifyDataSetChanged()
             }
         }).start()
