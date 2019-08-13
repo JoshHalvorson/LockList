@@ -231,18 +231,21 @@ class WatchPlaylistActivity : AppCompatActivity() {
         videos_list.visibility = View.VISIBLE
         youtube_player_view.visibility = View.VISIBLE
         video_title_container.visibility = View.VISIBLE
-        YoYo.with(Techniques.FadeIn)
-                .repeat(0)
-                .duration(400)
-                .playOn(youtube_player_view)
-        YoYo.with(Techniques.FadeIn)
-                .repeat(0)
-                .duration(400)
-                .playOn(video_title_container)
-        YoYo.with(Techniques.FadeIn)
-                .repeat(0)
-                .duration(400)
-                .playOn(videos_list)
+        if (videos_list.visibility != View.VISIBLE && youtube_player_view.visibility != View.VISIBLE && video_title_container.visibility != View.VISIBLE) {
+            YoYo.with(Techniques.FadeIn)
+                    .repeat(0)
+                    .duration(400)
+                    .playOn(youtube_player_view)
+            YoYo.with(Techniques.FadeIn)
+                    .repeat(0)
+                    .duration(400)
+                    .playOn(video_title_container)
+            YoYo.with(Techniques.FadeIn)
+                    .repeat(0)
+                    .duration(400)
+                    .playOn(videos_list)
+        }
+
     }
 
     private fun initializeYoutubePlayer(youtubePlayer: YouTubePlayerView) {
