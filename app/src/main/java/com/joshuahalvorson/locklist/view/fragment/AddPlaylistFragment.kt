@@ -1,5 +1,6 @@
 package com.joshuahalvorson.locklist.view.fragment
 
+import android.app.ActionBar
 import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Patterns
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Constraints
 import androidx.lifecycle.ViewModelProviders
 import androidx.room.Room
 import com.joshuahalvorson.locklist.R
@@ -43,6 +45,7 @@ class AddPlaylistFragment : androidx.fragment.app.DialogFragment() {
 
     override fun onStart() {
         super.onStart()
+        dialog?.window?.setLayout(Constraints.LayoutParams.FILL_PARENT, Constraints.LayoutParams.WRAP_CONTENT)
         val bundle = arguments
         if (bundle != null) {
             if (bundle.getBoolean(SHOW_FRAG_KEY)) {
